@@ -22,11 +22,14 @@ import sys, math, random
 class World(DirectObject): #subclassing here is necessary to accept events
     def __init__(self):
         #turn off mouse control, otherwise camera is not repositionable
+        self.lightables = []
         base.disableMouse()
         base.enableParticles()
-        camera.setPosHpr(0, -15, 7, 0, -15, 0)
+        self.setupLights()
         self.loadModels()
-        #self.setupLights()
+        camera.reparentTo(self.drill)
+        camera.setPosHpr(0, 3000, 1300, 180, -15, 0)
+        self.slnp.clearLight()
         self.setupCollisions()
         render.setShaderAuto() #you probably want to use this
         self.keyMap = {"left":0, "right":0, "forward":0}
@@ -54,6 +57,12 @@ class World(DirectObject): #subclassing here is necessary to accept events
     def setKey(self, key, value):
         self.keyMap[key] = value
         
+    def setWorldLight(self, object):
+        self.lightables.append(object)
+        object.setLight(self.keyLightNP)
+        object.setLight(self.fillLightNP)
+        object.setLight(self.slnp)
+    
     def loadModels(self):
         """loads models into the world"""
         #eat no longer exists? Phooey
@@ -61,19 +70,23 @@ class World(DirectObject): #subclassing here is necessary to accept events
         self.drill.setScale(.005)
         self.drill.setH(180)
         self.drill.reparentTo(render)
+        
+        self.slight = Spotlight('slight')
+        self.slight.setColor(VBase4(0, 0, 0, 1))
+        self.lens = PerspectiveLens()
+        self.slight.setLens(self.lens)
+        self.slnp = self.drill.attachNewNode(self.slight)
+        self.slnp.setPos(0, -700, 275)
+        self.slnp.setHpr(180, 0, 0)
+        self.slnp.setScale(200)
+        
+        self.setWorldLight(self.drill)
+        
         self.env = loader.loadModel("models/environment")
         self.env.reparentTo(render)
         self.env.setScale(.25)
         self.env.setPos(-8, 42, 0)
-        '''
-        self.slight = Spotlight('slight')
-        self.slight.setColor(VBase4(1, 1, 1, 1))
-        self.slnp = self.drill.attachNewNode(self.slight)
-        self.slnp.setPos(0.000, -2.150, 4.600)
-        self.slnp.setHpr(0, 120, 0)
-        self.slnp.setPos(10, 20, 0)
-        render.setLight(self.slnp)
-        '''
+        self.setWorldLight(self.env)
         
         #load targets
         self.targets = []
@@ -83,30 +96,33 @@ class World(DirectObject): #subclassing here is necessary to accept events
             target.setPos(random.uniform(-20, 20), random.uniform(-15, 15), 2)
             target.reparentTo(render)
             self.targets.append(target)
+            self.setWorldLight(target)
         
     def setupLights(self):
         #ambient light
         self.ambientLight = AmbientLight("ambientLight")
         #four values, RGBA (alpha is largely irrelevent), value range is 0:1
-        self.ambientLight.setColor((.25, .25, .25, 1))
+        self.ambientLight.setColor((.10, .10, .10, 1))
         self.ambientLightNP = render.attachNewNode(self.ambientLight)
         #the nodepath that calls setLight is what gets illuminated by the light
         render.setLight(self.ambientLightNP)
         #call clearLight() to turn it off
         
         self.keyLight = DirectionalLight("keyLight")
-        self.keyLight.setColor((.6,.6,.6, 1))
+        self.keyLight.setColor((.20,.20,.20, 1))
         self.keyLightNP = render.attachNewNode(self.keyLight)
         self.keyLightNP.setHpr(0, -26, 0)
-        render.setLight(self.keyLightNP)
+        
         self.fillLight = DirectionalLight("fillLight")
-        self.fillLight.setColor((.4,.4,.4, 1))
+        self.fillLight.setColor((.05,.05,.05, 1))
         self.fillLightNP = render.attachNewNode(self.fillLight)
         self.fillLightNP.setHpr(30, 0, 0)
-        render.setLight(self.fillLightNP)
         
     def drive(self):
         """compound interval for driveing"""
+        #some interval methods:
+        # start(), loop(), pause(), resume(), finish()
+        # start() can take arguments: start(starttime, endtime, playrate)
         dist = 5
         angle = deg2Rad(self.drill.getH())
         dx = dist * math.sin(angle)
@@ -114,9 +130,6 @@ class World(DirectObject): #subclassing here is necessary to accept events
         drilldrive = Parallel(self.drill.posInterval(1, (self.drill.getX() + dx, self.drill.getY() + dy, 0)), \
             self.drill.actorInterval("drive", loop=1, duration=2))
         drilldrive.start()
-        #some interval methods:
-        # start(), loop(), pause(), resume(), finish()
-        # start() can take arguments: start(starttime, endtime, playrate)
         
     def turn(self, direction):
         drillTurn = self.drill.hprInterval(.2, (self.drill.getH() - (10*direction), 0, 0))
@@ -124,7 +137,7 @@ class World(DirectObject): #subclassing here is necessary to accept events
         
     def move(self, task):
         elapsed = task.time - self.prevtime
-        camera.lookAt(self.drill)
+        #camera.lookAt(self.drill)
         if self.keyMap["left"]:
             self.drill.setH(self.drill.getH() + elapsed * 100)
         if self.keyMap["right"]:
@@ -170,25 +183,25 @@ class World(DirectObject): #subclassing here is necessary to accept events
             cSphere = CollisionSphere((0,0,0), 2)
             cNode = CollisionNode("smiley")
             cNode.addSolid(cSphere)
-            cNodePath = target.attachNewNode(cNode)
             #cNodePath.show()
+            cNodePath = target.attachNewNode(cNode)
             
     def startShoot(self):
-        self.loadParticleConfig('flamethrower2.ptf')
+        self.loadParticleConfig('flamethrower4.ptf')
+        self.slight.setColor(VBase4(500, 500, 500, 1))
         
     def stopShoot(self):
         self.p.softStop()
+        self.slight.setColor(VBase4(0, 0, 0, 1))
         
     def loadParticleConfig(self, file):
-        #Start of the code from steam.ptf
         self.p = ParticleEffect()
         self.p.loadConfig(Filename(file))        
-        #Sets particles to birth relative to the teapot, but to render at toplevel
         self.p.start(self.drill)
         self.p.setPos(0, -700, 275)
-        #self.p.setPos(0.000, -2.150, 4.600)
         self.p.setHpr(0, 90, 0)
         self.p.setScale(200)
+        self.p.setLightOff()
         
     def eat(self, cEntry):
         """handles the drill eating a smiley"""

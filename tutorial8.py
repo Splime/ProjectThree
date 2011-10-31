@@ -32,25 +32,32 @@ class World(DirectObject): #subclassing here is necessary to accept events
         self.slnp.clearLight()
         self.setupCollisions()
         render.setShaderAuto() #you probably want to use this
-        self.keyMap = {"left":0, "right":0, "forward":0}
+        self.keyMap = {"left":0, "right":0, "forward":0, "backwards":0}
         taskMgr.add(self.move, "moveTask")
         self.prevtime = 0
         self.isMoving = False
         self.accept("escape", sys.exit)
+        
         self.accept("arrow_up", self.setKey, ["forward", 1])
         self.accept("w", self.setKey, ["forward", 1])
         self.accept("arrow_right", self.setKey, ["right", 1])
         self.accept("d", self.setKey, ["right", 1])
         self.accept("arrow_left", self.setKey, ["left", 1])
         self.accept("a", self.setKey, ["left", 1])
+        self.accept("arrow_down", self.setKey, ["backwards", 1])
+        self.accept("s", self.setKey, ["backwards", 1])
+        
         self.accept("arrow_up-up", self.setKey, ["forward", 0])
         self.accept("w-up", self.setKey, ["forward", 0])
         self.accept("arrow_right-up", self.setKey, ["right", 0])
         self.accept("d-up", self.setKey, ["right", 0])
         self.accept("arrow_left-up", self.setKey, ["left", 0])
         self.accept("a-up", self.setKey, ["left", 0])
-        self.accept("space", self.startShoot)
-        self.accept("space-up", self.stopShoot)
+        self.accept("arrow_down-up", self.setKey, ["backwards", 0])
+        self.accept("s-up", self.setKey, ["backwards", 0])
+        
+        self.accept("mouse1", self.startShoot)
+        self.accept("mouse1-up", self.stopShoot)
         self.accept("ate-smiley", self.eat)
         self.p = ParticleEffect()
         
@@ -148,8 +155,14 @@ class World(DirectObject): #subclassing here is necessary to accept events
             dx = dist * math.sin(angle)
             dy = dist * -math.cos(angle)
             self.drill.setPos(self.drill.getX() + dx, self.drill.getY() + dy, 0)
+        if self.keyMap["backwards"]:
+            dist = 8 * elapsed
+            angle = deg2Rad(self.drill.getH())
+            dx = dist * -math.sin(angle)
+            dy = dist * math.cos(angle)
+            self.drill.setPos(self.drill.getX() + dx, self.drill.getY() + dy, 0)
             
-        if self.keyMap["left"] or self.keyMap["right"] or self.keyMap["forward"]:
+        if self.keyMap["left"] or self.keyMap["right"] or self.keyMap["forward"] or self.keyMap["backwards"]:
             if self.isMoving == False:
                 self.isMoving = True
                 self.drill.loop("drive")

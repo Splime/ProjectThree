@@ -19,7 +19,9 @@ from direct.showbase.DirectObject import DirectObject
 
 import sys, math, random
 
-class World(DirectObject): #subclassing here is necessary to accept events
+MAX_LIGHT = 30000
+
+class World(DirectObject):
     def __init__(self):
         #turn off mouse control, otherwise camera is not repositionable
         self.lightables = []
@@ -27,6 +29,7 @@ class World(DirectObject): #subclassing here is necessary to accept events
         base.enableParticles()
         self.setupLights()
         self.loadModels()
+        self.setupIntervals()
         camera.reparentTo(self.drill)
         camera.setPosHpr(0, 3000, 1300, 180, -15, 0)
         self.slnp.clearLight()
@@ -61,6 +64,22 @@ class World(DirectObject): #subclassing here is necessary to accept events
         self.accept("ate-smiley", self.eat)
         self.p = ParticleEffect()
         
+    def setupIntervals(self):
+        self.lightOn = LerpFunc(self.lightModify,
+                            fromData=0,
+                            toData=100,
+                            duration=0.6,
+                            blendType='noBlend',
+                            extraArgs=[True],
+                            name="LightUp")
+        self.lightOff = LerpFunc(self.lightModify,
+                            fromData=0,
+                            toData=100,
+                            duration=0.2,
+                            blendType='noBlend',
+                            extraArgs=[False],
+                            name="LightDown")
+                            
     def setKey(self, key, value):
         self.keyMap[key] = value
         
@@ -82,6 +101,7 @@ class World(DirectObject): #subclassing here is necessary to accept events
         self.slight.setColor(VBase4(0, 0, 0, 1))
         self.lens = PerspectiveLens()
         self.slight.setLens(self.lens)
+        self.slight.setAttenuation(Point3(0, 0.001, 0.001))
         self.slnp = self.drill.attachNewNode(self.slight)
         self.slnp.setPos(0, -700, 275)
         self.slnp.setHpr(180, 0, 0)
@@ -149,14 +169,14 @@ class World(DirectObject): #subclassing here is necessary to accept events
             self.drill.setH(self.drill.getH() + elapsed * 100)
         if self.keyMap["right"]:
             self.drill.setH(self.drill.getH() - elapsed * 100)
-        if self.keyMap["forward"]:
+        if self.keyMap["forward"] and not self.keyMap["backwards"]:
             dist = 8 * elapsed
             angle = deg2Rad(self.drill.getH())
             dx = dist * math.sin(angle)
             dy = dist * -math.cos(angle)
             self.drill.setPos(self.drill.getX() + dx, self.drill.getY() + dy, 0)
-        if self.keyMap["backwards"]:
-            dist = 8 * elapsed
+        if self.keyMap["backwards"] and not self.keyMap["forward"]:
+            dist = 4 * elapsed
             angle = deg2Rad(self.drill.getH())
             dx = dist * -math.sin(angle)
             dy = dist * math.cos(angle)
@@ -198,14 +218,23 @@ class World(DirectObject): #subclassing here is necessary to accept events
             cNode.addSolid(cSphere)
             #cNodePath.show()
             cNodePath = target.attachNewNode(cNode)
-            
+    
+    def lightModify(self, t, which_way):
+        if which_way:
+            value = t * MAX_LIGHT
+        else:
+            value = (100 - t) * MAX_LIGHT
+        self.slight.setColor(VBase4(value,value,value,1))
+        
     def startShoot(self):
         self.loadParticleConfig('flamethrower4.ptf')
-        self.slight.setColor(VBase4(500, 500, 500, 1))
+        self.lightOff.finish()
+        self.lightOn.start()
         
     def stopShoot(self):
         self.p.softStop()
-        self.slight.setColor(VBase4(0, 0, 0, 1))
+        self.lightOn.finish()
+        self.lightOff.start()
         
     def loadParticleConfig(self, file):
         self.p = ParticleEffect()
@@ -222,7 +251,6 @@ class World(DirectObject): #subclassing here is necessary to accept events
         self.targets.remove(cEntry.getIntoNodePath().getParent())
         #remove from scene graph
         cEntry.getIntoNodePath().getParent().remove()
-        
         
         
         

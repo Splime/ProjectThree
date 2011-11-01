@@ -19,20 +19,21 @@ from direct.showbase.DirectObject import DirectObject
 
 import sys, math, random
 
-MAX_LIGHT = 30000
+MAX_LIGHT = 25
 
 class World(DirectObject):
     def __init__(self):
         #turn off mouse control, otherwise camera is not repositionable
         self.lightables = []
+        self.cameraPositions = [((0, 5000, 5300), (180, -35, 0)),((0, 3000, 1300), (180, -15, 0))]
+        self.cameraIndex = 0
         base.disableMouse()
         base.enableParticles()
         self.setupLights()
         self.loadModels()
         self.setupIntervals()
         camera.reparentTo(self.drill)
-        camera.setPosHpr(0, 3000, 1300, 180, -15, 0)
-        self.slnp.clearLight()
+        camera.setPosHpr(0, 5000, 5300, 180, -35, 0)
         self.setupCollisions()
         render.setShaderAuto() #you probably want to use this
         self.keyMap = {"left":0, "right":0, "forward":0, "backwards":0}
@@ -61,6 +62,8 @@ class World(DirectObject):
         
         self.accept("mouse1", self.startShoot)
         self.accept("mouse1-up", self.stopShoot)
+        self.accept("tab", self.shiftCamera)        
+        
         self.accept("ate-smiley", self.eat)
         self.p = ParticleEffect()
         
@@ -68,7 +71,7 @@ class World(DirectObject):
         self.lightOn = LerpFunc(self.lightModify,
                             fromData=0,
                             toData=100,
-                            duration=0.6,
+                            duration=0.2,
                             blendType='noBlend',
                             extraArgs=[True],
                             name="LightUp")
@@ -80,6 +83,7 @@ class World(DirectObject):
                             extraArgs=[False],
                             name="LightDown")
                             
+        self.cameraMove = None
     def setKey(self, key, value):
         self.keyMap[key] = value
         
@@ -87,7 +91,24 @@ class World(DirectObject):
         self.lightables.append(object)
         object.setLight(self.keyLightNP)
         object.setLight(self.fillLightNP)
-        object.setLight(self.slnp)
+        for light in self.flameLights:
+            object.setLight(light[1])
+    
+    def shiftCamera(self):
+        if self.cameraMove:
+            self.cameraMove.finish()
+        old = self.cameraIndex
+        self.cameraIndex += 1
+        if self.cameraIndex == len(self.cameraPositions):
+            self.cameraIndex = 0
+        self.cameraMove=LerpPosHprInterval(camera,
+                                            .7, 
+                                            self.cameraPositions[self.cameraIndex][0], 
+                                            self.cameraPositions[self.cameraIndex][1],
+                                            camera.getPos(), 
+                                            camera.getHpr())
+        self.cameraMove.start()
+    
     
     def loadModels(self):
         """loads models into the world"""
@@ -97,15 +118,28 @@ class World(DirectObject):
         self.drill.setH(180)
         self.drill.reparentTo(render)
         
-        self.slight = Spotlight('slight')
-        self.slight.setColor(VBase4(0, 0, 0, 1))
-        self.lens = PerspectiveLens()
-        self.slight.setLens(self.lens)
-        self.slight.setAttenuation(Point3(0, 0.001, 0.001))
-        self.slnp = self.drill.attachNewNode(self.slight)
-        self.slnp.setPos(0, -700, 275)
-        self.slnp.setHpr(180, 0, 0)
-        self.slnp.setScale(200)
+        self.flameLights = []
+        shadowcam = Spotlight('shadowlight')
+        shadowcam.setColor(VBase4(0,0,0,1))
+        lens = PerspectiveLens()
+        shadowcam.setLens(lens)
+        shadowcam.setAttenuation(Point3(0, 0.001, 0.001))
+        shadowNP = self.drill.attachNewNode(shadowcam)
+        shadowNP.setPos(0, -1400, 450)
+        shadowNP.lookAt(self.drill)
+        shadowNP.setScale(200)
+        shadowNP.node().setShadowCaster(True)
+        self.flameLights.append((shadowcam, shadowNP))
+        
+        for i in range(3):
+            slight = PointLight('plight')
+            slight.setColor(VBase4(0, 0, 0, 1))
+            slight.setAttenuation(Point3(0, 0.001, 0.001))
+            slnp = self.drill.attachNewNode(slight)
+            slnp.setPos(0, -1200 - (300 * i), 450)
+            slnp.setHpr(180, 0, 0)
+            slnp.setScale(200)
+            self.flameLights.append((slight, slnp))
         
         self.setWorldLight(self.drill)
         
@@ -224,7 +258,8 @@ class World(DirectObject):
             value = t * MAX_LIGHT
         else:
             value = (100 - t) * MAX_LIGHT
-        self.slight.setColor(VBase4(value,value,value,1))
+        for light in self.flameLights:
+            light[0].setColor(VBase4(value,value,value,1))
         
     def startShoot(self):
         self.loadParticleConfig('flamethrower4.ptf')

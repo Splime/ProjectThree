@@ -28,8 +28,9 @@ class Vehicle(Actor):
     STOPPED = 0
     FORWARDS = 1
     
-    def __init__(self, modelStr, driveStr):
+    def __init__(self, modelStr, driveStr, world):
         Actor.__init__(self, modelStr, {"drive":driveStr})
+        self.world = world
         self.setScale(.005)
         self.setH(180)
         self.reparentTo(render)
@@ -44,8 +45,22 @@ class Vehicle(Actor):
         self.isTurning = False
         self.turnFactor = 4.0
     
+    def setupBooster(self):
+        #Booster Stuff
+        self.boosters = ParticleEffect()
+        self.boosterStartTime = -1
+        self.boosterLight = PointLight('boostlight')
+        self.boosterLight.setColor(VBase4(0,0,0,1))
+        self.boosterLight.setAttenuation(Point3(0,0.001,0.001))
+        self.world.boosterLightNP = self.attachNewNode(self.boosterLight)
+        self.world.boosterLightNP.setPos(0, 500, 275)
+        self.world.boosterLightNP.setHpr(180, 90, 0)
+        self.world.boosterLightNP.setScale(200)
+        self.world.setWorldLight(self)
+    
     def addKeyMap(self, keyMap):
         self.keyMap = keyMap
+        keyMap["boost"] = 0
     
     def move(self, task):
         elapsed = task.time - self.prevtime
@@ -72,7 +87,7 @@ class Vehicle(Actor):
             self.isTurning = False
         
         #Accelerating
-        if self.keyMap["forward"] and not self.keyMap["backwards"]:
+        if (self.keyMap["forward"] and not self.keyMap["backwards"]) or self.keyMap["boost"]:
             if self.direction == Vehicle.BACKWARDS:
                 newSpeed = self.speed + (self.accel-self.deccel)*elapsed
             else:
@@ -83,7 +98,7 @@ class Vehicle(Actor):
                 self.speed = newSpeed
         
         #Braking/Reversing
-        if self.keyMap["backwards"] and not self.keyMap["forward"]:
+        if self.keyMap["backwards"] and not (self.keyMap["forward"] or self.keyMap["boost"]):
             if self.direction == Vehicle.FORWARDS:
                 newSpeed = self.speed + (self.bkwdsAccel+self.deccel)*elapsed
             else:
@@ -94,7 +109,7 @@ class Vehicle(Actor):
                 self.speed = newSpeed
         
         #Even if no key is held down, we keep moving!
-        if (not self.keyMap["forward"] and not self.keyMap["backwards"]) or (self.keyMap["forward"] and self.keyMap["backwards"]):
+        if (not self.keyMap["forward"] and not self.keyMap["backwards"] and not self.keyMap["boost"]) or (self.keyMap["forward"] and self.keyMap["backwards"] and self.keyMap["boost"]):
             if self.direction == Vehicle.FORWARDS:
                 newSpeed = self.speed + self.deccel*elapsed
             else:
@@ -129,3 +144,33 @@ class Vehicle(Actor):
         
         self.prevtime = task.time
         return Task.cont
+    
+    def startBoosters(self):
+        if self.boosterStartTime == -1:
+            self.boosters.loadConfig(Filename('flamethrower4.ptf'))        
+            self.boosters.start(self.player)
+            self.boosters.setPos(0, 200, 275)
+            self.boosters.setHpr(180, 90, 0)
+            self.boosters.setScale(200)
+            self.boosters.setLightOff()
+            self.accel = self.accel * 2
+            self.keyMap["boost"] = 1
+            self.boosterLight.setColor(VBase4(MAX_LIGHT,MAX_LIGHT,MAX_LIGHT,1))
+            taskMgr.add(self.checkBoosterEnd, "endBoosters")
+    
+    def checkBoosterEnd(self, task):
+        if self.boosterStartTime == -1:
+            self.boosterStartTime = task.time
+            elapsed = 0
+        else:
+            elapsed = task.time - self.boosterStartTime
+            
+        if elapsed > BOOSTER_LENGTH:
+            self.boosterLight.setColor(VBase4(0,0,0,1))
+            self.boosters.softStop()
+            self.accel = self.accel / 2
+            self.keyMap["boost"] = 0
+            self.boosterStartTime = -1
+            return Task.done        
+        else:    
+            return Task.cont

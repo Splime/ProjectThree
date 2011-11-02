@@ -37,7 +37,9 @@ class World(DirectObject):
         self.setupLights()
         self.setupPicking()
         #Prepare the vehicular manslaughter!
-        self.player = Vehicle("models/panda-model", "panda-walk4")
+        self.boosterLightNP = None
+        self.flameLights = None
+        self.player = Vehicle("models/panda-model", "panda-walk4", self)
         self.loadModels()
         self.setupIntervals()
         camera.reparentTo(self.player)
@@ -77,13 +79,12 @@ class World(DirectObject):
         self.accept("mouse1", self.startShoot)
         self.accept("mouse1-up", self.stopShoot)
         self.accept("tab", self.shiftCamera)   
-        self.accept("space", self.startBoosters)
+        self.accept("space", self.player.startBoosters)
         
         self.accept("ate-smiley", self.eat)
         self.p1 = ParticleEffect()
         self.p2 = ParticleEffect()
-        self.boosters = ParticleEffect()
-        self.boosterStartTime = -1
+        
     
     def setupPicking(self):
         self.picker = CollisionTraverser()
@@ -109,34 +110,7 @@ class World(DirectObject):
                 print("Found target: " + str(i))
                   
         return Task.cont
-    def startBoosters(self):
-        if self.boosterStartTime == -1:
-            self.boosters.loadConfig(Filename('flamethrower4.ptf'))        
-            self.boosters.start(self.player)
-            self.boosters.setPos(0, 200, 275)
-            self.boosters.setHpr(180, 90, 0)
-            self.boosters.setScale(200)
-            self.boosters.setLightOff()
-            self.speed = self.speed_norm * 3
-            self.boosterLight.setColor(VBase4(MAX_LIGHT,MAX_LIGHT,MAX_LIGHT,1))
-            taskMgr.add(self.checkBoosterEnd, "endBoosters")
-    
-    def checkBoosterEnd(self, task):
-        if self.boosterStartTime == -1:
-            self.boosterStartTime = task.time
-            elapsed = 0
-        else:
-            elapsed = task.time - self.boosterStartTime
-            
-        if elapsed > BOOSTER_LENGTH:
-            self.boosterLight.setColor(VBase4(0,0,0,1))
-            self.boosters.softStop()
-            self.speed = self.speed_norm
-            self.boosterStartTime = -1
-            return Task.done        
-        else:    
-            return Task.cont
-   
+
     def setupIntervals(self):
         self.lightOn = LerpFunc(self.lightModify,
                             fromData=0,
@@ -184,10 +158,6 @@ class World(DirectObject):
     def loadModels(self):
         """loads models into the world"""
         #eat no longer exists? Phooey
-        # self.player = Actor("models/panda-model", {"drive":"panda-walk4"})
-        # self.player.setScale(.005)
-        # self.player.setH(180)
-        # self.player.reparentTo(render)
         
         self.flameLights = []
         shadowcam = Spotlight('shadowlight')
@@ -212,14 +182,7 @@ class World(DirectObject):
             slnp.setScale(200)
             self.flameLights.append((slight, slnp))
         
-        self.boosterLight = PointLight('boostlight')
-        self.boosterLight.setColor(VBase4(0,0,0,1))
-        self.boosterLight.setAttenuation(Point3(0,0.001,0.001))
-        self.boosterLightNP = self.player.attachNewNode(self.boosterLight)
-        self.boosterLightNP.setPos(0, 500, 275)
-        self.boosterLightNP.setHpr(180, 90, 0)
-        self.boosterLightNP.setScale(200)
-        self.setWorldLight(self.player)
+        self.player.setupBooster()
         
         self.env = loader.loadModel("models/environment")
         self.env.reparentTo(render)

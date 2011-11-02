@@ -46,6 +46,7 @@ class Vehicle(Actor):
     
     def addKeyMap(self, keyMap):
         self.keyMap = keyMap
+        keyMap["boost"] = 0
     
     def move(self, task):
         elapsed = task.time - self.prevtime
@@ -72,7 +73,7 @@ class Vehicle(Actor):
             self.isTurning = False
         
         #Accelerating
-        if self.keyMap["forward"] and not self.keyMap["backwards"]:
+        if (self.keyMap["forward"] and not self.keyMap["backwards"]) or self.keyMap["boost"]:
             if self.direction == Vehicle.BACKWARDS:
                 newSpeed = self.speed + (self.accel-self.deccel)*elapsed
             else:
@@ -83,7 +84,7 @@ class Vehicle(Actor):
                 self.speed = newSpeed
         
         #Braking/Reversing
-        if self.keyMap["backwards"] and not self.keyMap["forward"]:
+        if self.keyMap["backwards"] and not (self.keyMap["forward"] or self.keyMap["boost"]):
             if self.direction == Vehicle.FORWARDS:
                 newSpeed = self.speed + (self.bkwdsAccel+self.deccel)*elapsed
             else:
@@ -94,7 +95,7 @@ class Vehicle(Actor):
                 self.speed = newSpeed
         
         #Even if no key is held down, we keep moving!
-        if (not self.keyMap["forward"] and not self.keyMap["backwards"]) or (self.keyMap["forward"] and self.keyMap["backwards"]):
+        if (not self.keyMap["forward"] and not self.keyMap["backwards"] and not self.keyMap["boost"]) or (self.keyMap["forward"] and self.keyMap["backwards"] and self.keyMap["boost"]):
             if self.direction == Vehicle.FORWARDS:
                 newSpeed = self.speed + self.deccel*elapsed
             else:

@@ -117,7 +117,8 @@ class World(DirectObject):
             self.boosters.setHpr(180, 90, 0)
             self.boosters.setScale(200)
             self.boosters.setLightOff()
-            self.speed = self.speed_norm * 3
+            self.player.accel = self.player.accel * 2
+            self.player.keyMap["boost"] = 1
             self.boosterLight.setColor(VBase4(MAX_LIGHT,MAX_LIGHT,MAX_LIGHT,1))
             taskMgr.add(self.checkBoosterEnd, "endBoosters")
     
@@ -131,7 +132,8 @@ class World(DirectObject):
         if elapsed > BOOSTER_LENGTH:
             self.boosterLight.setColor(VBase4(0,0,0,1))
             self.boosters.softStop()
-            self.speed = self.speed_norm
+            self.player.accel = self.player.accel / 2
+            self.player.keyMap["boost"] = 0
             self.boosterStartTime = -1
             return Task.done        
         else:    

@@ -42,9 +42,10 @@ class Vehicle(Actor):
         #some movement stats
         self.accel = 40.0
         self.deccel = -40.0
-        self.bkwdsAccel = -40.0
+        self.bkwdsAccel = -10.0
         self.speed = 0.0
         self.maxSpeed = 100.0
+        self.maxBkwdsSpeed = -40.0
         self.direction = Vehicle.STOPPED
         self.isTurning = False
         self.turnFactor = 4.0
@@ -107,8 +108,8 @@ class Vehicle(Actor):
                 newSpeed = self.speed + (self.bkwdsAccel+self.deccel)*elapsed
             else:
                 newSpeed = self.speed + self.bkwdsAccel*elapsed
-            if newSpeed < -self.maxSpeed:
-                self.speed = -self.maxSpeed
+            if newSpeed < self.maxBkwdsSpeed:
+                self.speed = self.maxBkwdsSpeed
             else:
                 self.speed = newSpeed
         

@@ -1,4 +1,4 @@
-import direct.directbase.DirectStart #starts drill
+import direct.directbase.DirectStart #starts player
 from pandac.PandaModules import * #basic Panda modules
 from direct.showbase.DirectObject import DirectObject #for event handling
 from direct.actor.Actor import Actor #for animated models
@@ -21,6 +21,7 @@ from direct.gui.OnscreenText import OnscreenText
 from direct.showbase.DirectObject import DirectObject
 
 import sys, math, random
+from vehicle import Vehicle
 
 MAX_LIGHT = 2500
 BOOSTER_LENGTH = 3
@@ -35,14 +36,20 @@ class World(DirectObject):
         base.enableParticles()
         self.setupLights()
         self.setupPicking()
+        #Prepare the vehicular manslaughter!
+        self.player = Vehicle("models/panda-model", "panda-walk4")
         self.loadModels()
         self.setupIntervals()
-        camera.reparentTo(self.drill)
+        camera.reparentTo(self.player)
         camera.setPosHpr(0, 5000, 5300, 180, -35, 0)
         self.setupCollisions()
         render.setShaderAuto() #you probably want to use this
         self.keyMap = {"left":0, "right":0, "forward":0, "backwards":0}
-        taskMgr.add(self.move, "moveTask")
+        taskMgr.add(self.player.move, "moveTask")
+        
+        #Give the vehicle direct access to the keyMap
+        self.player.addKeyMap(self.keyMap)
+        
         self.prevtime = 0
         self.isMoving = False
         self.speed_norm = 8
@@ -105,7 +112,7 @@ class World(DirectObject):
     def startBoosters(self):
         if self.boosterStartTime == -1:
             self.boosters.loadConfig(Filename('flamethrower4.ptf'))        
-            self.boosters.start(self.drill)
+            self.boosters.start(self.player)
             self.boosters.setPos(0, 200, 275)
             self.boosters.setHpr(180, 90, 0)
             self.boosters.setScale(200)
@@ -177,10 +184,10 @@ class World(DirectObject):
     def loadModels(self):
         """loads models into the world"""
         #eat no longer exists? Phooey
-        self.drill = Actor("models/panda-model", {"drive":"panda-walk4"})
-        self.drill.setScale(.005)
-        self.drill.setH(180)
-        self.drill.reparentTo(render)
+        # self.player = Actor("models/panda-model", {"drive":"panda-walk4"})
+        # self.player.setScale(.005)
+        # self.player.setH(180)
+        # self.player.reparentTo(render)
         
         self.flameLights = []
         shadowcam = Spotlight('shadowlight')
@@ -188,9 +195,9 @@ class World(DirectObject):
         lens = PerspectiveLens()
         shadowcam.setLens(lens)
         shadowcam.setAttenuation(Point3(0, 0.001, 0.001))
-        shadowNP = self.drill.attachNewNode(shadowcam)
+        shadowNP = self.player.attachNewNode(shadowcam)
         shadowNP.setPos(0, -1400, 450)
-        shadowNP.lookAt(self.drill)
+        shadowNP.lookAt(self.player)
         shadowNP.setScale(200)
         shadowNP.node().setShadowCaster(True)
         self.flameLights.append((shadowcam, shadowNP))
@@ -199,7 +206,7 @@ class World(DirectObject):
             slight = PointLight('plight')
             slight.setColor(VBase4(0, 0, 0, 1))
             slight.setAttenuation(Point3(0, 0.001, 0.001))
-            slnp = self.drill.attachNewNode(slight)
+            slnp = self.player.attachNewNode(slight)
             slnp.setPos(0, -750 - (950 * i), 450)
             slnp.setHpr(180, 0, 0)
             slnp.setScale(200)
@@ -208,12 +215,11 @@ class World(DirectObject):
         self.boosterLight = PointLight('boostlight')
         self.boosterLight.setColor(VBase4(0,0,0,1))
         self.boosterLight.setAttenuation(Point3(0,0.001,0.001))
-        self.boosterLightNP = self.drill.attachNewNode(self.boosterLight)
+        self.boosterLightNP = self.player.attachNewNode(self.boosterLight)
         self.boosterLightNP.setPos(0, 500, 275)
         self.boosterLightNP.setHpr(180, 90, 0)
         self.boosterLightNP.setScale(200)
-        
-        self.setWorldLight(self.drill)
+        self.setWorldLight(self.player)
         
         self.env = loader.loadModel("models/environment")
         self.env.reparentTo(render)
@@ -257,45 +263,12 @@ class World(DirectObject):
         # start(), loop(), pause(), resume(), finish()
         # start() can take arguments: start(starttime, endtime, playrate)
         dist = 5
-        angle = deg2Rad(self.drill.getH())
+        angle = deg2Rad(self.player.getH())
         dx = dist * math.sin(angle)
         dy = dist * -math.cos(angle)
-        drilldrive = Parallel(self.drill.posInterval(1, (self.drill.getX() + dx, self.drill.getY() + dy, 0)), \
-            self.drill.actorInterval("drive", loop=1, duration=2))
-        drilldrive.start()
-           
-    def move(self, task):
-        elapsed = task.time - self.prevtime
-        #camera.lookAt(self.drill)
-        if self.keyMap["left"]:
-            self.drill.setH(self.drill.getH() + elapsed * 100)
-        if self.keyMap["right"]:
-            self.drill.setH(self.drill.getH() - elapsed * 100)
-        if self.keyMap["forward"] and not self.keyMap["backwards"]:
-            dist = self.speed * elapsed
-            angle = deg2Rad(self.drill.getH())
-            dx = dist * math.sin(angle)
-            dy = dist * -math.cos(angle)
-            self.drill.setPos(self.drill.getX() + dx, self.drill.getY() + dy, 0)
-        if self.keyMap["backwards"] and not self.keyMap["forward"]:
-            dist = (self.speed / 2) * elapsed
-            angle = deg2Rad(self.drill.getH())
-            dx = dist * -math.sin(angle)
-            dy = dist * math.cos(angle)
-            self.drill.setPos(self.drill.getX() + dx, self.drill.getY() + dy, 0)
-            
-        if self.keyMap["left"] or self.keyMap["right"] or self.keyMap["forward"] or self.keyMap["backwards"]:
-            if self.isMoving == False:
-                self.isMoving = True
-                self.drill.loop("drive")
-        else:
-            if self.isMoving:
-                self.isMoving = False
-                self.drill.stop()
-                self.drill.pose("drive", 4)
-        
-        self.prevtime = task.time
-        return Task.cont
+        playerdrive = Parallel(self.player.posInterval(1, (self.player.getX() + dx, self.player.getY() + dy, 0)), \
+            self.player.actorInterval("drive", loop=1, duration=2))
+        playerdrive.start()
         
     def setupCollisions(self):
         #instantiates a collision traverser and sets it to the default
@@ -305,11 +278,11 @@ class World(DirectObject):
         # "%in" is substituted with the name of the into object
         self.cHandler.setInPattern("ate-%in")
         
-        cSphere = CollisionSphere((0,0,0), 450) #because the drill is scaled way down
-        cNode = CollisionNode("drill")
+        cSphere = CollisionSphere((0,0,0), 450) #because the player is scaled way down
+        cNode = CollisionNode("player")
         cNode.addSolid(cSphere)
-        cNode.setIntoCollideMask(BitMask32.allOff()) #drill is *only* a from object
-        cNodePath = self.drill.attachNewNode(cNode)
+        cNode.setIntoCollideMask(BitMask32.allOff()) #player is *only* a from object
+        cNodePath = self.player.attachNewNode(cNode)
         #cNodePath.show()
         #registers a from object with the traverser with a corresponding handler
         base.cTrav.addCollider(cNodePath, self.cHandler)
@@ -345,21 +318,21 @@ class World(DirectObject):
     def loadParticleConfig(self, file):
         self.p1 = ParticleEffect()
         self.p1.loadConfig(Filename(file))        
-        self.p1.start(self.drill)
+        self.p1.start(self.player)
         self.p1.setPos(-250, -700, 275)
         self.p1.setHpr(0, 90, 0)
         self.p1.setScale(200)
         self.p1.setLightOff()
         self.p2 = ParticleEffect()
         self.p2.loadConfig(Filename(file))        
-        self.p2.start(self.drill)
+        self.p2.start(self.player)
         self.p2.setPos(250, -700, 275)
         self.p2.setHpr(0, 90, 0)
         self.p2.setScale(200)
         self.p2.setLightOff()
         
     def eat(self, cEntry):
-        """handles the drill eating a smiley"""
+        """handles the player eating a smiley"""
         #remove target from list of targets
         self.targets.remove(cEntry.getIntoNodePath().getParent())
         #remove from scene graph

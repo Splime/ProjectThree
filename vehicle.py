@@ -22,6 +22,10 @@ from direct.showbase.DirectObject import DirectObject
 
 import sys, math, random
 
+#WARNING: THESE ARE COPYPASTA'D FROM TUTORIAL8.PY
+MAX_LIGHT = 2500
+BOOSTER_LENGTH = 3
+
 class Vehicle(Actor):
     
     BACKWARDS = -1
@@ -148,7 +152,7 @@ class Vehicle(Actor):
     def startBoosters(self):
         if self.boosterStartTime == -1:
             self.boosters.loadConfig(Filename('flamethrower4.ptf'))        
-            self.boosters.start(self.player)
+            self.boosters.start(self)
             self.boosters.setPos(0, 200, 275)
             self.boosters.setHpr(180, 90, 0)
             self.boosters.setScale(200)

@@ -336,7 +336,8 @@ class World(DirectObject):
         self.lightOn.start()
         
     def stopShoot(self):
-        self.p.softStop()
+        self.p1.softStop()
+        self.p2.softStop()
         self.lightOn.finish()
         self.lightOff.start()
         

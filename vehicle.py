@@ -23,6 +23,11 @@ from direct.showbase.DirectObject import DirectObject
 import sys, math, random
 
 class Vehicle(Actor):
+    
+    BACKWARDS = -1
+    STOPPED = 0
+    FORWARDS = 1
+    
     def __init__(self, modelStr, driveStr):
         Actor.__init__(self, modelStr, {"drive":driveStr})
         self.setScale(.005)
@@ -30,12 +35,12 @@ class Vehicle(Actor):
         self.reparentTo(render)
         self.prevtime = 0
         #some movement stats
-        self.accel = 20
-        self.deccel = -40
-        self.speed = 0
-        self.maxSpeed = 100
-        self.isMovingFwd = False
-        self.isMovingBkwd = False
+        self.accel = 40.0
+        self.deccel = -40.0
+        self.bkwdsAccel = -40.0
+        self.speed = 0.0
+        self.maxSpeed = 100.0
+        self.direction = Vehicle.STOPPED
         self.isTurning = False
     
     def addKeyMap(self, keyMap):
@@ -44,23 +49,15 @@ class Vehicle(Actor):
     def move(self, task):
         elapsed = task.time - self.prevtime
         
-        wasMoving = self.isTurning and self.isMovingFwd and self.isMovingBkwd
+        wasMoving = self.isTurning or (self.direction != Vehicle.STOPPED)
         
         if self.speed > 0:
-            self.isMovingFwd = True
-        if self.speed >= 0:
-            self.isMovingBkwd = False
+            self.direction = Vehicle.FORWARDS
+        if self.speed == 0:
+            self.direction = Vehicle.STOPPED
         if self.speed < 0:
-            self.isMovingBkwd = True
-        if self.speed <= 0:
-            self.isMovingFwd = False
+            self.direction = Vehicle.BACKWARDS
         
-        # if self.isTurning:
-            # print "Turning"
-        # if self.isMovingFwd:
-            # print "Forward"
-        # if self.isMovingBkwd:
-            # print "Backwards"
         #Deal with turning
         if self.keyMap["left"]:
             self.setH(self.getH() + elapsed * 100)
@@ -74,58 +71,57 @@ class Vehicle(Actor):
         if self.keyMap["forward"] and not self.keyMap["backwards"]:
             #print "Accel Code, speed = %i"%self.speed
             #Calculate a new speed
-            newSpeed = self.speed + self.accel*elapsed
+            if self.direction == Vehicle.BACKWARDS:
+                newSpeed = self.speed + (self.accel-self.deccel)*elapsed
+            else:
+                newSpeed = self.speed + self.accel*elapsed
             if newSpeed > self.maxSpeed:
                 self.speed = self.maxSpeed
             else:
                 self.speed = newSpeed
-            dist = self.speed * elapsed
-            angle = deg2Rad(self.getH())
-            dx = dist * math.sin(angle)
-            dy = dist * -math.cos(angle)
-            self.setPos(self.getX() + dx, self.getY() + dy, 0)
             
         if self.keyMap["backwards"] and not self.keyMap["forward"]:
             #print "Backwards Accel Code, speed = %i"%self.speed
             #Calculate a new speed
-            newSpeed = self.speed + self.deccel*elapsed
+            if self.direction == Vehicle.FORWARDS:
+                newSpeed = self.speed + (self.bkwdsAccel+self.deccel)*elapsed
+            else:
+                newSpeed = self.speed + self.bkwdsAccel*elapsed
             if newSpeed < -self.maxSpeed:
                 self.speed = -self.maxSpeed
             else:
                 self.speed = newSpeed
-            dist = (self.speed) * elapsed
-            angle = deg2Rad(self.getH())
-            dx = dist * math.sin(angle)
-            dy = dist * -math.cos(angle)
-            self.setPos(self.getX() + dx, self.getY() + dy, 0)
         
         #Even if no key is held down, we keep moving!
         if (not self.keyMap["forward"] and not self.keyMap["backwards"]) or (self.keyMap["forward"] and self.keyMap["backwards"]):
             #print "Deccel Code, speed = %i"%self.speed
             #Calculate a new speed
-            if self.isMovingFwd:
+            if self.direction == Vehicle.FORWARDS:
                 newSpeed = self.speed + self.deccel*elapsed
             else:
                 newSpeed = self.speed - self.deccel*elapsed
             
-            if self.isMovingFwd:
+            if self.direction == Vehicle.FORWARDS:
                 if newSpeed < 0:
                     self.speed = 0
                 else:
                     self.speed = newSpeed
-            if self.isMovingBkwd:
+            if self.direction == Vehicle.BACKWARDS:
                 if newSpeed > 0:
                     self.speed = 0
                 else:
                     self.speed = newSpeed
-            dist = (-self.speed / 2) * elapsed
+        
+        #Now actually change position
+        if self.direction != Vehicle.STOPPED:
+            dist = self.speed * elapsed
             angle = deg2Rad(self.getH())
-            dx = dist * -math.sin(angle)
-            dy = dist * math.cos(angle)
+            dx = dist * math.sin(angle)
+            dy = dist * -math.cos(angle)
             self.setPos(self.getX() + dx, self.getY() + dy, 0)
         
         #Next, activate animation if necessary
-        isMoving = self.isTurning and self.isMovingFwd and self.isMovingBkwd
+        isMoving = self.isTurning or (self.direction != Vehicle.STOPPED)
         if not wasMoving and isMoving:
             self.loop("drive")
         else:

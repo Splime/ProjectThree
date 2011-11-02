@@ -138,7 +138,7 @@ class Vehicle(Actor):
             angle = deg2Rad(self.getH())
             dx = dist * math.sin(angle)
             dy = dist * -math.cos(angle)
-            self.setPos(self.getX() + dx, self.getY() + dy, 0)
+            self.setPos(self.getX() + dx, self.getY() + dy, self.getZ())
         
         #Next, activate animation if necessary
         isMoving = self.isTurning or (self.direction != Vehicle.STOPPED)

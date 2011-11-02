@@ -70,6 +70,7 @@ class Vehicle(Actor):
     def move(self, task):
         elapsed = task.time - self.prevtime
         
+        startpos = self.getPos() #Initial position
         wasMoving = self.isTurning or (self.direction != Vehicle.STOPPED)
         
         if self.speed > 0:
@@ -146,6 +147,21 @@ class Vehicle(Actor):
         elif not isMoving:
             self.stop()
             self.pose("drive", 4)
+        
+        #Collisions! Yay?
+        base.cTrav.traverse(self.world.env)
+        #Grab our collision entries
+        entries = []
+        for i in range(self.world.playerGroundHandler.getNumEntries()):
+            entry = self.world.playerGroundHandler.getEntry(i)
+            entries.append(entry)
+        #This code got copied from Roaming Ralph
+        entries.sort(lambda x,y: cmp(y.getSurfacePoint(render).getZ(), x.getSurfacePoint(render).getZ()))
+        if (len(entries)>0) and (entries[0].getIntoNode().getName() == "terrain"):
+            self.setZ(entries[0].getSurfacePoint(render).getZ())
+        elif (len(entries)>0):
+            #print "Hahahaha, nooope"
+            self.setPos(startpos)
         
         self.prevtime = task.time
         return Task.cont

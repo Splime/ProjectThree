@@ -40,7 +40,9 @@ class World(DirectObject):
         self.boosterLightNP = None
         self.flameLights = None
         self.player = Vehicle("models/panda-model", "panda-walk4", self)
+        
         self.loadModels()
+        self.player.setPos(self.env.find("**/start_point").getPos())
         self.setupIntervals()
         camera.reparentTo(self.player)
         camera.setPosHpr(0, 5000, 5300, 180, -35, 0)
@@ -84,6 +86,9 @@ class World(DirectObject):
         self.accept("ate-smiley", self.eat)
         self.p1 = ParticleEffect()
         self.p2 = ParticleEffect()
+        
+        #Show collisiony stuff
+        base.cTrav.showCollisions(render)
         
     
     def setupPicking(self):
@@ -184,10 +189,14 @@ class World(DirectObject):
         
         self.player.setupBooster()
         
-        self.env = loader.loadModel("models/environment")
+        #self.env = loader.loadModel("models/environment")
+        #self.env.reparentTo(render)
+        #self.env.setScale(.25)
+        #self.env.setPos(-8, 42, 0)
+        self.env = loader.loadModel("ralph_models/world")      
         self.env.reparentTo(render)
-        self.env.setScale(.25)
-        self.env.setPos(-8, 42, 0)
+        self.env.setPos(0,0,0)
+        
         self.setWorldLight(self.env)
         
         #load targets
@@ -241,12 +250,24 @@ class World(DirectObject):
         # "%in" is substituted with the name of the into object
         self.cHandler.setInPattern("ate-%in")
         
-        cSphere = CollisionSphere((0,0,0), 450) #because the player is scaled way down
+        cSphere = CollisionSphere((0,0,200), 450) #because the player is scaled way down
+        self.playerRay = CollisionRay()
+        self.playerRay.setOrigin(0,0,1000)
+        self.playerRay.setDirection(0,0,-1)
+        self.playerNode = CollisionNode("playerRay")
+        self.playerNode.addSolid(self.playerRay)
+        self.playerNode.setFromCollideMask(BitMask32.bit(0))
+        self.playerNode.setIntoCollideMask(BitMask32.allOff())
+        self.playerNodePath = self.player.attachNewNode(self.playerNode)
+        self.playerNodePath.show()
+        self.playerGroundHandler = CollisionHandlerQueue()
+        base.cTrav.addCollider(self.playerNodePath, self.playerGroundHandler)
+        
         cNode = CollisionNode("player")
         cNode.addSolid(cSphere)
         cNode.setIntoCollideMask(BitMask32.allOff()) #player is *only* a from object
+        #cNode.setFromCollideMask(BitMask32.bit(0))
         cNodePath = self.player.attachNewNode(cNode)
-        #cNodePath.show()
         #registers a from object with the traverser with a corresponding handler
         base.cTrav.addCollider(cNodePath, self.cHandler)
         i = 0

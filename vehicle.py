@@ -42,6 +42,7 @@ class Vehicle(Actor):
         self.maxSpeed = 100.0
         self.direction = Vehicle.STOPPED
         self.isTurning = False
+        self.turnFactor = 4.0
     
     def addKeyMap(self, keyMap):
         self.keyMap = keyMap
@@ -60,17 +61,18 @@ class Vehicle(Actor):
         
         #Deal with turning
         if self.keyMap["left"]:
-            self.setH(self.getH() + elapsed * 100)
-            self.isTurning = True
+            self.setH(self.getH() + elapsed * self.speed * self.turnFactor)
+            if self.direction != Vehicle.STOPPED:
+                self.isTurning = True
         elif self.keyMap["right"]:
-            self.setH(self.getH() - elapsed * 100)
-            self.isTurning = True
+            self.setH(self.getH() - elapsed * self.speed * self.turnFactor)
+            if self.direction != Vehicle.STOPPED:
+                self.isTurning = True
         else:
             self.isTurning = False
         
+        #Accelerating
         if self.keyMap["forward"] and not self.keyMap["backwards"]:
-            #print "Accel Code, speed = %i"%self.speed
-            #Calculate a new speed
             if self.direction == Vehicle.BACKWARDS:
                 newSpeed = self.speed + (self.accel-self.deccel)*elapsed
             else:
@@ -79,10 +81,9 @@ class Vehicle(Actor):
                 self.speed = self.maxSpeed
             else:
                 self.speed = newSpeed
-            
+        
+        #Braking/Reversing
         if self.keyMap["backwards"] and not self.keyMap["forward"]:
-            #print "Backwards Accel Code, speed = %i"%self.speed
-            #Calculate a new speed
             if self.direction == Vehicle.FORWARDS:
                 newSpeed = self.speed + (self.bkwdsAccel+self.deccel)*elapsed
             else:
@@ -94,8 +95,6 @@ class Vehicle(Actor):
         
         #Even if no key is held down, we keep moving!
         if (not self.keyMap["forward"] and not self.keyMap["backwards"]) or (self.keyMap["forward"] and self.keyMap["backwards"]):
-            #print "Deccel Code, speed = %i"%self.speed
-            #Calculate a new speed
             if self.direction == Vehicle.FORWARDS:
                 newSpeed = self.speed + self.deccel*elapsed
             else:
@@ -124,7 +123,7 @@ class Vehicle(Actor):
         isMoving = self.isTurning or (self.direction != Vehicle.STOPPED)
         if not wasMoving and isMoving:
             self.loop("drive")
-        else:
+        elif not isMoving:
             self.stop()
             self.pose("drive", 4)
         

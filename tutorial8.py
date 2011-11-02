@@ -316,6 +316,7 @@ class World(DirectObject):
         self.lightOff.start()
         
     def loadParticleConfig(self, file):
+        self.p1.reset()
         self.p1 = ParticleEffect()
         self.p1.loadConfig(Filename(file))        
         self.p1.start(self.player)
@@ -323,6 +324,7 @@ class World(DirectObject):
         self.p1.setHpr(0, 90, 0)
         self.p1.setScale(200)
         self.p1.setLightOff()
+        self.p2.reset()
         self.p2 = ParticleEffect()
         self.p2.loadConfig(Filename(file))        
         self.p2.start(self.player)

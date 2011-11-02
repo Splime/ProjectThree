@@ -19,6 +19,10 @@ from direct.showbase.DirectObject import DirectObject
 
 import sys, math, random
 
+import Node
+import Enemy
+
+
 MAX_LIGHT = 25
 
 class World(DirectObject):
@@ -40,8 +44,6 @@ class World(DirectObject):
         taskMgr.add(self.move, "moveTask")
         self.prevtime = 0
         self.isMoving = False
-        self.speed_norm = 8
-        self.speed = self.speed_norm
         self.accept("escape", sys.exit)
         
         self.accept("arrow_up", self.setKey, ["forward", 1])
@@ -67,8 +69,7 @@ class World(DirectObject):
         self.accept("tab", self.shiftCamera)        
         
         self.accept("ate-smiley", self.eat)
-        self.p1 = ParticleEffect()
-        self.p2 = ParticleEffect()
+        self.p = ParticleEffect()
         
     def setupIntervals(self):
         self.lightOn = LerpFunc(self.lightModify,
@@ -87,7 +88,6 @@ class World(DirectObject):
                             name="LightDown")
                             
         self.cameraMove = None
-        
     def setKey(self, key, value):
         self.keyMap[key] = value
         
@@ -112,7 +112,8 @@ class World(DirectObject):
                                             camera.getPos(), 
                                             camera.getHpr())
         self.cameraMove.start()
-     
+    
+    
     def loadModels(self):
         """loads models into the world"""
         #eat no longer exists? Phooey
@@ -139,7 +140,7 @@ class World(DirectObject):
             slight.setColor(VBase4(0, 0, 0, 1))
             slight.setAttenuation(Point3(0, 0.001, 0.001))
             slnp = self.drill.attachNewNode(slight)
-            slnp.setPos(0, -750 - (475 * i), 450)
+            slnp.setPos(0, -1200 - (300 * i), 450)
             slnp.setHpr(180, 0, 0)
             slnp.setScale(200)
             self.flameLights.append((slight, slnp))
@@ -161,6 +162,27 @@ class World(DirectObject):
             target.reparentTo(render)
             self.targets.append(target)
             self.setWorldLight(target)
+         
+        # Node Map
+        map = Node.NodeMap("nodes.txt")
+            
+        # enemies    
+        self.enemies = []
+        file = open('levels/enemies.txt' )
+        line = file.readline().rstrip()
+        while line != "" :
+            nums = line.split(',')
+            convertedNums = []
+            for i in range(len(nums)):
+                if i != 0:
+                    convertedNums.append(int(nums[i]))
+            nodePos = map.nodeList[int(nums[0])].getPos()
+            self.enemies.append( Enemy.Enemy(int(nums[0]), convertedNums, nodePos[0], nodePos[1], nodePos[2] ) )
+            line = file.readline().rstrip()
+        print "what"
+        print str(len(self.enemies))    
+        
+            
         
     def setupLights(self):
         #ambient light
@@ -194,7 +216,11 @@ class World(DirectObject):
         drilldrive = Parallel(self.drill.posInterval(1, (self.drill.getX() + dx, self.drill.getY() + dy, 0)), \
             self.drill.actorInterval("drive", loop=1, duration=2))
         drilldrive.start()
-           
+        
+    def turn(self, direction):
+        drillTurn = self.drill.hprInterval(.2, (self.drill.getH() - (10*direction), 0, 0))
+        drillTurn.start()
+        
     def move(self, task):
         elapsed = task.time - self.prevtime
         #camera.lookAt(self.drill)
@@ -203,13 +229,13 @@ class World(DirectObject):
         if self.keyMap["right"]:
             self.drill.setH(self.drill.getH() - elapsed * 100)
         if self.keyMap["forward"] and not self.keyMap["backwards"]:
-            dist = self.speed * elapsed
+            dist = 8 * elapsed
             angle = deg2Rad(self.drill.getH())
             dx = dist * math.sin(angle)
             dy = dist * -math.cos(angle)
             self.drill.setPos(self.drill.getX() + dx, self.drill.getY() + dy, 0)
         if self.keyMap["backwards"] and not self.keyMap["forward"]:
-            dist = (self.speed / 2) * elapsed
+            dist = 4 * elapsed
             angle = deg2Rad(self.drill.getH())
             dx = dist * -math.sin(angle)
             dy = dist * math.cos(angle)
@@ -253,9 +279,9 @@ class World(DirectObject):
             cNodePath = target.attachNewNode(cNode)
     
     def lightModify(self, t, which_way):
-        if which_way: #which_way == true then make it brighter
+        if which_way:
             value = t * MAX_LIGHT
-        else: #which_way == true then make it darker
+        else:
             value = (100 - t) * MAX_LIGHT
         for light in self.flameLights:
             light[0].setColor(VBase4(value,value,value,1))
@@ -266,26 +292,18 @@ class World(DirectObject):
         self.lightOn.start()
         
     def stopShoot(self):
-        self.p1.softStop()
-        self.p2.softStop()
+        self.p.softStop()
         self.lightOn.finish()
         self.lightOff.start()
         
     def loadParticleConfig(self, file):
-        self.p1 = ParticleEffect()
-        self.p1.loadConfig(Filename(file))        
-        self.p1.start(self.drill)
-        self.p1.setPos(-250, -700, 275)
-        self.p1.setHpr(0, 90, 0)
-        self.p1.setScale(200)
-        self.p1.setLightOff()
-        self.p2 = ParticleEffect()
-        self.p2.loadConfig(Filename(file))        
-        self.p2.start(self.drill)
-        self.p2.setPos(250, -700, 275)
-        self.p2.setHpr(0, 90, 0)
-        self.p2.setScale(200)
-        self.p2.setLightOff()
+        self.p = ParticleEffect()
+        self.p.loadConfig(Filename(file))        
+        self.p.start(self.drill)
+        self.p.setPos(0, -700, 275)
+        self.p.setHpr(0, 90, 0)
+        self.p.setScale(200)
+        self.p.setLightOff()
         
     def eat(self, cEntry):
         """handles the drill eating a smiley"""
@@ -297,7 +315,9 @@ class World(DirectObject):
         
         
 w = World()
+print "what1"
 run()
+print "what2"
 
 
 

@@ -107,7 +107,7 @@ class World(DirectObject):
             if self.pq.getNumEntries() > 0:
                 self.pq.sortEntries()
                 i = int(self.pq.getEntry(0).getIntoNode().getTag('target'))
-                print("Found target: " + str(i))
+                #print("Found target: " + str(i))
                   
         return Task.cont
     def startBoosters(self):

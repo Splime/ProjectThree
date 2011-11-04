@@ -42,7 +42,8 @@ class World(DirectObject):
         self.player = Vehicle("models/panda-model", "panda-walk4", self)
         
         self.loadModels()
-        self.player.setPos(self.env.find("**/start_point").getPos())
+        # self.player.setPos(self.env.find("**/start_point").getPos())
+        self.player.setPos(0,0,0)
         self.setupIntervals()
         camera.reparentTo(self.player)
         camera.setPosHpr(0, 5000, 5300, 180, -35, 0)
@@ -84,6 +85,7 @@ class World(DirectObject):
         self.accept("space", self.player.startBoosters)
         
         self.accept("ate-smiley", self.eat)
+        self.accept("ground_collide", self.player.collider)
         self.p1 = ParticleEffect()
         self.p2 = ParticleEffect()
         
@@ -193,7 +195,7 @@ class World(DirectObject):
         #self.env.reparentTo(render)
         #self.env.setScale(.25)
         #self.env.setPos(-8, 42, 0)
-        self.env = loader.loadModel("ralph_models/world")      
+        self.env = loader.loadModel("models/terrain2")      
         self.env.reparentTo(render)
         self.env.setPos(0,0,0)
         
@@ -252,7 +254,7 @@ class World(DirectObject):
         
         cSphere = CollisionSphere((0,0,200), 450) #because the player is scaled way down
         self.playerRay = CollisionRay()
-        self.playerRay.setOrigin(0,0,1000)
+        self.playerRay.setOrigin(0,0,2000)
         self.playerRay.setDirection(0,0,-1)
         self.playerNode = CollisionNode("playerRay")
         self.playerNode.addSolid(self.playerRay)
@@ -260,7 +262,8 @@ class World(DirectObject):
         self.playerNode.setIntoCollideMask(BitMask32.allOff())
         self.playerNodePath = self.player.attachNewNode(self.playerNode)
         self.playerNodePath.show()
-        self.playerGroundHandler = CollisionHandlerQueue()
+        self.playerGroundHandler = CollisionHandlerFloor()
+        self.playerGroundHandler.addCollider(self.playerNodePath, self.player)
         base.cTrav.addCollider(self.playerNodePath, self.playerGroundHandler)
         
         cNode = CollisionNode("player")

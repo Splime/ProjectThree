@@ -4,7 +4,7 @@
   "maya2egg2012 -cs y-up -a model -cn alan_terrain -o green_ramps.egg 'C:\Users\lummia2\Dropbox\Project 3\Project folder\alan_terrain.mb'"
 }
 <Texture> lambert2SG {
-  "../../Users/lummia2/Dropbox/Project 3/Project folder/bubbles.bmp"
+  "bubbles.bmp"
   <Scalar> wrapu { repeat }
   <Scalar> wrapv { repeat }
   <Scalar> minfilter { linear_mipmap_linear }

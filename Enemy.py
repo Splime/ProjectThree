@@ -17,48 +17,138 @@ from direct.particles.ForceGroup import ForceGroup
 from direct.gui.OnscreenText import OnscreenText
 from direct.showbase.DirectObject import DirectObject
 
-class Enemy(DirectObject):
-    def __init__(self, startingNode, nodePath, x, y, z ):
-        
-        self.lastNode = startingNode
-        self.currentNode = None
+import math
+import vehicle
+
+LEEWAY = 0.5
+ANGLE_LEEWAY = 1.0
+
+
+MOVING = 0
+TURNING = 1
+
+
+TURNTIME = 5
+
+class Enemy(vehicle.Vehicle):
+    def __init__(self, map, nodePath, x, y, z ):
+        vehicle.Vehicle.__init__(self, "models/panda-model", "panda-walk4")
+        self.setPos(x,y,z)
         self.nodePath = nodePath
         
-        self.model = Actor("models/panda-model", {"drive":"panda-walk4"})
-        self.model.setScale(.005)
-        self.model.setH(180)
-        self.model.setPos(x,y,z)
-        self.model.reparentTo(render)
+        self.curNodeIndex = 0 
+        self.speed = 4.0
         
-    def move(self, task, map):
+        self.turnTime = TURNTIME
+        self.turnSpeed = 40.0
+        
+        self.phase = MOVING
+        
+        self.lastNodePos = map.nodeList[nodePath[self.curNodeIndex]].getPos()
+        self.nextNodePos = map.nodeList[nodePath[self.curNodeIndex+1]].getPos()
+        
+        self.finishedTurning = True
+        
+    def turn( self, task ):
         elapsed = task.time - self.prevtime
-        #camera.lookAt(self.drill)
-        if self.keyMap["left"]:
-            self.drill.setH(self.drill.getH() + elapsed * 100)
-        if self.keyMap["right"]:
-            self.drill.setH(self.drill.getH() - elapsed * 100)
-        if self.keyMap["forward"] and not self.keyMap["backwards"]:
-            dist = 8 * elapsed
-            angle = deg2Rad(self.drill.getH())
-            dx = dist * math.sin(angle)
-            dy = dist * -math.cos(angle)
-            self.drill.setPos(self.drill.getX() + dx, self.drill.getY() + dy, 0)
-        if self.keyMap["backwards"] and not self.keyMap["forward"]:
-            dist = 4 * elapsed
-            angle = deg2Rad(self.drill.getH())
-            dx = dist * -math.sin(angle)
-            dy = dist * math.cos(angle)
-            self.drill.setPos(self.drill.getX() + dx, self.drill.getY() + dy, 0)
-            
-        if self.keyMap["left"] or self.keyMap["right"] or self.keyMap["forward"] or self.keyMap["backwards"]:
-            if self.isMoving == False:
-                self.isMoving = True
-                self.drill.loop("drive")
-        else:
-            if self.isMoving:
-                self.isMoving = False
-                self.drill.stop()
-                self.drill.pose("drive", 4)
+        dx = self.lastNodePos[0] - self.nextNodePos[0]
+        dy = self.lastNodePos[1] - self.nextNodePos[1]
         
+        absx = abs(dx)
+        absy = abs(dy)
+        
+        curAngle = self.getH()
+        
+        if self.finishedTurning == True :
+            if absx == 0 and absy != 0 : 
+                self.nextAngle = math.acos(dy/absy)
+            elif absy == 0 and absx != 0 : 
+                self.nextAngle = math.asin(dx/absx)
+            else:
+                self.nextAngle = math.atan(dx/dy)
+            self.nextAngle = math.degrees(self.nextAngle)
+            if dx != 0:
+                self.nextAngle += 180
+            self.finishedTurning = False    
+            
+        print "(1) DX: " + str(dx) + " DY: " + str(dy) + " Angle: " + str(self.nextAngle) + " CurAngle: " + str(curAngle)
+        
+        # most the panda should ever have to turn is 180 degrees.
+        angleDiff = abs( curAngle - self.nextAngle )
+        if angleDiff > 180:
+            print " Angle Diff: " + str(angleDiff)
+            angleDiff -= 180
+            angleDiff *= -1
+            self.nextAngle = angleDiff
+        
+        
+        
+        print "(2) Abs X: " + str(absx) + " Abs Y: " + str(absy) + " Angle: " + str(self.nextAngle) + " CurAngle: " + str(curAngle)
+        if abs(curAngle - self.nextAngle) < ANGLE_LEEWAY:
+            self.setH(self.nextAngle)
+            while self.getH() < 0:
+                self.setH(self.getH() + 360)
+            self.phase = MOVING
+            self.finishedTurning = True
+            print "inside leeway"
+        else:
+            if curAngle < self.nextAngle:
+                self.setH(curAngle + elapsed * self.turnSpeed)
+            elif curAngle > self.nextAngle:
+                self.setH(curAngle + elapsed * self.turnSpeed * - 1)
         self.prevtime = task.time
+        
+    def move( self, map, task ):
+        
+        
+        #check if enemy is at node, if so, then change lastNode and nextNode
+        #print "X: " + str(int(self.getX())) + " vs "  + str(self.nextNodePos[0])
+        #print "Y: " + str(int(self.getY())) + " vs "  + str(self.nextNodePos[1])
+        #print "Index: " + str(self.curNodeIndex)
+        #print self.lastNodePos
+        #print self.nextNodePos
+        #print "Index: " + str(self.curNodeIndex)
+        if self.phase == TURNING:
+            self.turn( task )
+        elif self.phase == MOVING:
+            if abs(self.getX() - self.nextNodePos[0] ) < LEEWAY and abs(self.getY() - self.nextNodePos[1] ) < LEEWAY :
+                self.setX(self.nextNodePos[0])
+                self.setY(self.nextNodePos[1])
+                self.curNodeIndex = self.curNodeIndex + 1
+                if self.curNodeIndex == len(self.nodePath) - 1:
+                    self.nextNodePos = map.nodeList[self.nodePath[0]].getPos()
+                elif self.curNodeIndex == len(self.nodePath):
+                    self.curNodeIndex = 0 
+                    self.nextNodePos = map.nodeList[self.nodePath[self.curNodeIndex+1]].getPos()
+                else:
+                    self.nextNodePos = map.nodeList[self.nodePath[self.curNodeIndex+1]].getPos()
+                self.lastNodePos = map.nodeList[self.nodePath[self.curNodeIndex]].getPos()    
+                self.phase = TURNING
+            elapsed = task.time -self.prevtime
+            dist = self.speed * elapsed  
+            
+            dx = self.getX() - self.nextNodePos[0]
+            dy = self.getY() - self.nextNodePos[1]
+            
+            #print "Dx: " + str(dx)
+            #print "Dy: " + str(dy)
+            
+            xdir = 0
+            ydir = 0
+            
+            if dx > 0:
+                xdir = -1
+            elif dx < 0:
+                xdir = 1
+                
+            if dy > 0 :
+                ydir = -1
+            elif dy < 0:
+                ydir = 1
+                
+            dx = xdir * dist
+            dy = ydir * dist
+            
+            self.setPos(self.getX() + dx, self.getY() + dy, 0)
+            self.prevtime = task.time
         return Task.cont

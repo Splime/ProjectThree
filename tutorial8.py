@@ -90,7 +90,7 @@ class World(DirectObject):
         
         #Show collisiony stuff
         base.cTrav.showCollisions(render)
-        f = open('testLog.txt', 'r+')
+        #f = open('testLog.txt', 'r+')
         #self.dfs(file = f)
         
     
@@ -227,8 +227,9 @@ class World(DirectObject):
                 if i != 0:
                     convertedNums.append(int(nums[i]))
             nodePos = map.nodeList[int(nums[0])].getPos()
-            newEnemy = Enemy.Enemy(map, convertedNums, nodePos[0], nodePos[1], nodePos[2] )
+            newEnemy = Enemy.Enemy(map, convertedNums, self, nodePos[0], nodePos[1], nodePos[2] )
             self.enemies.append( newEnemy )
+            self.setWorldLight( newEnemy ) 
             taskMgr.add(newEnemy.move, "Enemy Move " + str(i), extraArgs = [map], appendTask = True)
             line = file.readline().rstrip()
             i = i + 1

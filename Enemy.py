@@ -31,8 +31,8 @@ TURNING = 1
 TURNTIME = 5
 
 class Enemy(vehicle.Vehicle):
-    def __init__(self, map, nodePath, x, y, z ):
-        vehicle.Vehicle.__init__(self, "models/panda-model", "panda-walk4")
+    def __init__(self, map, nodePath, world, x, y, z ):
+        vehicle.Vehicle.__init__(self, "models/panda-model", "panda-walk4", world)
         self.setPos(x,y,z)
         self.nodePath = nodePath
         
@@ -71,26 +71,26 @@ class Enemy(vehicle.Vehicle):
                 self.nextAngle += 180
             self.finishedTurning = False    
             
-        print "(1) DX: " + str(dx) + " DY: " + str(dy) + " Angle: " + str(self.nextAngle) + " CurAngle: " + str(curAngle)
+        #print "(1) DX: " + str(dx) + " DY: " + str(dy) + " Angle: " + str(self.nextAngle) + " CurAngle: " + str(curAngle)
         
         # most the panda should ever have to turn is 180 degrees.
         angleDiff = abs( curAngle - self.nextAngle )
         if angleDiff > 180:
-            print " Angle Diff: " + str(angleDiff)
+            #print " Angle Diff: " + str(angleDiff)
             angleDiff -= 180
             angleDiff *= -1
             self.nextAngle = angleDiff
         
         
         
-        print "(2) Abs X: " + str(absx) + " Abs Y: " + str(absy) + " Angle: " + str(self.nextAngle) + " CurAngle: " + str(curAngle)
+        #print "(2) Abs X: " + str(absx) + " Abs Y: " + str(absy) + " Angle: " + str(self.nextAngle) + " CurAngle: " + str(curAngle)
         if abs(curAngle - self.nextAngle) < ANGLE_LEEWAY:
             self.setH(self.nextAngle)
             while self.getH() < 0:
                 self.setH(self.getH() + 360)
             self.phase = MOVING
             self.finishedTurning = True
-            print "inside leeway"
+            #print "inside leeway"
         else:
             if curAngle < self.nextAngle:
                 self.setH(curAngle + elapsed * self.turnSpeed)

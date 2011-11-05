@@ -42,7 +42,8 @@ class World(DirectObject):
         self.player = Vehicle("models/panda-model", "panda-walk4", self)
         
         self.loadModels()
-        self.player.setPos(0,0,0)#self.env.find("**/start_point").getPos())
+        # self.player.setPos(self.env.find("**/start_point").getPos())
+        self.player.setPos(0,0,0)
         self.setupIntervals()
         camera.reparentTo(self.player)
         camera.setPosHpr(0, 5000, 5300, 180, -35, 0)
@@ -84,13 +85,12 @@ class World(DirectObject):
         self.accept("space", self.player.startBoosters)
         
         self.accept("ate-smiley", self.eat)
+        self.accept("ground_collide", self.player.collider)
         self.p1 = ParticleEffect()
         self.p2 = ParticleEffect()
         
         #Show collisiony stuff
         base.cTrav.showCollisions(render)
-        f = open('testLog.txt', 'r+')
-        #self.dfs(file = f)
         
     
     def setupPicking(self):
@@ -105,18 +105,7 @@ class World(DirectObject):
         
         self.targetRoot = render.attachNewNode('targetRoot')
         self.mouseTask = taskMgr.add(self.mouseTask, 'mouseTask')
-        
-    def dfs(self, item = render, depth = 0, file = None):
-        if file:
-            file.write(("-" * depth) + item.getName() + ": \n")
-        print(("-" * depth) + item.getName() + ": ")
-        for i in range(item.getNumNodes()):
-            if file:
-                file.write((" " * depth) + "+" + item.getNode(i).getName() + ": " + str(item.getNode(i).getClassType()) + "\n")
-            print((" " * depth) + "+" + item.getNode(i).getName() + ": " + str(item.getNode(i).getClassType()))
-        for i in range(item.getNumChildren()):
-            self.dfs(item.getChild(i), depth + 1, file)
-            
+    
     def mouseTask(self, task):
         if base.mouseWatcherNode.hasMouse():
             mpos = base.mouseWatcherNode.getMouse()
@@ -125,6 +114,7 @@ class World(DirectObject):
             if self.pq.getNumEntries() > 0:
                 self.pq.sortEntries()
                 i = int(self.pq.getEntry(0).getIntoNode().getTag('target'))
+                print("Found target: " + str(i))
                   
         return Task.cont
 
@@ -177,6 +167,17 @@ class World(DirectObject):
         #eat no longer exists? Phooey
         
         self.flameLights = []
+        shadowcam = Spotlight('shadowlight')
+        shadowcam.setColor(VBase4(0,0,0,1))
+        lens = PerspectiveLens()
+        shadowcam.setLens(lens)
+        shadowcam.setAttenuation(Point3(0, 0.001, 0.001))
+        shadowNP = self.player.attachNewNode(shadowcam)
+        shadowNP.setPos(0, -1400, 450)
+        shadowNP.lookAt(self.player)
+        shadowNP.setScale(200)
+        shadowNP.node().setShadowCaster(True)
+        self.flameLights.append((shadowcam, shadowNP))
         
         for i in range(2):
             slight = PointLight('plight')
@@ -194,9 +195,9 @@ class World(DirectObject):
         #self.env.reparentTo(render)
         #self.env.setScale(.25)
         #self.env.setPos(-8, 42, 0)
-        self.env = loader.loadModel("ralph_models/green_ramps")      
+        self.env = loader.loadModel("models/terrain2")      
         self.env.reparentTo(render)
-        self.env.setScale(5)
+        self.env.setPos(0,0,0)
         
         self.setWorldLight(self.env)
         
@@ -253,7 +254,7 @@ class World(DirectObject):
         
         cSphere = CollisionSphere((0,0,200), 450) #because the player is scaled way down
         self.playerRay = CollisionRay()
-        self.playerRay.setOrigin(0,0,1000)
+        self.playerRay.setOrigin(0,0,2000)
         self.playerRay.setDirection(0,0,-1)
         self.playerNode = CollisionNode("playerRay")
         self.playerNode.addSolid(self.playerRay)
@@ -261,28 +262,9 @@ class World(DirectObject):
         self.playerNode.setIntoCollideMask(BitMask32.allOff())
         self.playerNodePath = self.player.attachNewNode(self.playerNode)
         self.playerNodePath.show()
-        self.playerGroundHandler = CollisionHandlerQueue()
+        self.playerGroundHandler = CollisionHandlerFloor()
+        self.playerGroundHandler.addCollider(self.playerNodePath, self.player)
         base.cTrav.addCollider(self.playerNodePath, self.playerGroundHandler)
-        
-        envcNode = CollisionNode("parking_lot")
-        envcNode.setFromCollideMask(BitMask32.bit(0))
-        temp = CollisionPolygon(Point3(12.56, 19.182, 0), Point3(12.56, -21.261, 0),
-                                Point3(-13.217, -21.261, 0), Point3(-13.217, 19.182, 0))
-        envcNode.addSolid(temp)
-        temp = CollisionPolygon(Point3(32.715, -14.923, 3.5), Point3(32.715, -21.261, 3.5),
-                                Point3(12.56, -21.261, 0), Point3(12.56, -14.923, 0))
-        envcNode.addSolid(temp)
-        temp = CollisionPolygon(Point3(42.715, -14.923, 3.5), Point3(42.715, -21.261, 3.5),
-                                Point3(32.715, -21.261, 3.5), Point3(32.715, -14.923, 3.5))
-        envcNode.addSolid(temp)
-        temp = CollisionPolygon(Point3(42.715, -8.845, 6), Point3(42.715, -14.923, 3.5),
-                                Point3(32.715, -14.923, 3.5), Point3(32.715, -8.845, 6))
-        envcNode.addSolid(temp)
-        temp = CollisionPolygon(Point3(42.715, 16.155, 6), Point3(42.715, -8.845, 6),
-                                Point3(17.715, -8.845, 6), Point3(17.715, 16.155, 6))
-        envcNode.addSolid(temp)
-        
-        envcNodePath = self.env.attachNewNode(envcNode)
         
         cNode = CollisionNode("player")
         cNode.addSolid(cSphere)

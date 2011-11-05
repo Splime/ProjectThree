@@ -138,7 +138,9 @@ class Vehicle(Actor):
             angle = deg2Rad(self.getH())
             dx = dist * math.sin(angle)
             dy = dist * -math.cos(angle)
-            self.setPos(self.getX() + dx, self.getY() + dy, self.getZ())
+            #self.setPos(self.getX() + dx, self.getY() + dy, self.getZ())
+            self.setX(self.getX() + dx)
+            self.setY(self.getY() + dy)
         
         #Next, activate animation if necessary
         isMoving = self.isTurning or (self.direction != Vehicle.STOPPED)
@@ -149,25 +151,27 @@ class Vehicle(Actor):
             self.pose("drive", 4)
         
         #Collisions! Yay?
+        print "(%i, %i, %i)"%(self.getX(), self.getY(), self.getZ())
         base.cTrav.traverse(self.world.env)
+        #print "(%i, %i, %i)"%(self.getX(), self.getY(), self.getZ())
         #Grab our collision entries
-        entries = []
-        for i in range(self.world.playerGroundHandler.getNumEntries()):
-            entry = self.world.playerGroundHandler.getEntry(i)
-            entries.append(entry)
-            print(entry.getIntoNode().getName())
+        # entries = []
+        # for i in range(self.world.playerGroundHandler.getNumEntries()):
+            # entry = self.world.playerGroundHandler.getEntry(i)
+            # entries.append(entry)
         #This code got copied from Roaming Ralph
-        entries.sort(lambda x,y: cmp(y.getSurfacePoint(render).getZ(), x.getSurfacePoint(render).getZ()))
-        if (len(entries)>0) and (entries[0].getIntoNode().getName() == "parking_lot"):
-            self.setZ(entries[0].getSurfacePoint(render).getZ())
-            print("colliding: " + str(self.getZ()))
-            #self.setP(rad2Deg(entries[0].getSurfaceNormal(render)[1]))
-        elif (len(entries)>0):
+        # entries.sort(lambda x,y: cmp(y.getSurfacePoint(render).getZ(), x.getSurfacePoint(render).getZ()))
+        # if (len(entries)>0) and (entries[0].getIntoNode().getName() == "terrain"):
+            # self.setZ(entries[0].getSurfacePoint(render).getZ())
+        # if (len(entries)>0):
             #print "Hahahaha, nooope"
-            self.setPos(startpos)
+            # self.setPos(startpos)
         
         self.prevtime = task.time
         return Task.cont
+    
+    def collider(self, cEntry):
+        pass
     
     def startBoosters(self):
         if self.boosterStartTime == -1:

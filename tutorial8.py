@@ -40,8 +40,12 @@ class World(DirectObject):
         self.setupLights()
         self.setupPicking()
         #Prepare the vehicular manslaughter!
-        self.player = Vehicle("models/panda-model", "panda-walk4")
+        self.boosterLightNP = None
+        self.flameLights = None
+        self.player = Vehicle("models/panda-model", "panda-walk4", self)
+        
         self.loadModels()
+        self.player.setPos(0,0,0)#self.env.find("**/start_point").getPos())
         self.setupIntervals()
         camera.reparentTo(self.player)
         camera.setPosHpr(0, 5000, 5300, 180, -35, 0)
@@ -78,13 +82,17 @@ class World(DirectObject):
         self.accept("mouse1", self.startShoot)
         self.accept("mouse1-up", self.stopShoot)
         self.accept("tab", self.shiftCamera)   
-        self.accept("space", self.startBoosters)
+        self.accept("space", self.player.startBoosters)
         
         self.accept("ate-smiley", self.eat)
         self.p1 = ParticleEffect()
         self.p2 = ParticleEffect()
-        self.boosters = ParticleEffect()
-        self.boosterStartTime = -1
+        
+        #Show collisiony stuff
+        base.cTrav.showCollisions(render)
+        f = open('testLog.txt', 'r+')
+        #self.dfs(file = f)
+        
     
     def setupPicking(self):
         self.picker = CollisionTraverser()
@@ -98,7 +106,18 @@ class World(DirectObject):
         
         self.targetRoot = render.attachNewNode('targetRoot')
         self.mouseTask = taskMgr.add(self.mouseTask, 'mouseTask')
-    
+        
+    def dfs(self, item = render, depth = 0, file = None):
+        if file:
+            file.write(("-" * depth) + item.getName() + ": \n")
+        print(("-" * depth) + item.getName() + ": ")
+        for i in range(item.getNumNodes()):
+            if file:
+                file.write((" " * depth) + "+" + item.getNode(i).getName() + ": " + str(item.getNode(i).getClassType()) + "\n")
+            print((" " * depth) + "+" + item.getNode(i).getName() + ": " + str(item.getNode(i).getClassType()))
+        for i in range(item.getNumChildren()):
+            self.dfs(item.getChild(i), depth + 1, file)
+            
     def mouseTask(self, task):
         if base.mouseWatcherNode.hasMouse():
             mpos = base.mouseWatcherNode.getMouse()
@@ -107,39 +126,9 @@ class World(DirectObject):
             if self.pq.getNumEntries() > 0:
                 self.pq.sortEntries()
                 i = int(self.pq.getEntry(0).getIntoNode().getTag('target'))
-                #print("Found target: " + str(i))
                   
         return Task.cont
-    def startBoosters(self):
-        if self.boosterStartTime == -1:
-            self.boosters.loadConfig(Filename('flamethrower4.ptf'))        
-            self.boosters.start(self.player)
-            self.boosters.setPos(0, 200, 275)
-            self.boosters.setHpr(180, 90, 0)
-            self.boosters.setScale(200)
-            self.boosters.setLightOff()
-            self.player.accel = self.player.accel * 2
-            self.player.keyMap["boost"] = 1
-            self.boosterLight.setColor(VBase4(MAX_LIGHT,MAX_LIGHT,MAX_LIGHT,1))
-            taskMgr.add(self.checkBoosterEnd, "endBoosters")
-    
-    def checkBoosterEnd(self, task):
-        if self.boosterStartTime == -1:
-            self.boosterStartTime = task.time
-            elapsed = 0
-        else:
-            elapsed = task.time - self.boosterStartTime
-            
-        if elapsed > BOOSTER_LENGTH:
-            self.boosterLight.setColor(VBase4(0,0,0,1))
-            self.boosters.softStop()
-            self.player.accel = self.player.accel / 2
-            self.player.keyMap["boost"] = 0
-            self.boosterStartTime = -1
-            return Task.done        
-        else:    
-            return Task.cont
-   
+
     def setupIntervals(self):
         self.lightOn = LerpFunc(self.lightModify,
                             fromData=0,
@@ -187,23 +176,8 @@ class World(DirectObject):
     def loadModels(self):
         """loads models into the world"""
         #eat no longer exists? Phooey
-        # self.player = Actor("models/panda-model", {"drive":"panda-walk4"})
-        # self.player.setScale(.005)
-        # self.player.setH(180)
-        # self.player.reparentTo(render)
         
         self.flameLights = []
-        shadowcam = Spotlight('shadowlight')
-        shadowcam.setColor(VBase4(0,0,0,1))
-        lens = PerspectiveLens()
-        shadowcam.setLens(lens)
-        shadowcam.setAttenuation(Point3(0, 0.001, 0.001))
-        shadowNP = self.player.attachNewNode(shadowcam)
-        shadowNP.setPos(0, -1400, 450)
-        shadowNP.lookAt(self.player)
-        shadowNP.setScale(200)
-        shadowNP.node().setShadowCaster(True)
-        self.flameLights.append((shadowcam, shadowNP))
         
         for i in range(2):
             slight = PointLight('plight')
@@ -216,19 +190,16 @@ class World(DirectObject):
             slnp.setScale(200)
             self.flameLights.append((slight, slnp))
         
-        self.boosterLight = PointLight('boostlight')
-        self.boosterLight.setColor(VBase4(0,0,0,1))
-        self.boosterLight.setAttenuation(Point3(0,0.001,0.001))
-        self.boosterLightNP = self.player.attachNewNode(self.boosterLight)
-        self.boosterLightNP.setPos(0, 500, 275)
-        self.boosterLightNP.setHpr(180, 90, 0)
-        self.boosterLightNP.setScale(200)
-        self.setWorldLight(self.player)
+        self.player.setupBooster()
         
-        self.env = loader.loadModel("models/environment")
+        #self.env = loader.loadModel("models/environment")
+        #self.env.reparentTo(render)
+        #self.env.setScale(.25)
+        #self.env.setPos(-8, 42, 0)
+        self.env = loader.loadModel("ralph_models/green_ramps")      
         self.env.reparentTo(render)
-        self.env.setScale(.25)
-        self.env.setPos(-8, 42, 0)
+        self.env.setScale(5)
+        
         self.setWorldLight(self.env)
         
         #load targets
@@ -305,12 +276,44 @@ class World(DirectObject):
         # "%in" is substituted with the name of the into object
         self.cHandler.setInPattern("ate-%in")
         
-        cSphere = CollisionSphere((0,0,0), 450) #because the player is scaled way down
+        cSphere = CollisionSphere((0,0,200), 450) #because the player is scaled way down
+        self.playerRay = CollisionRay()
+        self.playerRay.setOrigin(0,0,1000)
+        self.playerRay.setDirection(0,0,-1)
+        self.playerNode = CollisionNode("playerRay")
+        self.playerNode.addSolid(self.playerRay)
+        self.playerNode.setFromCollideMask(BitMask32.bit(0))
+        self.playerNode.setIntoCollideMask(BitMask32.allOff())
+        self.playerNodePath = self.player.attachNewNode(self.playerNode)
+        self.playerNodePath.show()
+        self.playerGroundHandler = CollisionHandlerQueue()
+        base.cTrav.addCollider(self.playerNodePath, self.playerGroundHandler)
+        
+        envcNode = CollisionNode("parking_lot")
+        envcNode.setFromCollideMask(BitMask32.bit(0))
+        temp = CollisionPolygon(Point3(12.56, 19.182, 0), Point3(12.56, -21.261, 0),
+                                Point3(-13.217, -21.261, 0), Point3(-13.217, 19.182, 0))
+        envcNode.addSolid(temp)
+        temp = CollisionPolygon(Point3(32.715, -14.923, 3.5), Point3(32.715, -21.261, 3.5),
+                                Point3(12.56, -21.261, 0), Point3(12.56, -14.923, 0))
+        envcNode.addSolid(temp)
+        temp = CollisionPolygon(Point3(42.715, -14.923, 3.5), Point3(42.715, -21.261, 3.5),
+                                Point3(32.715, -21.261, 3.5), Point3(32.715, -14.923, 3.5))
+        envcNode.addSolid(temp)
+        temp = CollisionPolygon(Point3(42.715, -8.845, 6), Point3(42.715, -14.923, 3.5),
+                                Point3(32.715, -14.923, 3.5), Point3(32.715, -8.845, 6))
+        envcNode.addSolid(temp)
+        temp = CollisionPolygon(Point3(42.715, 16.155, 6), Point3(42.715, -8.845, 6),
+                                Point3(17.715, -8.845, 6), Point3(17.715, 16.155, 6))
+        envcNode.addSolid(temp)
+        
+        envcNodePath = self.env.attachNewNode(envcNode)
+        
         cNode = CollisionNode("player")
         cNode.addSolid(cSphere)
         cNode.setIntoCollideMask(BitMask32.allOff()) #player is *only* a from object
+        #cNode.setFromCollideMask(BitMask32.bit(0))
         cNodePath = self.player.attachNewNode(cNode)
-        #cNodePath.show()
         #registers a from object with the traverser with a corresponding handler
         base.cTrav.addCollider(cNodePath, self.cHandler)
         i = 0
@@ -344,7 +347,7 @@ class World(DirectObject):
         self.lightOff.start()
         
     def loadParticleConfig(self, file):
-
+        self.p1.reset()
         self.p1 = ParticleEffect()
         self.p1.loadConfig(Filename(file))        
         self.p1.start(self.player)
@@ -352,6 +355,7 @@ class World(DirectObject):
         self.p1.setHpr(0, 90, 0)
         self.p1.setScale(200)
         self.p1.setLightOff()
+        self.p2.reset()
         self.p2 = ParticleEffect()
         self.p2.loadConfig(Filename(file))        
         self.p2.start(self.player)

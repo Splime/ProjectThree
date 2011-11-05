@@ -248,6 +248,7 @@ class World(DirectObject):
         self.enemies = []
         file = open('levels/enemies.txt' )
         line = file.readline().rstrip()
+        i = 0
         while line != "" :
             nums = line.split(',')
             convertedNums = []
@@ -255,10 +256,11 @@ class World(DirectObject):
                 if i != 0:
                     convertedNums.append(int(nums[i]))
             nodePos = map.nodeList[int(nums[0])].getPos()
-            self.enemies.append( Enemy.Enemy(int(nums[0]), convertedNums, nodePos[0], nodePos[1], nodePos[2] ) )
+            newEnemy = Enemy.Enemy(map, convertedNums, nodePos[0], nodePos[1], nodePos[2] )
+            self.enemies.append( newEnemy )
+            taskMgr.add(newEnemy.move, "Enemy Move " + str(i), extraArgs = [map], appendTask = True)
             line = file.readline().rstrip()
-        print "what"
-        print str(len(self.enemies))    
+            i = i + 1
         
             
         
@@ -368,9 +370,7 @@ class World(DirectObject):
         
         
 w = World()
-print "what1"
 run()
-print "what2"
 
 
 

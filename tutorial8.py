@@ -23,14 +23,20 @@ from direct.showbase.DirectObject import DirectObject
 import sys, math, random
 from vehicle import Vehicle
 
-MAX_LIGHT = 2500
+MAX_LIGHT = 6
 BOOSTER_LENGTH = 3
+
+FULL_SCREEN = False
 
 class World(DirectObject):
     def __init__(self):
         #turn off mouse control, otherwise camera is not repositionable
+        if FULL_SCREEN:
+            wp = WindowProperties() 
+            wp.setFullscreen(True) 
+            base.win.requestProperties(wp)
         self.lightables = []
-        self.cameraPositions = [((0, 5000, 5300), (180, -35, 0)),((0, 3000, 1300), (180, -15, 0))]
+        self.cameraPositions = [((0, 70, 70), (180, -35, 0)),((0, 15, 6.5), (180, -15, 0))]
         self.cameraIndex = 0
         base.disableMouse()
         base.enableParticles()
@@ -39,13 +45,14 @@ class World(DirectObject):
         #Prepare the vehicular manslaughter!
         self.boosterLightNP = None
         self.flameLights = None
-        self.player = Vehicle("models/panda-model", "panda-walk4", self)
+        self.player = Vehicle("ralph_models/vampire_car", "ralph_models/vampire_car", self)
         
         self.loadModels()
         self.player.setPos(0,0,0)#self.env.find("**/start_point").getPos())
         self.setupIntervals()
         camera.reparentTo(self.player)
-        camera.setPosHpr(0, 5000, 5300, 180, -35, 0)
+        camera.setPos(self.cameraPositions[0][0][0],self.cameraPositions[0][0][1],self.cameraPositions[0][0][2])
+        camera.setHpr(self.cameraPositions[0][1][0],self.cameraPositions[0][1][1],self.cameraPositions[0][1][2])
         self.setupCollisions()
         render.setShaderAuto() #you probably want to use this
         self.keyMap = {"left":0, "right":0, "forward":0, "backwards":0}
@@ -154,8 +161,8 @@ class World(DirectObject):
         object.setLight(self.keyLightNP)
         object.setLight(self.fillLightNP)
         object.setLight(self.boosterLightNP)
-        for light in self.flameLights:
-            object.setLight(light[1])
+        #for light in self.flameLights:
+        #    object.setLight(light[1])
         
     def shiftCamera(self):
         if self.cameraMove:
@@ -173,27 +180,7 @@ class World(DirectObject):
         self.cameraMove.start()
      
     def loadModels(self):
-        """loads models into the world"""
-        #eat no longer exists? Phooey
-        
-        self.flameLights = []
-        
-        for i in range(2):
-            slight = PointLight('plight')
-            slight.setColor(VBase4(0, 0, 0, 1))
-            slight.setAttenuation(Point3(0, 0.001, 0.001))
-            slnp = self.player.attachNewNode(slight)
-            slnp.setPos(0, -750 - (950 * i), 450)
-            slnp.setHpr(180, 0, 0)
-            slnp.setScale(200)
-            self.flameLights.append((slight, slnp))
-        
         self.player.setupBooster()
-        
-        #self.env = loader.loadModel("models/environment")
-        #self.env.reparentTo(render)
-        #self.env.setScale(.25)
-        #self.env.setPos(-8, 42, 0)
         self.env = loader.loadModel("ralph_models/green_ramps")      
         self.env.reparentTo(render)
         self.env.setScale(5)
@@ -251,7 +238,7 @@ class World(DirectObject):
         # "%in" is substituted with the name of the into object
         self.cHandler.setInPattern("ate-%in")
         
-        cSphere = CollisionSphere((0,0,200), 450) #because the player is scaled way down
+        cSphere = CollisionSphere((0,0,200), 2.25) #because the player is scaled way down
         self.playerRay = CollisionRay()
         self.playerRay.setOrigin(0,0,1000)
         self.playerRay.setDirection(0,0,-1)
@@ -264,25 +251,41 @@ class World(DirectObject):
         self.playerGroundHandler = CollisionHandlerQueue()
         base.cTrav.addCollider(self.playerNodePath, self.playerGroundHandler)
         
-        envcNode = CollisionNode("parking_lot")
-        envcNode.setFromCollideMask(BitMask32.bit(0))
+        envcNode1 = CollisionNode("lot_bottom")
+        envcNode1.setFromCollideMask(BitMask32.bit(0))
         temp = CollisionPolygon(Point3(12.56, 19.182, 0), Point3(12.56, -21.261, 0),
                                 Point3(-13.217, -21.261, 0), Point3(-13.217, 19.182, 0))
-        envcNode.addSolid(temp)
+        envcNode1.addSolid(temp)
+        
+        envcNode2 = CollisionNode("lot_ramp_bottom")
+        envcNode2.setFromCollideMask(BitMask32.bit(0))
         temp = CollisionPolygon(Point3(32.715, -14.923, 3.5), Point3(32.715, -21.261, 3.5),
                                 Point3(12.56, -21.261, 0), Point3(12.56, -14.923, 0))
-        envcNode.addSolid(temp)
+        envcNode2.addSolid(temp)
+        
+        envcNode3 = CollisionNode("lot_middle")
+        envcNode3.setFromCollideMask(BitMask32.bit(0))
         temp = CollisionPolygon(Point3(42.715, -14.923, 3.5), Point3(42.715, -21.261, 3.5),
                                 Point3(32.715, -21.261, 3.5), Point3(32.715, -14.923, 3.5))
-        envcNode.addSolid(temp)
+        envcNode3.addSolid(temp)
+        
+        envcNode4 = CollisionNode("lot_ramp_top")
+        envcNode4.setFromCollideMask(BitMask32.bit(0))
         temp = CollisionPolygon(Point3(42.715, -8.845, 6), Point3(42.715, -14.923, 3.5),
                                 Point3(32.715, -14.923, 3.5), Point3(32.715, -8.845, 6))
-        envcNode.addSolid(temp)
+        envcNode4.addSolid(temp)
+        
+        envcNode5 = CollisionNode("lot_top")
+        envcNode5.setFromCollideMask(BitMask32.bit(0))
         temp = CollisionPolygon(Point3(42.715, 16.155, 6), Point3(42.715, -8.845, 6),
                                 Point3(17.715, -8.845, 6), Point3(17.715, 16.155, 6))
-        envcNode.addSolid(temp)
+        envcNode5.addSolid(temp)
         
-        envcNodePath = self.env.attachNewNode(envcNode)
+        envcNodePath1 = self.env.attachNewNode(envcNode1)
+        envcNodePath2 = self.env.attachNewNode(envcNode2)
+        envcNodePath3 = self.env.attachNewNode(envcNode3)
+        envcNodePath4 = self.env.attachNewNode(envcNode4)
+        envcNodePath5 = self.env.attachNewNode(envcNode5)
         
         cNode = CollisionNode("player")
         cNode.addSolid(cSphere)
@@ -311,31 +314,29 @@ class World(DirectObject):
         
     def startShoot(self):
         self.loadParticleConfig('flamethrower4.ptf')
-        self.lightOff.finish()
-        self.lightOn.start()
+        #self.lightOff.finish()
+        #self.lightOn.start()
         
     def stopShoot(self):
         self.p1.softStop()
         self.p2.softStop()
-        self.lightOn.finish()
-        self.lightOff.start()
+        #self.lightOn.finish()
+        #self.lightOff.start()
         
     def loadParticleConfig(self, file):
         self.p1.reset()
         self.p1 = ParticleEffect()
         self.p1.loadConfig(Filename(file))        
         self.p1.start(self.player)
-        self.p1.setPos(-250, -700, 275)
+        self.p1.setPos(-1.25, -7, 1.375)
         self.p1.setHpr(0, 90, 0)
-        self.p1.setScale(200)
         self.p1.setLightOff()
         self.p2.reset()
         self.p2 = ParticleEffect()
         self.p2.loadConfig(Filename(file))        
         self.p2.start(self.player)
-        self.p2.setPos(250, -700, 275)
+        self.p2.setPos(1.25, -7, 1.375)
         self.p2.setHpr(0, 90, 0)
-        self.p2.setScale(200)
         self.p2.setLightOff()
         
     def eat(self, cEntry):

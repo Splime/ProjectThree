@@ -23,7 +23,7 @@ from direct.showbase.DirectObject import DirectObject
 import sys, math, random
 
 #WARNING: THESE ARE COPYPASTA'D FROM TUTORIAL8.PY
-MAX_LIGHT = 2500
+MAX_LIGHT = 6
 BOOSTER_LENGTH = 3
 
 class Vehicle(Actor):
@@ -35,7 +35,6 @@ class Vehicle(Actor):
     def __init__(self, modelStr, driveStr, world):
         Actor.__init__(self, modelStr, {"drive":driveStr})
         self.world = world
-        self.setScale(.005)
         self.setH(180)
         self.reparentTo(render)
         self.prevtime = 0
@@ -58,9 +57,8 @@ class Vehicle(Actor):
         self.boosterLight.setColor(VBase4(0,0,0,1))
         self.boosterLight.setAttenuation(Point3(0,0.001,0.001))
         self.world.boosterLightNP = self.attachNewNode(self.boosterLight)
-        self.world.boosterLightNP.setPos(0, 500, 275)
+        self.world.boosterLightNP.setPos(0, 2.5, 1.375)
         self.world.boosterLightNP.setHpr(180, 90, 0)
-        self.world.boosterLightNP.setScale(200)
         self.world.setWorldLight(self)
     
     def addKeyMap(self, keyMap):
@@ -155,13 +153,27 @@ class Vehicle(Actor):
         for i in range(self.world.playerGroundHandler.getNumEntries()):
             entry = self.world.playerGroundHandler.getEntry(i)
             entries.append(entry)
-            print(entry.getIntoNode().getName())
+            #print(entry.getIntoNode().getName())
+            
         #This code got copied from Roaming Ralph
         entries.sort(lambda x,y: cmp(y.getSurfacePoint(render).getZ(), x.getSurfacePoint(render).getZ()))
-        if (len(entries)>0) and (entries[0].getIntoNode().getName() == "parking_lot"):
+        if (len(entries)>0) and (entries[0].getIntoNode().getName()[:3] == "lot"):
             self.setZ(entries[0].getSurfacePoint(render).getZ())
-            print("colliding: " + str(self.getZ()))
-            #self.setP(rad2Deg(entries[0].getSurfaceNormal(render)[1]))
+            #print(self.getP())
+            if entries[0].getIntoNode().getName() == "lot_ramp_top":
+                slope_angle = math.asin((6 - 3.5) / (-8.845 + 14.923))
+                slope_angle = rad2Deg(math.sin(slope_angle))
+                self.setP(slope_angle * math.cos(deg2Rad(self.getH())))
+                self.setR(slope_angle * -math.sin(deg2Rad(self.getH())))
+                #Point3(42.715, -8.845, 6), Point3(42.715, -14.923, 3.5)
+            elif entries[0].getIntoNode().getName() ==  "lot_ramp_bottom":
+                slope_angle = math.asin((3.5 - 0) / ( -32.715 - 12.56))
+                slope_angle = rad2Deg(math.sin(slope_angle))
+                self.setP(slope_angle * math.sin(deg2Rad(self.getH())))
+                self.setR(slope_angle * math.cos(deg2Rad(self.getH())))
+                #Point3(32.715, -21.261, 3.5), Point3(12.56, -21.261, 0)
+            else:
+                self.setHpr(self.getH(), 0, 0)
         elif (len(entries)>0):
             #print "Hahahaha, nooope"
             self.setPos(startpos)

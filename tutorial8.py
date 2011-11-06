@@ -23,6 +23,8 @@ from direct.showbase.DirectObject import DirectObject
 import sys, math, random
 from vehicle import Vehicle
 
+import carLocations
+
 MAX_LIGHT = 2500
 BOOSTER_LENGTH = 3
 
@@ -89,9 +91,7 @@ class World(DirectObject):
         
         #Show collisiony stuff
         base.cTrav.showCollisions(render)
-        f = open('testLog.txt', 'r+')
-        #self.dfs(file = f)
-        
+        #self.dfs(file = f)    
     
     def setupPicking(self):
         self.picker = CollisionTraverser()
@@ -209,6 +209,16 @@ class World(DirectObject):
             target.reparentTo(self.targetRoot)
             self.targets.append(target)
             self.setWorldLight(target)
+
+        self.staticCars = []
+        for currCar in carLocations.cars:
+            target = loader.loadModel("models/panda-model")
+            target.setScale(0.005)
+            target.setPos(currCar['position'])
+            target.setHpr(currCar['direction'])
+            target.reparentTo(render)
+            self.setWorldLight(target)
+            self.staticCars.append(currCar)
         
     def setupLights(self):
         #ambient light
@@ -231,7 +241,7 @@ class World(DirectObject):
         self.fillLightNP.setHpr(30, 0, 0)
         
     def drive(self):
-        """compound interval for driveing"""
+        """compound interval for driving"""
         #some interval methods:
         # start(), loop(), pause(), resume(), finish()
         # start() can take arguments: start(starttime, endtime, playrate)
@@ -300,6 +310,16 @@ class World(DirectObject):
             cNode.setTag('target', str(i))
             cNodePath = target.attachNewNode(cNode)
             i += 1
+
+        i = 0
+        for currCar in self.staticCars:
+            cSphere = CollisionSphere((0,0,0), 2)
+            cNode = CollisionNode("staticCar")
+            cNode.addSolid(cSphere)
+            cNode.setIntoCollideMask(BitMask32.bit(1))
+            cNode.setTag('staticCar', str(i))
+            cNodePath = target.attachNewNode(cNode)
+            i += 1
     
     def lightModify(self, t, which_way):
         if which_way: #which_way == true then make it brighter
@@ -345,19 +365,5 @@ class World(DirectObject):
         #remove from scene graph
         cEntry.getIntoNodePath().getParent().remove()
         
-        
-        
 w = World()
 run()
-
-
-
-
-
-
-
-
-
-
-
-

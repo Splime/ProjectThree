@@ -36,7 +36,7 @@ class World(DirectObject):
             wp.setFullscreen(True) 
             base.win.requestProperties(wp)
         self.lightables = []
-        self.cameraPositions = [((0, 70, 70), (180, -35, 0)),((0, 15, 6.5), (180, -15, 0))]
+        self.cameraPositions = [((0, 70, 70), (180, -35, 0)),((0, 35, 15), (180, -15, 0))]
         self.cameraIndex = 0
         base.disableMouse()
         base.enableParticles()
@@ -183,7 +183,7 @@ class World(DirectObject):
         self.player.setupBooster()
         self.env = loader.loadModel("ralph_models/green_ramps")      
         self.env.reparentTo(render)
-        self.env.setScale(5)
+        self.env.setScale(10)
         
         self.setWorldLight(self.env)
         

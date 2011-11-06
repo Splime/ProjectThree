@@ -25,6 +25,7 @@ import sys, math, random
 #WARNING: THESE ARE COPYPASTA'D FROM TUTORIAL8.PY
 MAX_LIGHT = 6
 BOOSTER_LENGTH = 3
+RAMP_INTERVAL_DURATION = 0.5
 
 class Vehicle(Actor):
     
@@ -48,6 +49,14 @@ class Vehicle(Actor):
         self.direction = Vehicle.STOPPED
         self.isTurning = False
         self.turnFactor = 4.0
+        self.loc = ""
+        self.rampHprInterval = LerpFunc(self.rampInterval,
+                                        fromData=0,
+                                        toData=100,
+                                        duration=1,
+                                        blendType='noBlend',
+                                        extraArgs=[(0,0),(0,0)],
+                                        name="rampInterval")
     
     def setupBooster(self):
         #Booster Stuff
@@ -64,7 +73,12 @@ class Vehicle(Actor):
     def addKeyMap(self, keyMap):
         self.keyMap = keyMap
         keyMap["boost"] = 0
-    
+        
+    def rampInterval(self, t, start, end):
+        self.setP(((end[0] - start[0]) * (t / 100)) + start[0])
+        self.setR(((end[1] - start[1]) * (t / 100)) + start[1])
+        
+        
     def move(self, task):
         elapsed = task.time - self.prevtime
         
@@ -161,19 +175,56 @@ class Vehicle(Actor):
             self.setZ(entries[0].getSurfacePoint(render).getZ())
             #print(self.getP())
             if entries[0].getIntoNode().getName() == "lot_ramp_top":
-                slope_angle = math.asin((6 - 3.5) / (-8.845 + 14.923))
-                slope_angle = rad2Deg(math.sin(slope_angle))
-                self.setP(slope_angle * math.cos(deg2Rad(self.getH())))
-                self.setR(slope_angle * -math.sin(deg2Rad(self.getH())))
-                #Point3(42.715, -8.845, 6), Point3(42.715, -14.923, 3.5)
+                if self.loc != entries[0].getIntoNode().getName():
+                    slope_angle = math.asin((6 - 3.5) / (-8.845 + 14.923))
+                    slope_angle = rad2Deg(math.sin(slope_angle))
+                    P = slope_angle * math.cos(deg2Rad(self.getH()))
+                    R = slope_angle * -math.sin(deg2Rad(self.getH()))
+                    self.rampHprInterval.finish()
+                    self.rampHprInterval = LerpFunc(self.rampInterval,
+                                                    fromData=0,
+                                                    toData=100,
+                                                    duration=RAMP_INTERVAL_DURATION,
+                                                    blendType='noBlend',
+                                                    extraArgs=[(self.getP(),self.getR()),(P,R)],
+                                                    name="rampInterval")
+                    self.rampHprInterval.start()
+                elif not self.rampHprInterval.isPlaying():
+                    slope_angle = math.asin((6 - 3.5) / (-8.845 + 14.923))
+                    slope_angle = rad2Deg(math.sin(slope_angle))
+                    self.setP(slope_angle * math.cos(deg2Rad(self.getH())))
+                    self.setR(slope_angle * -math.sin(deg2Rad(self.getH())))
             elif entries[0].getIntoNode().getName() ==  "lot_ramp_bottom":
-                slope_angle = math.asin((3.5 - 0) / ( -32.715 - 12.56))
-                slope_angle = rad2Deg(math.sin(slope_angle))
-                self.setP(slope_angle * math.sin(deg2Rad(self.getH())))
-                self.setR(slope_angle * math.cos(deg2Rad(self.getH())))
-                #Point3(32.715, -21.261, 3.5), Point3(12.56, -21.261, 0)
+                if self.loc != entries[0].getIntoNode().getName():
+                    slope_angle = math.asin((3.5 - 0) / ( -32.715 - 12.56))
+                    slope_angle = rad2Deg(math.sin(slope_angle))
+                    P = slope_angle * math.sin(deg2Rad(self.getH()))
+                    R = slope_angle * math.cos(deg2Rad(self.getH()))
+                    self.rampHprInterval.finish()
+                    self.rampHprInterval = LerpFunc(self.rampInterval,
+                                                    fromData=0,
+                                                    toData=100,
+                                                    duration=RAMP_INTERVAL_DURATION,
+                                                    blendType='noBlend',
+                                                    extraArgs=[(self.getP(),self.getR()),(P,R)],
+                                                    name="rampInterval")
+                    self.rampHprInterval.start()
+                elif not self.rampHprInterval.isPlaying():
+                    slope_angle = math.asin((3.5 - 0) / ( -32.715 - 12.56))
+                    slope_angle = rad2Deg(math.sin(slope_angle))
+                    self.setP(slope_angle * math.sin(deg2Rad(self.getH())))
+                    self.setR(slope_angle * math.cos(deg2Rad(self.getH())))
             else:
-                self.setHpr(self.getH(), 0, 0)
+                if self.loc != entries[0].getIntoNode().getName():
+                    self.rampHprInterval = LerpFunc(self.rampInterval,
+                                                    fromData=0,
+                                                    toData=100,
+                                                    duration=RAMP_INTERVAL_DURATION,
+                                                    blendType='noBlend',
+                                                    extraArgs=[(self.getP(),self.getR()),(0,0)],
+                                                    name="rampInterval")
+                    self.rampHprInterval.start()
+            self.loc = entries[0].getIntoNode().getName()
         elif (len(entries)>0):
             #print "Hahahaha, nooope"
             self.setPos(startpos)

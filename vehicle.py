@@ -45,7 +45,7 @@ class Vehicle(Actor):
         self.accel = 25.0
         self.brake = -200.0
         self.deccel = -50.0
-        self.bkwdsAccel = -10.0
+        self.bkwdsAccel = -17.5
         self.speed = 0.0
         self.maxSpeed = 260.0
         self.maxBkwdsSpeed = -40.0
@@ -173,7 +173,6 @@ class Vehicle(Actor):
             #print(entry.getIntoNode().getName())
             
         #This code got copied from Roaming Ralph
-        print(self.speed)
         entries.sort(lambda x,y: cmp(y.getSurfacePoint(render).getZ(), x.getSurfacePoint(render).getZ()))
         if (len(entries)>0) and (entries[0].getIntoNode().getName()[:3] == "lot"):
             self.setZ(entries[0].getSurfacePoint(render).getZ())
@@ -228,9 +227,9 @@ class Vehicle(Actor):
                                                     name="rampInterval")
                     self.rampHprInterval.start()
             self.loc = entries[0].getIntoNode().getName()
-        elif (len(entries)>0):
-            #print "Hahahaha, nooope"
-            self.setPos(startpos)
+        #elif (len(entries)>0):
+        #    print "Hahahaha, nooope"
+        #    self.setPos(startpos)
         
         self.prevtime = task.time
         return Task.cont

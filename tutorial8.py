@@ -25,7 +25,7 @@ from vehicle import Vehicle
 
 MAX_LIGHT = 6
 BOOSTER_LENGTH = 3
-
+DEBUG = False
 FULL_SCREEN = False
 
 class World(DirectObject):
@@ -95,7 +95,9 @@ class World(DirectObject):
         self.p2 = ParticleEffect()
         
         #Show collisiony stuff
-        base.cTrav.showCollisions(render)
+        if DEBUG:
+            base.cTrav.showCollisions(render)
+        
         f = open('testLog.txt', 'r+')
         #self.dfs(file = f)
         
@@ -161,8 +163,6 @@ class World(DirectObject):
         object.setLight(self.keyLightNP)
         object.setLight(self.fillLightNP)
         object.setLight(self.boosterLightNP)
-        #for light in self.flameLights:
-        #    object.setLight(light[1])
         
     def shiftCamera(self):
         if self.cameraMove:
@@ -216,29 +216,9 @@ class World(DirectObject):
         self.fillLight.setColor((.05,.05,.05, 1))
         self.fillLightNP = render.attachNewNode(self.fillLight)
         self.fillLightNP.setHpr(30, 0, 0)
-        
-    def drive(self):
-        """compound interval for driveing"""
-        #some interval methods:
-        # start(), loop(), pause(), resume(), finish()
-        # start() can take arguments: start(starttime, endtime, playrate)
-        dist = 5
-        angle = deg2Rad(self.player.getH())
-        dx = dist * math.sin(angle)
-        dy = dist * -math.cos(angle)
-        playerdrive = Parallel(self.player.posInterval(1, (self.player.getX() + dx, self.player.getY() + dy, 0)), \
-            self.player.actorInterval("drive", loop=1, duration=2))
-        playerdrive.start()
-        
-    def setupCollisions(self):
-        #instantiates a collision traverser and sets it to the default
-        base.cTrav = CollisionTraverser()
-        self.cHandler = CollisionHandlerEvent()
-        #set pattern for event sent on collision
-        # "%in" is substituted with the name of the into object
-        self.cHandler.setInPattern("ate-%in")
-        
-        cSphere = CollisionSphere((0,0,200), 2.25) #because the player is scaled way down
+               
+    def setupCollisions(self):       
+        base.cTrav = CollisionTraverser() 
         self.playerRay = CollisionRay()
         self.playerRay.setOrigin(0,0,1000)
         self.playerRay.setDirection(0,0,-1)
@@ -281,50 +261,50 @@ class World(DirectObject):
                                 Point3(17.715, -8.845, 6), Point3(17.715, 16.155, 6))
         envcNode5.addSolid(temp)
         
-        envcNode6 = CollisionNode("fence")
-        envcNode6.setFromCollideMask(BitMask32.bit(0))
+        wallCNode = CollisionNode("fence")
+        wallCNode.setFromCollideMask(BitMask32.bit(0))
         temp = CollisionPolygon(Point3(12.56, 19.182, 0), Point3(12.56, -14.923, 0),
                                 Point3(12.56, -14.923, 10), Point3(12.56, 19.182, 10))
-        envcNode6.addSolid(temp)
+        wallCNode.addSolid(temp)
         temp = CollisionPolygon(Point3(12.56, -14.923, 0), Point3(32.715, -14.923, 3.5),
                                 Point3(32.715, -14.923, 10), Point3(12.56, -14.923, 10))
-        envcNode6.addSolid(temp)
+        wallCNode.addSolid(temp)
         temp = CollisionPolygon(Point3(32.715, -14.923, 3.5), Point3(32.715, -8.845, 6),
                                 Point3(32.715, -8.845, 10), Point3(32.715, -14.923, 10))
-        envcNode6.addSolid(temp)
+        wallCNode.addSolid(temp)
         temp = CollisionPolygon(Point3(32.715, -8.845, 6), Point3(17.715, -8.845, 6),
                                 Point3(17.715, -8.845, 10), Point3(32.715, -8.845, 10))
-        envcNode6.addSolid(temp)
+        wallCNode.addSolid(temp)
         temp = CollisionPolygon(Point3(17.715, -8.845, 6), Point3(17.715, 16.155, 6),
                                 Point3(17.715, 16.155, 10), Point3(17.715, -8.845, 10))
-        envcNode6.addSolid(temp)
+        wallCNode.addSolid(temp)
         temp = CollisionPolygon(Point3(17.715, 16.155, 6), Point3(42.715, 16.155, 6),
                                 Point3(42.715, 16.155, 10), Point3(17.715, 16.155, 10))
-        envcNode6.addSolid(temp)
+        wallCNode.addSolid(temp)
         temp = CollisionPolygon(Point3(42.715, 16.155, 6), Point3(42.715, -8.845, 6),
                                 Point3(42.715, -8.845, 10), Point3(42.715, 16.155, 10))
-        envcNode6.addSolid(temp)
+        wallCNode.addSolid(temp)
         temp = CollisionPolygon(Point3(42.715, -8.845, 6), Point3(42.715, -14.923, 3.5),
                                 Point3(42.715, -14.923, 10), Point3(42.715, -8.845, 10))
-        envcNode6.addSolid(temp)
+        wallCNode.addSolid(temp)
         temp = CollisionPolygon(Point3(42.715, -14.923, 3.5), Point3(42.715, -21.261, 3.5),
                                 Point3(42.715, -21.261, 10), Point3(42.715, -14.923, 10))
-        envcNode6.addSolid(temp)
+        wallCNode.addSolid(temp)
         temp = CollisionPolygon(Point3(42.715, -21.261, 3.5), Point3(32.715, -21.261, 3.5),
                                 Point3(32.715, -21.261, 10), Point3(42.715, -21.261, 10))
-        envcNode6.addSolid(temp)
+        wallCNode.addSolid(temp)
         temp = CollisionPolygon(Point3(32.715, -21.261, 3.5), Point3(12.56, -21.261, 0),
                                 Point3(12.56, -21.261, 10), Point3(32.715, -21.261, 10))
-        envcNode6.addSolid(temp)
+        wallCNode.addSolid(temp)
         temp = CollisionPolygon(Point3(12.56, -21.261, 0), Point3(-13.217, -21.261, 0),
                                 Point3(-13.217, -21.261, 10), Point3(12.56, -21.261, 10))
-        envcNode6.addSolid(temp)
+        wallCNode.addSolid(temp)
         temp = CollisionPolygon(Point3(-13.217, -21.261, 0), Point3(-13.217, 19.182, 0),
                                 Point3(-13.217, 19.182, 10), Point3(-13.217, -21.261, 10))
-        envcNode6.addSolid(temp)
+        wallCNode.addSolid(temp)
         temp = CollisionPolygon(Point3(-13.217, 19.182, 0), Point3(12.56, 19.182, 0),
                                 Point3(12.56, 19.182, 10), Point3(-13.217, 19.182, 10))
-        envcNode6.addSolid(temp)
+        wallCNode.addSolid(temp)
         
         
         envcNodePath1 = self.env.attachNewNode(envcNode1)
@@ -332,25 +312,55 @@ class World(DirectObject):
         envcNodePath3 = self.env.attachNewNode(envcNode3)
         envcNodePath4 = self.env.attachNewNode(envcNode4)
         envcNodePath5 = self.env.attachNewNode(envcNode5)
-        #envcNodePath6 = self.env.attachNewNode(envcNode6)
+        
+        self.cHandler = CollisionHandlerEvent()
+        pusher = CollisionHandlerPusher()
+        
+        self.wallNode = self.env.attachNewNode('wallNode')
+        wallCNodePath = self.wallNode.attachNewNode(wallCNode)
+        if DEBUG:
+            wallCNodePath.show()
+        
+        segment1 = CollisionSegment(-4, -10, 2,  4, -10, 2)
+        segment2 = CollisionSegment(-4,   9, 2,  4,   9, 2)
+        segment3 = CollisionSegment(-4, -10, 2, -4,   9, 2)
+        segment4 = CollisionSegment( 4, -10, 2,  4,   9, 2)
         
         cNode = CollisionNode("player")
-        cNode.addSolid(cSphere)
+        #cNode.addSolid(segment1)
+        #cNode.addSolid(segment2)
+        #cNode.addSolid(segment3)
+        #cNode.addSolid(segment4)
+        temp = CollisionSphere((0,-5.5,10), 4)
+        cNode.addSolid(temp)
+        temp = CollisionSphere((0,-0.5,10), 4)
+        cNode.addSolid(temp)
+        temp = CollisionSphere((0,3.5,10), 4)
+        cNode.addSolid(temp)
         cNode.setIntoCollideMask(BitMask32.allOff()) #player is *only* a from object
-        #cNode.setFromCollideMask(BitMask32.bit(0))
         cNodePath = self.player.attachNewNode(cNode)
+        if DEBUG:
+            cNodePath.show()
+            
+        base.cTrav.addCollider(cNodePath, pusher)
+        pusher.addCollider(cNodePath, self.player)
+        pusher.addInPattern('%fn-into-%in')
+        self.accept('player-into-fence', self.collideWithFence)
         #registers a from object with the traverser with a corresponding handler
-        base.cTrav.addCollider(cNodePath, self.cHandler)
+        #base.cTrav.addCollider(cNodePath, self.cHandler)
         i = 0
         for target in self.targets:
             cSphere = CollisionSphere((0,0,0), 2)
             cNode = CollisionNode("smiley")
-            cNode.addSolid(cSphere)
+            #cNode.addSolid(cSphere)
             cNode.setIntoCollideMask(BitMask32.bit(1))
             cNode.setTag('target', str(i))
             cNodePath = target.attachNewNode(cNode)
             i += 1
     
+    def collideWithFence(self, entry):
+        self.player.speed = self.player.speed * 0.9
+        
     def lightModify(self, t, which_way):
         if which_way: #which_way == true then make it brighter
             value = t/100 * MAX_LIGHT

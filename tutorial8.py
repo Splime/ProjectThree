@@ -183,7 +183,7 @@ class World(DirectObject):
         self.player.setupBooster()
         self.env = loader.loadModel("ralph_models/green_ramps")      
         self.env.reparentTo(render)
-        self.env.setScale(10)
+        self.env.setScale(15)
         
         self.setWorldLight(self.env)
         
@@ -281,11 +281,58 @@ class World(DirectObject):
                                 Point3(17.715, -8.845, 6), Point3(17.715, 16.155, 6))
         envcNode5.addSolid(temp)
         
+        envcNode6 = CollisionNode("fence")
+        envcNode6.setFromCollideMask(BitMask32.bit(0))
+        temp = CollisionPolygon(Point3(12.56, 19.182, 0), Point3(12.56, -14.923, 0),
+                                Point3(12.56, -14.923, 10), Point3(12.56, 19.182, 10))
+        envcNode6.addSolid(temp)
+        temp = CollisionPolygon(Point3(12.56, -14.923, 0), Point3(32.715, -14.923, 3.5),
+                                Point3(32.715, -14.923, 10), Point3(12.56, -14.923, 10))
+        envcNode6.addSolid(temp)
+        temp = CollisionPolygon(Point3(32.715, -14.923, 3.5), Point3(32.715, -8.845, 6),
+                                Point3(32.715, -8.845, 10), Point3(32.715, -14.923, 10))
+        envcNode6.addSolid(temp)
+        temp = CollisionPolygon(Point3(32.715, -8.845, 6), Point3(17.715, -8.845, 6),
+                                Point3(17.715, -8.845, 10), Point3(32.715, -8.845, 10))
+        envcNode6.addSolid(temp)
+        temp = CollisionPolygon(Point3(17.715, -8.845, 6), Point3(17.715, 16.155, 6),
+                                Point3(17.715, 16.155, 10), Point3(17.715, -8.845, 10))
+        envcNode6.addSolid(temp)
+        temp = CollisionPolygon(Point3(17.715, 16.155, 6), Point3(42.715, 16.155, 6),
+                                Point3(42.715, 16.155, 10), Point3(17.715, 16.155, 10))
+        envcNode6.addSolid(temp)
+        temp = CollisionPolygon(Point3(42.715, 16.155, 6), Point3(42.715, -8.845, 6),
+                                Point3(42.715, -8.845, 10), Point3(42.715, 16.155, 10))
+        envcNode6.addSolid(temp)
+        temp = CollisionPolygon(Point3(42.715, -8.845, 6), Point3(42.715, -14.923, 3.5),
+                                Point3(42.715, -14.923, 10), Point3(42.715, -8.845, 10))
+        envcNode6.addSolid(temp)
+        temp = CollisionPolygon(Point3(42.715, -14.923, 3.5), Point3(42.715, -21.261, 3.5),
+                                Point3(42.715, -21.261, 10), Point3(42.715, -14.923, 10))
+        envcNode6.addSolid(temp)
+        temp = CollisionPolygon(Point3(42.715, -21.261, 3.5), Point3(32.715, -21.261, 3.5),
+                                Point3(32.715, -21.261, 10), Point3(42.715, -21.261, 10))
+        envcNode6.addSolid(temp)
+        temp = CollisionPolygon(Point3(32.715, -21.261, 3.5), Point3(12.56, -21.261, 0),
+                                Point3(12.56, -21.261, 10), Point3(32.715, -21.261, 10))
+        envcNode6.addSolid(temp)
+        temp = CollisionPolygon(Point3(12.56, -21.261, 0), Point3(-13.217, -21.261, 0),
+                                Point3(-13.217, -21.261, 10), Point3(12.56, -21.261, 10))
+        envcNode6.addSolid(temp)
+        temp = CollisionPolygon(Point3(-13.217, -21.261, 0), Point3(-13.217, 19.182, 0),
+                                Point3(-13.217, 19.182, 10), Point3(-13.217, -21.261, 10))
+        envcNode6.addSolid(temp)
+        temp = CollisionPolygon(Point3(-13.217, 19.182, 0), Point3(12.56, 19.182, 0),
+                                Point3(12.56, 19.182, 10), Point3(-13.217, 19.182, 10))
+        envcNode6.addSolid(temp)
+        
+        
         envcNodePath1 = self.env.attachNewNode(envcNode1)
         envcNodePath2 = self.env.attachNewNode(envcNode2)
         envcNodePath3 = self.env.attachNewNode(envcNode3)
         envcNodePath4 = self.env.attachNewNode(envcNode4)
         envcNodePath5 = self.env.attachNewNode(envcNode5)
+        #envcNodePath6 = self.env.attachNewNode(envcNode6)
         
         cNode = CollisionNode("player")
         cNode.addSolid(cSphere)
@@ -313,7 +360,7 @@ class World(DirectObject):
             light[0].setColor(VBase4(value,value,value,1))
         
     def startShoot(self):
-        self.loadParticleConfig('flamethrower4.ptf')
+        self.loadParticleConfig('flamethrower6.ptf')
         #self.lightOff.finish()
         #self.lightOn.start()
         
@@ -328,15 +375,17 @@ class World(DirectObject):
         self.p1 = ParticleEffect()
         self.p1.loadConfig(Filename(file))        
         self.p1.start(self.player)
-        self.p1.setPos(-1.25, -7, 1.375)
+        self.p1.setPos(-1.75, -10, 1.375)
         self.p1.setHpr(0, 90, 0)
+        self.p1.setScale(1.5)
         self.p1.setLightOff()
         self.p2.reset()
         self.p2 = ParticleEffect()
         self.p2.loadConfig(Filename(file))        
         self.p2.start(self.player)
-        self.p2.setPos(1.25, -7, 1.375)
+        self.p2.setPos(1.75, -10, 1.375)
         self.p2.setHpr(0, 90, 0)
+        self.p2.setScale(1.5)
         self.p2.setLightOff()
         
     def eat(self, cEntry):

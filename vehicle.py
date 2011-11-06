@@ -25,7 +25,9 @@ import sys, math, random
 #WARNING: THESE ARE COPYPASTA'D FROM TUTORIAL8.PY
 MAX_LIGHT = 6
 BOOSTER_LENGTH = 3
-RAMP_INTERVAL_DURATION = 0.5
+RAMP_INTERVAL_DURATION = 0.25
+BOOST_FACTOR = 2.5
+BOOST_MAX_SPEED_BONUS = 100
 
 class Vehicle(Actor):
     
@@ -40,20 +42,21 @@ class Vehicle(Actor):
         self.reparentTo(render)
         self.prevtime = 0
         #some movement stats
-        self.accel = 40.0
-        self.deccel = -40.0
+        self.accel = 25.0
+        self.brake = -200.0
+        self.deccel = -50.0
         self.bkwdsAccel = -10.0
         self.speed = 0.0
-        self.maxSpeed = 100.0
+        self.maxSpeed = 260.0
         self.maxBkwdsSpeed = -40.0
         self.direction = Vehicle.STOPPED
         self.isTurning = False
-        self.turnFactor = 4.0
+        self.turnFactor = 1.2
         self.loc = ""
         self.rampHprInterval = LerpFunc(self.rampInterval,
                                         fromData=0,
                                         toData=100,
-                                        duration=1,
+                                        duration=RAMP_INTERVAL_DURATION,
                                         blendType='noBlend',
                                         extraArgs=[(0,0),(0,0)],
                                         name="rampInterval")
@@ -107,7 +110,7 @@ class Vehicle(Actor):
         #Accelerating
         if (self.keyMap["forward"] and not self.keyMap["backwards"]) or self.keyMap["boost"]:
             if self.direction == Vehicle.BACKWARDS:
-                newSpeed = self.speed + (self.accel-self.deccel)*elapsed
+                newSpeed = self.speed + (self.accel-self.brake)*elapsed
             else:
                 newSpeed = self.speed + self.accel*elapsed
             if newSpeed > self.maxSpeed:
@@ -118,7 +121,7 @@ class Vehicle(Actor):
         #Braking/Reversing
         if self.keyMap["backwards"] and not (self.keyMap["forward"] or self.keyMap["boost"]):
             if self.direction == Vehicle.FORWARDS:
-                newSpeed = self.speed + (self.bkwdsAccel+self.deccel)*elapsed
+                newSpeed = self.speed + (self.bkwdsAccel+self.brake)*elapsed
             else:
                 newSpeed = self.speed + self.bkwdsAccel*elapsed
             if newSpeed < self.maxBkwdsSpeed:
@@ -170,10 +173,10 @@ class Vehicle(Actor):
             #print(entry.getIntoNode().getName())
             
         #This code got copied from Roaming Ralph
+        print(self.speed)
         entries.sort(lambda x,y: cmp(y.getSurfacePoint(render).getZ(), x.getSurfacePoint(render).getZ()))
         if (len(entries)>0) and (entries[0].getIntoNode().getName()[:3] == "lot"):
             self.setZ(entries[0].getSurfacePoint(render).getZ())
-            #print(self.getP())
             if entries[0].getIntoNode().getName() == "lot_ramp_top":
                 if self.loc != entries[0].getIntoNode().getName():
                     slope_angle = math.asin((6 - 3.5) / (-8.845 + 14.923))
@@ -240,7 +243,8 @@ class Vehicle(Actor):
             self.boosters.setHpr(180, 90, 0)
             self.boosters.setScale(200)
             self.boosters.setLightOff()
-            self.accel = self.accel * 2
+            self.maxSpeed = self.maxSpeed + BOOST_MAX_SPEED_BONUS
+            self.accel = self.accel * BOOST_FACTOR
             self.keyMap["boost"] = 1
             self.boosterLight.setColor(VBase4(MAX_LIGHT,MAX_LIGHT,MAX_LIGHT,1))
             taskMgr.add(self.checkBoosterEnd, "endBoosters")
@@ -255,9 +259,11 @@ class Vehicle(Actor):
         if elapsed > BOOSTER_LENGTH:
             self.boosterLight.setColor(VBase4(0,0,0,1))
             self.boosters.softStop()
-            self.accel = self.accel / 2
+            self.accel = self.accel / BOOST_FACTOR
             self.keyMap["boost"] = 0
             self.boosterStartTime = -1
+            self.maxSpeed = self.maxSpeed - BOOST_MAX_SPEED_BONUS
+            self.speed = min(self.speed, self.maxSpeed)
             return Task.done        
         else:    
             return Task.cont

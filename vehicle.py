@@ -23,8 +23,9 @@ from direct.showbase.DirectObject import DirectObject
 import sys, math, random
 
 #WARNING: THESE ARE COPYPASTA'D FROM TUTORIAL8.PY
-MAX_LIGHT = 2500
+MAX_LIGHT = 6
 BOOSTER_LENGTH = 3
+RAMP_INTERVAL_DURATION = 0.5
 
 class Vehicle(Actor):
     
@@ -35,7 +36,6 @@ class Vehicle(Actor):
     def __init__(self, modelStr, driveStr, world):
         Actor.__init__(self, modelStr, {"drive":driveStr})
         self.world = world
-        self.setScale(.005)
         self.setH(180)
         self.reparentTo(render)
         self.prevtime = 0
@@ -49,6 +49,14 @@ class Vehicle(Actor):
         self.direction = Vehicle.STOPPED
         self.isTurning = False
         self.turnFactor = 4.0
+        self.loc = ""
+        self.rampHprInterval = LerpFunc(self.rampInterval,
+                                        fromData=0,
+                                        toData=100,
+                                        duration=1,
+                                        blendType='noBlend',
+                                        extraArgs=[(0,0),(0,0)],
+                                        name="rampInterval")
     
     def setupBooster(self):
         #Booster Stuff
@@ -58,15 +66,19 @@ class Vehicle(Actor):
         self.boosterLight.setColor(VBase4(0,0,0,1))
         self.boosterLight.setAttenuation(Point3(0,0.001,0.001))
         self.world.boosterLightNP = self.attachNewNode(self.boosterLight)
-        self.world.boosterLightNP.setPos(0, 500, 275)
+        self.world.boosterLightNP.setPos(0, 2.5, 1.375)
         self.world.boosterLightNP.setHpr(180, 90, 0)
-        self.world.boosterLightNP.setScale(200)
         self.world.setWorldLight(self)
     
     def addKeyMap(self, keyMap):
         self.keyMap = keyMap
         keyMap["boost"] = 0
-    
+        
+    def rampInterval(self, t, start, end):
+        self.setP(((end[0] - start[0]) * (t / 100)) + start[0])
+        self.setR(((end[1] - start[1]) * (t / 100)) + start[1])
+        
+        
     def move(self, task):
         elapsed = task.time - self.prevtime
         
@@ -155,13 +167,64 @@ class Vehicle(Actor):
         for i in range(self.world.playerGroundHandler.getNumEntries()):
             entry = self.world.playerGroundHandler.getEntry(i)
             entries.append(entry)
-            print(entry.getIntoNode().getName())
+            #print(entry.getIntoNode().getName())
+            
         #This code got copied from Roaming Ralph
         entries.sort(lambda x,y: cmp(y.getSurfacePoint(render).getZ(), x.getSurfacePoint(render).getZ()))
-        if (len(entries)>0) and (entries[0].getIntoNode().getName() == "parking_lot"):
+        if (len(entries)>0) and (entries[0].getIntoNode().getName()[:3] == "lot"):
             self.setZ(entries[0].getSurfacePoint(render).getZ())
-            print("colliding: " + str(self.getZ()))
-            #self.setP(rad2Deg(entries[0].getSurfaceNormal(render)[1]))
+            #print(self.getP())
+            if entries[0].getIntoNode().getName() == "lot_ramp_top":
+                if self.loc != entries[0].getIntoNode().getName():
+                    slope_angle = math.asin((6 - 3.5) / (-8.845 + 14.923))
+                    slope_angle = rad2Deg(math.sin(slope_angle))
+                    P = slope_angle * math.cos(deg2Rad(self.getH()))
+                    R = slope_angle * -math.sin(deg2Rad(self.getH()))
+                    self.rampHprInterval.finish()
+                    self.rampHprInterval = LerpFunc(self.rampInterval,
+                                                    fromData=0,
+                                                    toData=100,
+                                                    duration=RAMP_INTERVAL_DURATION,
+                                                    blendType='noBlend',
+                                                    extraArgs=[(self.getP(),self.getR()),(P,R)],
+                                                    name="rampInterval")
+                    self.rampHprInterval.start()
+                elif not self.rampHprInterval.isPlaying():
+                    slope_angle = math.asin((6 - 3.5) / (-8.845 + 14.923))
+                    slope_angle = rad2Deg(math.sin(slope_angle))
+                    self.setP(slope_angle * math.cos(deg2Rad(self.getH())))
+                    self.setR(slope_angle * -math.sin(deg2Rad(self.getH())))
+            elif entries[0].getIntoNode().getName() ==  "lot_ramp_bottom":
+                if self.loc != entries[0].getIntoNode().getName():
+                    slope_angle = math.asin((3.5 - 0) / ( -32.715 - 12.56))
+                    slope_angle = rad2Deg(math.sin(slope_angle))
+                    P = slope_angle * math.sin(deg2Rad(self.getH()))
+                    R = slope_angle * math.cos(deg2Rad(self.getH()))
+                    self.rampHprInterval.finish()
+                    self.rampHprInterval = LerpFunc(self.rampInterval,
+                                                    fromData=0,
+                                                    toData=100,
+                                                    duration=RAMP_INTERVAL_DURATION,
+                                                    blendType='noBlend',
+                                                    extraArgs=[(self.getP(),self.getR()),(P,R)],
+                                                    name="rampInterval")
+                    self.rampHprInterval.start()
+                elif not self.rampHprInterval.isPlaying():
+                    slope_angle = math.asin((3.5 - 0) / ( -32.715 - 12.56))
+                    slope_angle = rad2Deg(math.sin(slope_angle))
+                    self.setP(slope_angle * math.sin(deg2Rad(self.getH())))
+                    self.setR(slope_angle * math.cos(deg2Rad(self.getH())))
+            else:
+                if self.loc != entries[0].getIntoNode().getName():
+                    self.rampHprInterval = LerpFunc(self.rampInterval,
+                                                    fromData=0,
+                                                    toData=100,
+                                                    duration=RAMP_INTERVAL_DURATION,
+                                                    blendType='noBlend',
+                                                    extraArgs=[(self.getP(),self.getR()),(0,0)],
+                                                    name="rampInterval")
+                    self.rampHprInterval.start()
+            self.loc = entries[0].getIntoNode().getName()
         elif (len(entries)>0):
             #print "Hahahaha, nooope"
             self.setPos(startpos)

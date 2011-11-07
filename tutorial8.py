@@ -1,3 +1,10 @@
+from pandac.PandaModules import loadPrcFileData
+if False:
+    loadPrcFileData("", "window-title Your Title")
+    loadPrcFileData("", "fullscreen 1") # Set to 1 for fullscreen
+    loadPrcFileData("", "win-size 1680 1050")
+    loadPrcFileData("", "win-origin 0 0")
+
 import direct.directbase.DirectStart #starts player
 from pandac.PandaModules import * #basic Panda modules
 from direct.showbase.DirectObject import DirectObject #for event handling
@@ -26,15 +33,9 @@ from vehicle import Vehicle
 MAX_LIGHT = 6
 BOOSTER_LENGTH = 3
 DEBUG = False
-FULL_SCREEN = False
 
 class World(DirectObject):
     def __init__(self):
-        #turn off mouse control, otherwise camera is not repositionable
-        if FULL_SCREEN:
-            wp = WindowProperties() 
-            wp.setFullscreen(True) 
-            base.win.requestProperties(wp)
         self.lightables = []
         self.cameraPositions = [((0, 95, 75), (180, -27, 0)),((0, 55, 25), (180, -15, 0))]
         self.cameraIndex = 0

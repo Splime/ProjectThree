@@ -22,8 +22,7 @@ from direct.showbase.DirectObject import DirectObject
 
 import sys, math, random
 
-#WARNING: THESE ARE COPYPASTA'D FROM TUTORIAL8.PY
-MAX_LIGHT = 6
+MAX_LIGHT = 1.5
 BOOSTER_LENGTH = 3
 RAMP_INTERVAL_DURATION = 0.25
 BOOST_FACTOR = 2.5
@@ -42,7 +41,7 @@ class Vehicle(Actor):
         self.reparentTo(render)
         self.prevtime = 0
         #some movement stats
-        self.accel = 25.0
+        self.accel = 30.0
         self.brake = -200.0
         self.deccel = -50.0
         self.bkwdsAccel = -17.5
@@ -69,7 +68,7 @@ class Vehicle(Actor):
         self.boosterLight.setColor(VBase4(0,0,0,1))
         self.boosterLight.setAttenuation(Point3(0,0.001,0.001))
         self.world.boosterLightNP = self.attachNewNode(self.boosterLight)
-        self.world.boosterLightNP.setPos(0, 2.5, 1.375)
+        self.world.boosterLightNP.setPos(0, 20, 2)
         self.world.boosterLightNP.setHpr(180, 90, 0)
         self.world.setWorldLight(self)
     
@@ -238,16 +237,16 @@ class Vehicle(Actor):
         if self.boosterStartTime == -1:
             self.boosters.loadConfig(Filename('flamethrower4.ptf'))        
             self.boosters.start(self)
-            self.boosters.setPos(0, 200, 275)
+            self.boosters.setPos(0, 8.5, 2)
             self.boosters.setHpr(180, 90, 0)
-            self.boosters.setScale(200)
             self.boosters.setLightOff()
             self.maxSpeed = self.maxSpeed + BOOST_MAX_SPEED_BONUS
+            self.speed = min(self.speed + 75, self.maxSpeed)
             self.accel = self.accel * BOOST_FACTOR
             self.keyMap["boost"] = 1
             self.boosterLight.setColor(VBase4(MAX_LIGHT,MAX_LIGHT,MAX_LIGHT,1))
             taskMgr.add(self.checkBoosterEnd, "endBoosters")
-    
+        
     def checkBoosterEnd(self, task):
         if self.boosterStartTime == -1:
             self.boosterStartTime = task.time
@@ -266,3 +265,4 @@ class Vehicle(Actor):
             return Task.done        
         else:    
             return Task.cont
+            

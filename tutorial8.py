@@ -36,7 +36,7 @@ class World(DirectObject):
             wp.setFullscreen(True) 
             base.win.requestProperties(wp)
         self.lightables = []
-        self.cameraPositions = [((0, 70, 70), (180, -35, 0)),((0, 35, 15), (180, -15, 0))]
+        self.cameraPositions = [((0, 95, 75), (180, -27, 0)),((0, 55, 25), (180, -15, 0))]
         self.cameraIndex = 0
         base.disableMouse()
         base.enableParticles()

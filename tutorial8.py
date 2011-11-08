@@ -39,7 +39,7 @@ DEBUG = False
 
 class World(DirectObject):
     def __init__(self):
-        self.lightables = []
+        self.enemyLights = []
         self.cameraPositions = [((0, 95, 75), (180, -27, 0)),((0, 55, 25), (180, -15, 0))]
         self.cameraIndex = 0
         base.disableMouse()
@@ -100,9 +100,11 @@ class World(DirectObject):
         if DEBUG:
             base.cTrav.showCollisions(render)
         
-        f = open('testLog.txt', 'r+')
+        #f = open('testLog.txt', 'r+')
         #self.dfs(file = f)
         
+    
+        self.setLights()
     
     def setupPicking(self):
         self.picker = CollisionTraverser()
@@ -160,10 +162,17 @@ class World(DirectObject):
         self.keyMap[key] = value
         
     def setWorldLight(self, object):
-        self.lightables.append(object)
         object.setLight(self.keyLightNP)
         object.setLight(self.fillLightNP)
         object.setLight(self.boosterLightNP)
+        for light in self.enemyLights:
+            object.setLight(light)
+        
+    def setLights(self):
+        self.setWorldLight(self.player)
+        self.setWorldLight(self.env)
+        for enemy in self.enemies:
+            self.setWorldLight(enemy)
         
     def shiftCamera(self):
         if self.cameraMove:
@@ -187,7 +196,7 @@ class World(DirectObject):
         self.env.reparentTo(render)
         self.env.setScale(15)
         
-        self.setWorldLight(self.env)
+        #self.setWorldLight(self.env)
         
         #load targets
         self.targets = []
@@ -197,7 +206,7 @@ class World(DirectObject):
             target.setPos(random.uniform(-20, 20), random.uniform(-15, 15), 2)
             target.reparentTo(self.targetRoot)
             self.targets.append(target)
-            self.setWorldLight(target)
+            #self.setWorldLight(target)
          
         # Node Map
         map = Node.NodeMap("nodes.txt")
@@ -216,7 +225,7 @@ class World(DirectObject):
             nodePos = map.nodeList[int(nums[0])].getPos()
             newEnemy = Enemy.Enemy(map, convertedNums, self, nodePos[0], nodePos[1], nodePos[2] )
             self.enemies.append( newEnemy )
-            self.setWorldLight( newEnemy ) 
+            #self.setWorldLight( newEnemy ) 
             taskMgr.add(newEnemy.move, "Enemy Move " + str(i), extraArgs = [map], appendTask = True)
             line = file.readline().rstrip()
             i = i + 1

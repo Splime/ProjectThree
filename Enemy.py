@@ -29,12 +29,12 @@ TURNING = 1
 
 class Enemy(vehicle.Vehicle):
     def __init__(self, map, nodePath, world, x, y, z ):
-        vehicle.Vehicle.__init__(self, "models/panda-model", "panda-walk4", world)
+        vehicle.Vehicle.__init__(self, "ralph_models/vampire_car", "ralph_models/vampire_car", world)
         self.setPos(x,y,z)
         self.nodePath = nodePath
         
         self.curNodeIndex = 0 
-        self.speed = 4.0
+        self.speed = 40.0
         
         self.firstNode = nodePath[0]
         
@@ -46,6 +46,25 @@ class Enemy(vehicle.Vehicle):
         self.nextNodePos = map.nodeList[nodePath[self.curNodeIndex+1]].getPos()
         
         self.finishedTurning = True
+        
+        
+        self.headlight1 = Spotlight('headlight1')
+        self.headlight1.setColor(VBase4(75, 75, 75, 75))
+        self.headlight1.setAttenuation(Point3(0,0.001,0.010))
+        self.lens = PerspectiveLens()
+        self.headlight1.setLens(self.lens)
+        self.headlight1NP = self.attachNewNode(self.headlight1)
+        self.headlight1NP.setPos(0, -2, 2)
+        self.headlight1NP.setHpr(0,-175, 0)
+        self.headlight1.getLens().setFov(180)
+        
+        #self.headlight1.getLens().setFar(20)
+        #self.headlight1.getLens().setFilmSize(50,50)
+        #self.headlight1NP.lookAt(0,0,0)
+        self.headlight1.showFrustum()
+        self.world.enemyLights.append(self.headlight1NP)
+        #self.world.setWorldLight(self)
+        
         
     def turn( self, task ):
         elapsed = task.time - self.prevtime

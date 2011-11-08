@@ -70,7 +70,7 @@ class Vehicle(Actor):
         self.world.boosterLightNP = self.attachNewNode(self.boosterLight)
         self.world.boosterLightNP.setPos(0, 20, 2)
         self.world.boosterLightNP.setHpr(180, 90, 0)
-        self.world.setWorldLight(self)
+        #self.world.setWorldLight(self)
     
     def addKeyMap(self, keyMap):
         self.keyMap = keyMap

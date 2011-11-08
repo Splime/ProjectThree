@@ -399,6 +399,27 @@ class World(DirectObject):
         pusher.addInPattern('%fn-into-%in')
         self.accept('player-into-fence', self.collideWithFence)
         
+        self.playerLightCollision = CollisionHandlerEvent()
+        self.playerLightCollision.addInPattern('into-%in')
+        
+        cNode2 = CollisionNode("playerinto")
+        
+        #cNode.addSolid(segment1)
+        #cNode.addSolid(segment2)
+        #cNode.addSolid(segment3)
+        #cNode.addSolid(segment4)
+        temp = CollisionSphere((0,-5.5,1), 4)
+        cNode2.addSolid(temp)
+        temp = CollisionSphere((0,-0.5,1), 4)
+        cNode2.addSolid(temp)
+        temp = CollisionSphere((0,3.5,1), 4)
+        cNode2.addSolid(temp)
+        cNode2.setFromCollideMask(BitMask32.allOff()) #player is *only* a from object
+        cNodePath2 = self.player.attachNewNode(cNode2)
+        if True:
+            cNodePath2.show()
+        
+        
         for currCar in self.staticCars:
             staticNode = CollisionNode("staticCar")
             temp = CollisionSphere((0,-5.5,10), 4)
@@ -423,6 +444,7 @@ class World(DirectObject):
             # cNodePath = target.attachNewNode(cNode)
             # i += 1
             
+        self.enemyHandler = CollisionHandlerEvent()    
         for enemy in self.enemies:
             collideNode = CollisionNode("droneNode")
             temp = CollisionSphere((0,0,10), 4)
@@ -453,7 +475,14 @@ class World(DirectObject):
             enemy.lightRayNode.setIntoCollideMask(BitMask32.allOff())
             enemy.lightRayNodePath = enemy.attachNewNode(enemy.lightRayNode)
             enemy.lightRayNodePath.show()
+            
+            base.cTrav.addCollider(enemy.lightRayNodePath, self.playerLightCollision)
+        self.accept('into-playerinto', self.playerHit)
 
+    
+    def playerHit(self, entry):
+        print "HIT"
+        print entry
     
     def collideWithFence(self, entry):
         self.player.speed = self.player.speed * 0.9

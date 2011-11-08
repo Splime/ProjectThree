@@ -50,7 +50,7 @@ class Enemy(vehicle.Vehicle):
         
         self.headlight1 = Spotlight('headlight1')
         self.headlight1.setColor(VBase4(75, 75, 75, 75))
-        self.headlight1.setAttenuation(Point3(0,0.001,0.010))
+        self.headlight1.setAttenuation(Point3(0,0.001,0.001))
         self.lens = PerspectiveLens()
         self.headlight1.setLens(self.lens)
         self.headlight1NP = self.attachNewNode(self.headlight1)
@@ -72,6 +72,10 @@ class Enemy(vehicle.Vehicle):
         elapsed = task.time - self.prevtime
         dx = self.lastNodePos[0] - self.nextNodePos[0]
         dy = self.lastNodePos[1] - self.nextNodePos[1]
+        
+        if dx == 0 and dy == 0:
+            # if at the same node, do nothing.
+            return
         
         absx = abs(dx)
         absy = abs(dy)

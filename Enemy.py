@@ -29,7 +29,7 @@ TURNING = 1
 
 class Enemy(vehicle.Vehicle):
     def __init__(self, map, nodePath, world, x, y, z ):
-        vehicle.Vehicle.__init__(self, "ralph_models/vampire_car", "ralph_models/vampire_car", world)
+        vehicle.Vehicle.__init__(self, "ralph_models/drone-model", "ralph_models/drone-model", world)
         self.setPos(x,y,z)
         self.nodePath = nodePath
         
@@ -143,8 +143,11 @@ class Enemy(vehicle.Vehicle):
         #print self.nextNodePos
         #print "Index: " + str(self.curNodeIndex)
         if self.phase == TURNING:
+            self.stop()
+            self.pose("drive", 4)
             self.turn( task )
         elif self.phase == MOVING:
+            self.loop("drive")
             if abs(self.getX() - self.nextNodePos[0] ) < LEEWAY and abs(self.getY() - self.nextNodePos[1] ) < LEEWAY :
                 self.setX(self.nextNodePos[0])
                 self.setY(self.nextNodePos[1])

@@ -1,3 +1,10 @@
+from pandac.PandaModules import loadPrcFileData
+if False:
+    loadPrcFileData("", "window-title Your Title")
+    loadPrcFileData("", "fullscreen 1") # Set to 1 for fullscreen
+    loadPrcFileData("", "win-size 1680 1050")
+    loadPrcFileData("", "win-origin 0 0")
+
 import direct.directbase.DirectStart #starts player
 from pandac.PandaModules import * #basic Panda modules
 from direct.showbase.DirectObject import DirectObject #for event handling
@@ -26,14 +33,14 @@ from vehicle import Vehicle
 import Node
 import Enemy
 
-MAX_LIGHT = 2500
+MAX_LIGHT = 6
 BOOSTER_LENGTH = 3
+DEBUG = False
 
 class World(DirectObject):
     def __init__(self):
-        #turn off mouse control, otherwise camera is not repositionable
         self.lightables = []
-        self.cameraPositions = [((0, 5000, 5300), (180, -35, 0)),((0, 3000, 1300), (180, -15, 0))]
+        self.cameraPositions = [((0, 95, 75), (180, -27, 0)),((0, 55, 25), (180, -15, 0))]
         self.cameraIndex = 0
         base.disableMouse()
         base.enableParticles()
@@ -42,13 +49,14 @@ class World(DirectObject):
         #Prepare the vehicular manslaughter!
         self.boosterLightNP = None
         self.flameLights = None
-        self.player = Vehicle("models/panda-model", "panda-walk4", self)
+        self.player = Vehicle("ralph_models/vampire_car", "ralph_models/vampire_car", self)
         
         self.loadModels()
         self.player.setPos(0,0,0)#self.env.find("**/start_point").getPos())
         self.setupIntervals()
         camera.reparentTo(self.player)
-        camera.setPosHpr(0, 5000, 5300, 180, -35, 0)
+        camera.setPos(self.cameraPositions[0][0][0],self.cameraPositions[0][0][1],self.cameraPositions[0][0][2])
+        camera.setHpr(self.cameraPositions[0][1][0],self.cameraPositions[0][1][1],self.cameraPositions[0][1][2])
         self.setupCollisions()
         render.setShaderAuto() #you probably want to use this
         self.keyMap = {"left":0, "right":0, "forward":0, "backwards":0}
@@ -89,8 +97,10 @@ class World(DirectObject):
         self.p2 = ParticleEffect()
         
         #Show collisiony stuff
-        base.cTrav.showCollisions(render)
-        #f = open('testLog.txt', 'r+')
+        if DEBUG:
+            base.cTrav.showCollisions(render)
+        
+        f = open('testLog.txt', 'r+')
         #self.dfs(file = f)
         
     
@@ -154,8 +164,6 @@ class World(DirectObject):
         object.setLight(self.keyLightNP)
         object.setLight(self.fillLightNP)
         object.setLight(self.boosterLightNP)
-        for light in self.flameLights:
-            object.setLight(light[1])
         
     def shiftCamera(self):
         if self.cameraMove:
@@ -174,31 +182,10 @@ class World(DirectObject):
     
     
     def loadModels(self):
-        """loads models into the world"""
-        #eat no longer exists? Phooey
-        
-        self.flameLights = []
-        
-        for i in range(2):
-            slight = PointLight('plight')
-            slight.setColor(VBase4(0, 0, 0, 1))
-            slight.setAttenuation(Point3(0, 0.001, 0.001))
-
-            slnp = self.player.attachNewNode(slight)
-            slnp.setPos(0, -750 - (950 * i), 450)
-            slnp.setHpr(180, 0, 0)
-            slnp.setScale(200)
-            self.flameLights.append((slight, slnp))
-        
         self.player.setupBooster()
-        
-        #self.env = loader.loadModel("models/environment")
-        #self.env.reparentTo(render)
-        #self.env.setScale(.25)
-        #self.env.setPos(-8, 42, 0)
         self.env = loader.loadModel("ralph_models/green_ramps")      
         self.env.reparentTo(render)
-        self.env.setScale(5)
+        self.env.setScale(15)
         
         self.setWorldLight(self.env)
         
@@ -255,29 +242,9 @@ class World(DirectObject):
         self.fillLight.setColor((.05,.05,.05, 1))
         self.fillLightNP = render.attachNewNode(self.fillLight)
         self.fillLightNP.setHpr(30, 0, 0)
-        
-    def drive(self):
-        """compound interval for driveing"""
-        #some interval methods:
-        # start(), loop(), pause(), resume(), finish()
-        # start() can take arguments: start(starttime, endtime, playrate)
-        dist = 5
-        angle = deg2Rad(self.player.getH())
-        dx = dist * math.sin(angle)
-        dy = dist * -math.cos(angle)
-        playerdrive = Parallel(self.player.posInterval(1, (self.player.getX() + dx, self.player.getY() + dy, 0)), \
-            self.player.actorInterval("drive", loop=1, duration=2))
-        playerdrive.start()
-        
-    def setupCollisions(self):
-        #instantiates a collision traverser and sets it to the default
-        base.cTrav = CollisionTraverser()
-        self.cHandler = CollisionHandlerEvent()
-        #set pattern for event sent on collision
-        # "%in" is substituted with the name of the into object
-        self.cHandler.setInPattern("ate-%in")
-        
-        cSphere = CollisionSphere((0,0,200), 450) #because the player is scaled way down
+               
+    def setupCollisions(self):       
+        base.cTrav = CollisionTraverser() 
         self.playerRay = CollisionRay()
         self.playerRay.setOrigin(0,0,1000)
         self.playerRay.setDirection(0,0,-1)
@@ -290,43 +257,136 @@ class World(DirectObject):
         self.playerGroundHandler = CollisionHandlerQueue()
         base.cTrav.addCollider(self.playerNodePath, self.playerGroundHandler)
         
-        envcNode = CollisionNode("parking_lot")
-        envcNode.setFromCollideMask(BitMask32.bit(0))
+        envcNode1 = CollisionNode("lot_bottom")
+        envcNode1.setFromCollideMask(BitMask32.bit(0))
         temp = CollisionPolygon(Point3(12.56, 19.182, 0), Point3(12.56, -21.261, 0),
                                 Point3(-13.217, -21.261, 0), Point3(-13.217, 19.182, 0))
-        envcNode.addSolid(temp)
+        envcNode1.addSolid(temp)
+        
+        envcNode2 = CollisionNode("lot_ramp_bottom")
+        envcNode2.setFromCollideMask(BitMask32.bit(0))
         temp = CollisionPolygon(Point3(32.715, -14.923, 3.5), Point3(32.715, -21.261, 3.5),
                                 Point3(12.56, -21.261, 0), Point3(12.56, -14.923, 0))
-        envcNode.addSolid(temp)
+        envcNode2.addSolid(temp)
+        
+        envcNode3 = CollisionNode("lot_middle")
+        envcNode3.setFromCollideMask(BitMask32.bit(0))
         temp = CollisionPolygon(Point3(42.715, -14.923, 3.5), Point3(42.715, -21.261, 3.5),
                                 Point3(32.715, -21.261, 3.5), Point3(32.715, -14.923, 3.5))
-        envcNode.addSolid(temp)
+        envcNode3.addSolid(temp)
+        
+        envcNode4 = CollisionNode("lot_ramp_top")
+        envcNode4.setFromCollideMask(BitMask32.bit(0))
         temp = CollisionPolygon(Point3(42.715, -8.845, 6), Point3(42.715, -14.923, 3.5),
                                 Point3(32.715, -14.923, 3.5), Point3(32.715, -8.845, 6))
-        envcNode.addSolid(temp)
+        envcNode4.addSolid(temp)
+        
+        envcNode5 = CollisionNode("lot_top")
+        envcNode5.setFromCollideMask(BitMask32.bit(0))
         temp = CollisionPolygon(Point3(42.715, 16.155, 6), Point3(42.715, -8.845, 6),
                                 Point3(17.715, -8.845, 6), Point3(17.715, 16.155, 6))
-        envcNode.addSolid(temp)
+        envcNode5.addSolid(temp)
         
-        envcNodePath = self.env.attachNewNode(envcNode)
+        wallCNode = CollisionNode("fence")
+        wallCNode.setFromCollideMask(BitMask32.bit(0))
+        temp = CollisionPolygon(Point3(12.56, 19.182, 0), Point3(12.56, -14.923, 0),
+                                Point3(12.56, -14.923, 10), Point3(12.56, 19.182, 10))
+        wallCNode.addSolid(temp)
+        temp = CollisionPolygon(Point3(12.56, -14.923, 0), Point3(32.715, -14.923, 3.5),
+                                Point3(32.715, -14.923, 10), Point3(12.56, -14.923, 10))
+        wallCNode.addSolid(temp)
+        temp = CollisionPolygon(Point3(32.715, -14.923, 3.5), Point3(32.715, -8.845, 6),
+                                Point3(32.715, -8.845, 10), Point3(32.715, -14.923, 10))
+        wallCNode.addSolid(temp)
+        temp = CollisionPolygon(Point3(32.715, -8.845, 6), Point3(17.715, -8.845, 6),
+                                Point3(17.715, -8.845, 10), Point3(32.715, -8.845, 10))
+        wallCNode.addSolid(temp)
+        temp = CollisionPolygon(Point3(17.715, -8.845, 6), Point3(17.715, 16.155, 6),
+                                Point3(17.715, 16.155, 10), Point3(17.715, -8.845, 10))
+        wallCNode.addSolid(temp)
+        temp = CollisionPolygon(Point3(17.715, 16.155, 6), Point3(42.715, 16.155, 6),
+                                Point3(42.715, 16.155, 10), Point3(17.715, 16.155, 10))
+        wallCNode.addSolid(temp)
+        temp = CollisionPolygon(Point3(42.715, 16.155, 6), Point3(42.715, -8.845, 6),
+                                Point3(42.715, -8.845, 10), Point3(42.715, 16.155, 10))
+        wallCNode.addSolid(temp)
+        temp = CollisionPolygon(Point3(42.715, -8.845, 6), Point3(42.715, -14.923, 3.5),
+                                Point3(42.715, -14.923, 10), Point3(42.715, -8.845, 10))
+        wallCNode.addSolid(temp)
+        temp = CollisionPolygon(Point3(42.715, -14.923, 3.5), Point3(42.715, -21.261, 3.5),
+                                Point3(42.715, -21.261, 10), Point3(42.715, -14.923, 10))
+        wallCNode.addSolid(temp)
+        temp = CollisionPolygon(Point3(42.715, -21.261, 3.5), Point3(32.715, -21.261, 3.5),
+                                Point3(32.715, -21.261, 10), Point3(42.715, -21.261, 10))
+        wallCNode.addSolid(temp)
+        temp = CollisionPolygon(Point3(32.715, -21.261, 3.5), Point3(12.56, -21.261, 0),
+                                Point3(12.56, -21.261, 10), Point3(32.715, -21.261, 10))
+        wallCNode.addSolid(temp)
+        temp = CollisionPolygon(Point3(12.56, -21.261, 0), Point3(-13.217, -21.261, 0),
+                                Point3(-13.217, -21.261, 10), Point3(12.56, -21.261, 10))
+        wallCNode.addSolid(temp)
+        temp = CollisionPolygon(Point3(-13.217, -21.261, 0), Point3(-13.217, 19.182, 0),
+                                Point3(-13.217, 19.182, 10), Point3(-13.217, -21.261, 10))
+        wallCNode.addSolid(temp)
+        temp = CollisionPolygon(Point3(-13.217, 19.182, 0), Point3(12.56, 19.182, 0),
+                                Point3(12.56, 19.182, 10), Point3(-13.217, 19.182, 10))
+        wallCNode.addSolid(temp)
+        
+        
+        envcNodePath1 = self.env.attachNewNode(envcNode1)
+        envcNodePath2 = self.env.attachNewNode(envcNode2)
+        envcNodePath3 = self.env.attachNewNode(envcNode3)
+        envcNodePath4 = self.env.attachNewNode(envcNode4)
+        envcNodePath5 = self.env.attachNewNode(envcNode5)
+        
+        self.cHandler = CollisionHandlerEvent()
+        pusher = CollisionHandlerPusher()
+        
+        self.wallNode = self.env.attachNewNode('wallNode')
+        wallCNodePath = self.wallNode.attachNewNode(wallCNode)
+        if DEBUG:
+            wallCNodePath.show()
+        
+        segment1 = CollisionSegment(-4, -10, 2,  4, -10, 2)
+        segment2 = CollisionSegment(-4,   9, 2,  4,   9, 2)
+        segment3 = CollisionSegment(-4, -10, 2, -4,   9, 2)
+        segment4 = CollisionSegment( 4, -10, 2,  4,   9, 2)
         
         cNode = CollisionNode("player")
-        cNode.addSolid(cSphere)
+        #cNode.addSolid(segment1)
+        #cNode.addSolid(segment2)
+        #cNode.addSolid(segment3)
+        #cNode.addSolid(segment4)
+        temp = CollisionSphere((0,-5.5,10), 4)
+        cNode.addSolid(temp)
+        temp = CollisionSphere((0,-0.5,10), 4)
+        cNode.addSolid(temp)
+        temp = CollisionSphere((0,3.5,10), 4)
+        cNode.addSolid(temp)
         cNode.setIntoCollideMask(BitMask32.allOff()) #player is *only* a from object
-        #cNode.setFromCollideMask(BitMask32.bit(0))
         cNodePath = self.player.attachNewNode(cNode)
+        if DEBUG:
+            cNodePath.show()
+            
+        base.cTrav.addCollider(cNodePath, pusher)
+        pusher.addCollider(cNodePath, self.player)
+        pusher.addInPattern('%fn-into-%in')
+        self.accept('player-into-fence', self.collideWithFence)
         #registers a from object with the traverser with a corresponding handler
-        base.cTrav.addCollider(cNodePath, self.cHandler)
+        #base.cTrav.addCollider(cNodePath, self.cHandler)
         i = 0
         for target in self.targets:
             cSphere = CollisionSphere((0,0,0), 2)
             cNode = CollisionNode("smiley")
-            cNode.addSolid(cSphere)
+            #cNode.addSolid(cSphere)
             cNode.setIntoCollideMask(BitMask32.bit(1))
             cNode.setTag('target', str(i))
             cNodePath = target.attachNewNode(cNode)
             i += 1
     
+    def collideWithFence(self, entry):
+        self.player.speed = self.player.speed * 0.9
+        
     def lightModify(self, t, which_way):
 
         if which_way: #which_way == true then make it brighter
@@ -337,32 +397,32 @@ class World(DirectObject):
             light[0].setColor(VBase4(value,value,value,1))
         
     def startShoot(self):
-        self.loadParticleConfig('flamethrower4.ptf')
-        self.lightOff.finish()
-        self.lightOn.start()
+        self.loadParticleConfig('flamethrower6.ptf')
+        #self.lightOff.finish()
+        #self.lightOn.start()
         
     def stopShoot(self):
         self.p1.softStop()
         self.p2.softStop()
-        self.lightOn.finish()
-        self.lightOff.start()
+        #self.lightOn.finish()
+        #self.lightOff.start()
         
     def loadParticleConfig(self, file):
         self.p1.reset()
         self.p1 = ParticleEffect()
         self.p1.loadConfig(Filename(file))        
         self.p1.start(self.player)
-        self.p1.setPos(-250, -700, 275)
+        self.p1.setPos(-1.75, -10, 1.375)
         self.p1.setHpr(0, 90, 0)
-        self.p1.setScale(200)
+        self.p1.setScale(1.5)
         self.p1.setLightOff()
         self.p2.reset()
         self.p2 = ParticleEffect()
         self.p2.loadConfig(Filename(file))        
         self.p2.start(self.player)
-        self.p2.setPos(250, -700, 275)
+        self.p2.setPos(1.75, -10, 1.375)
         self.p2.setHpr(0, 90, 0)
-        self.p2.setScale(200)
+        self.p2.setScale(1.5)
         self.p2.setLightOff()
         
     def eat(self, cEntry):

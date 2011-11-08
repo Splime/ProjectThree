@@ -49,7 +49,7 @@ class World(DirectObject):
         self.player = Vehicle("ralph_models/vampire_car", "ralph_models/vampire_car", self)
         
         self.loadModels()
-        self.player.setPos(0,0,0)#self.env.find("**/start_point").getPos())
+        self.player.setPos(0,0,0)
         self.setupIntervals()
         camera.reparentTo(self.player)
         camera.setPos(self.cameraPositions[0][0][0],self.cameraPositions[0][0][1],self.cameraPositions[0][0][2])
@@ -99,7 +99,7 @@ class World(DirectObject):
         if DEBUG:
             base.cTrav.showCollisions(render)
         
-        f = open('testLog.txt', 'r+')
+        #f = open('testLog.txt', 'r+')
         #self.dfs(file = f)
         
     
@@ -189,14 +189,14 @@ class World(DirectObject):
         self.setWorldLight(self.env)
         
         #load targets
-        self.targets = []
-        for i in range (10):
-            target = loader.loadModel("smiley")
-            target.setScale(.5)
-            target.setPos(random.uniform(-20, 20), random.uniform(-15, 15), 2)
-            target.reparentTo(self.targetRoot)
-            self.targets.append(target)
-            self.setWorldLight(target)
+        # self.targets = []
+        # for i in range (10):
+            # target = loader.loadModel("smiley")
+            # target.setScale(.5)
+            # target.setPos(random.uniform(-20, 20), random.uniform(-15, 15), 2)
+            # target.reparentTo(self.targetRoot)
+            # self.targets.append(target)
+            # self.setWorldLight(target)
         
     def setupLights(self):
         #ambient light
@@ -349,15 +349,15 @@ class World(DirectObject):
         self.accept('player-into-fence', self.collideWithFence)
         #registers a from object with the traverser with a corresponding handler
         #base.cTrav.addCollider(cNodePath, self.cHandler)
-        i = 0
-        for target in self.targets:
-            cSphere = CollisionSphere((0,0,0), 2)
-            cNode = CollisionNode("smiley")
-            #cNode.addSolid(cSphere)
-            cNode.setIntoCollideMask(BitMask32.bit(1))
-            cNode.setTag('target', str(i))
-            cNodePath = target.attachNewNode(cNode)
-            i += 1
+        # i = 0
+        # for target in self.targets:
+            # cSphere = CollisionSphere((0,0,0), 2)
+            # cNode = CollisionNode("smiley")
+            ##cNode.addSolid(cSphere)
+            # cNode.setIntoCollideMask(BitMask32.bit(1))
+            # cNode.setTag('target', str(i))
+            # cNodePath = target.attachNewNode(cNode)
+            # i += 1
     
     def collideWithFence(self, entry):
         self.player.speed = self.player.speed * 0.9

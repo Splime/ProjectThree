@@ -398,6 +398,32 @@ class World(DirectObject):
             # cNode.setTag('target', str(i))
             # cNodePath = target.attachNewNode(cNode)
             # i += 1
+            
+        for enemy in self.enemies:
+            enemy.lightRay = CollisionRay()
+            enemy.lightRay.setOrigin(0, -10, 4)
+            # This is assumed based on the -175 degree pitch of the headlights.
+            enemy.lightRay.setDirection( 0 , -1 , -0.125 ) 
+            
+            # left
+            enemy.lightRayLeft = CollisionRay()
+            enemy.lightRayLeft.setOrigin(0, -10, 4)
+            enemy.lightRayLeft.setDirection( -0.125 , -1 , -0.125 ) 
+            
+            #right
+            enemy.lightRayRight = CollisionRay()
+            enemy.lightRayRight.setOrigin(0, -10, 4)
+            enemy.lightRayRight.setDirection( 0.125 , -1 , -0.125 ) 
+            
+            enemy.lightRayNode = CollisionNode("lightRay")
+            enemy.lightRayNode.addSolid(enemy.lightRay)
+            enemy.lightRayNode.addSolid(enemy.lightRayLeft)
+            enemy.lightRayNode.addSolid(enemy.lightRayRight)
+            enemy.lightRayNode.setIntoCollideMask(BitMask32.allOff())
+            enemy.lightRayNodePath = enemy.attachNewNode(enemy.lightRayNode)
+            enemy.lightRayNodePath.show()
+            
+
     
     def collideWithFence(self, entry):
         self.player.speed = self.player.speed * 0.9

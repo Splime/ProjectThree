@@ -61,9 +61,11 @@ class Enemy(vehicle.Vehicle):
         #self.headlight1.getLens().setFar(20)
         #self.headlight1.getLens().setFilmSize(50,50)
         #self.headlight1NP.lookAt(0,0,0)
-        self.headlight1.showFrustum()
+        #self.headlight1.showFrustum()
         self.world.enemyLights.append(self.headlight1NP)
         #self.world.setWorldLight(self)
+        
+
         
         
     def turn( self, task ):
@@ -101,7 +103,7 @@ class Enemy(vehicle.Vehicle):
                     self.nextAngle = self.nextAngle + 360 - 2 * self.nextAngle
                     
                 #self.nextAngle = self.nextAngle - 90
-            print "(1) DX: " + str(dx) + " DY: " + str(dy) + " Angle: " + str(self.nextAngle) + " CurAngle: " + str(curAngle)
+            #print "(1) DX: " + str(dx) + " DY: " + str(dy) + " Angle: " + str(self.nextAngle) + " CurAngle: " + str(curAngle)
             
             self.finishedTurning = False    
             
@@ -116,7 +118,7 @@ class Enemy(vehicle.Vehicle):
         
         
         
-        print "(2) Abs X: " + str(absx) + " Abs Y: " + str(absy) + " Angle: " + str(self.nextAngle) + " CurAngle: " + str(curAngle)
+        #print "(2) Abs X: " + str(absx) + " Abs Y: " + str(absy) + " Angle: " + str(self.nextAngle) + " CurAngle: " + str(curAngle)
         if abs(curAngle - self.nextAngle) < ANGLE_LEEWAY:
             self.setH(self.nextAngle)
             print "(1): " + str(self.getH())

@@ -62,6 +62,9 @@ class World(DirectObject):
         #Give the vehicle direct access to the keyMap
         self.player.addKeyMap(self.keyMap)
         
+        #Sounds!
+        self.loadSounds()
+        
         self.prevtime = 0
         self.isMoving = False
         self.speed_norm = 8
@@ -197,6 +200,11 @@ class World(DirectObject):
             # target.reparentTo(self.targetRoot)
             # self.targets.append(target)
             # self.setWorldLight(target)
+    
+    def loadSounds(self):
+        self.flamethrowerSound = base.loader.loadSfx("sound/dragonflame.wav")
+        self.flamethrowerEndSound = base.loader.loadSfx("sound/dragonflameend.wav")
+
         
     def setupLights(self):
         #ambient light
@@ -375,11 +383,17 @@ class World(DirectObject):
         #self.lightOff.finish()
         #self.lightOn.start()
         
+        #Get the flame noise started!
+        self.flamethrowerSound.play()
+        
     def stopShoot(self):
         self.p1.softStop()
         self.p2.softStop()
         #self.lightOn.finish()
         #self.lightOff.start()
+        
+        self.flamethrowerSound.stop()
+        self.flamethrowerEndSound.play()
         
     def loadParticleConfig(self, file):
         self.p1.reset()

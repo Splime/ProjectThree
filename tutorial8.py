@@ -401,18 +401,18 @@ class World(DirectObject):
             
         for enemy in self.enemies:
             enemy.lightRay = CollisionRay()
-            enemy.lightRay.setOrigin(0, -10, 4)
+            enemy.lightRay.setOrigin(0, -4, 4)
             # This is assumed based on the -175 degree pitch of the headlights.
             enemy.lightRay.setDirection( 0 , -1 , -0.125 ) 
             
             # left
             enemy.lightRayLeft = CollisionRay()
-            enemy.lightRayLeft.setOrigin(0, -10, 4)
+            enemy.lightRayLeft.setOrigin(0, -4, 4)
             enemy.lightRayLeft.setDirection( -0.125 , -1 , -0.125 ) 
             
             #right
             enemy.lightRayRight = CollisionRay()
-            enemy.lightRayRight.setOrigin(0, -10, 4)
+            enemy.lightRayRight.setOrigin(0, -4, 4)
             enemy.lightRayRight.setDirection( 0.125 , -1 , -0.125 ) 
             
             enemy.lightRayNode = CollisionNode("lightRay")

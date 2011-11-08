@@ -2,7 +2,7 @@ from pandac.PandaModules import loadPrcFileData
 if 0:
     loadPrcFileData("", "window-title THE_TITLE_GOES_HERE!!!!")
     loadPrcFileData("", "fullscreen 1") # Set to 1 for fullscreen
-    loadPrcFileData("", "win-size 1680 1050")
+    loadPrcFileData("", "win-size 1680 1050") #CHANGE TO FIT THE PROJECTOR
     loadPrcFileData("", "win-origin 0 0")
 
 import direct.directbase.DirectStart #starts player

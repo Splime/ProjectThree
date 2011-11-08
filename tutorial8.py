@@ -30,6 +30,7 @@ from direct.showbase.DirectObject import DirectObject
 import sys, math, random
 from vehicle import Vehicle
 
+import carLocations
 import Node
 import Enemy
 
@@ -100,6 +101,9 @@ class World(DirectObject):
         self.p2 = ParticleEffect()
         
         #Show collisiony stuff
+        base.cTrav.showCollisions(render)
+        #self.dfs(file = f)    
+
         if DEBUG:
             base.cTrav.showCollisions(render)
         
@@ -232,6 +236,16 @@ class World(DirectObject):
             taskMgr.add(newEnemy.move, "Enemy Move " + str(i), extraArgs = [map], appendTask = True)
             line = file.readline().rstrip()
             i = i + 1
+
+        self.staticCars = []
+        for currCar in carLocations.cars:
+            target = loader.loadModel("models/panda-model")
+            target.setScale(0.005)
+            target.setPos(currCar['position'])
+            target.setHpr(currCar['direction'])
+            target.reparentTo(render)
+            self.setWorldLight(target)
+            self.staticCars.append(target)
         
             
     def loadSounds(self):
@@ -257,9 +271,18 @@ class World(DirectObject):
         self.fillLight.setColor((.05,.05,.05, 1))
         self.fillLightNP = render.attachNewNode(self.fillLight)
         self.fillLightNP.setHpr(30, 0, 0)
-               
+
     def setupCollisions(self):       
+        #instantiates a collision traverser and sets it to the default
         base.cTrav = CollisionTraverser() 
+        self.cHandler = CollisionHandlerEvent()
+        #Create a collision handler that prevents the player from moving through the stationary cars.
+        pusher = CollisionHandlerPusher()
+        #set pattern for event sent on collision
+        # "%in" is substituted with the name of the into object
+        self.cHandler.setInPattern("ate-%in")
+        
+        cSphere = CollisionSphere((0,0,0), 10) #because the player is scaled way down
         self.playerRay = CollisionRay()
         self.playerRay.setOrigin(0,0,1000)
         self.playerRay.setDirection(0,0,-1)
@@ -398,6 +421,17 @@ class World(DirectObject):
             # cNode.setTag('target', str(i))
             # cNodePath = target.attachNewNode(cNode)
             # i += 1
+
+        for currCar in self.staticCars:
+            cSphere = CollisionSphere((0,0,0), 1000)
+            staticNode = CollisionNode("staticCar")
+            staticNode.addSolid(cSphere)
+            staticNode.setIntoCollideMask(BitMask32.bit(1))
+            staticNodePath = currCar.attachNewNode(staticNode)
+            staticNodePath.show()
+            pusher.addCollider(cNodePath, staticNodePath, base.drive.node())
+        
+        base.cTrav.addCollider(cNodePath, pusher)
     
     def collideWithFence(self, entry):
         self.player.speed = self.player.speed * 0.9
@@ -454,19 +488,5 @@ class World(DirectObject):
         #remove from scene graph
         cEntry.getIntoNodePath().getParent().remove()
         
-        
-        
 w = World()
 run()
-
-
-
-
-
-
-
-
-
-
-
-

@@ -30,13 +30,16 @@ from direct.showbase.DirectObject import DirectObject
 import sys, math, random
 from vehicle import Vehicle
 
+import Node
+import Enemy
+
 MAX_LIGHT = 6
 BOOSTER_LENGTH = 3
 DEBUG = False
 
 class World(DirectObject):
     def __init__(self):
-        self.lightables = []
+        self.enemyLights = []
         self.cameraPositions = [((0, 95, 75), (180, -27, 0)),((0, 55, 25), (180, -15, 0))]
         self.cameraIndex = 0
         base.disableMouse()
@@ -67,8 +70,6 @@ class World(DirectObject):
         
         self.prevtime = 0
         self.isMoving = False
-        self.speed_norm = 8
-        self.speed = self.speed_norm
         self.accept("escape", sys.exit)
         
         self.accept("arrow_up", self.setKey, ["forward", 1])
@@ -105,6 +106,8 @@ class World(DirectObject):
         #f = open('testLog.txt', 'r+')
         #self.dfs(file = f)
         
+    
+        self.setLights()
     
     def setupPicking(self):
         self.picker = CollisionTraverser()
@@ -158,15 +161,21 @@ class World(DirectObject):
                             name="LightDown")
                             
         self.cameraMove = None
-        
     def setKey(self, key, value):
         self.keyMap[key] = value
         
     def setWorldLight(self, object):
-        self.lightables.append(object)
         object.setLight(self.keyLightNP)
         object.setLight(self.fillLightNP)
         object.setLight(self.boosterLightNP)
+        for light in self.enemyLights:
+            object.setLight(light)
+        
+    def setLights(self):
+        self.setWorldLight(self.player)
+        self.setWorldLight(self.env)
+        for enemy in self.enemies:
+            self.setWorldLight(enemy)
         
     def shiftCamera(self):
         if self.cameraMove:
@@ -182,29 +191,52 @@ class World(DirectObject):
                                             camera.getPos(), 
                                             camera.getHpr())
         self.cameraMove.start()
-     
+    
+    
     def loadModels(self):
         self.player.setupBooster()
         self.env = loader.loadModel("ralph_models/green_ramps")      
         self.env.reparentTo(render)
         self.env.setScale(15)
         
-        self.setWorldLight(self.env)
+        #self.setWorldLight(self.env)
         
         #load targets
-        # self.targets = []
-        # for i in range (10):
-            # target = loader.loadModel("smiley")
-            # target.setScale(.5)
-            # target.setPos(random.uniform(-20, 20), random.uniform(-15, 15), 2)
-            # target.reparentTo(self.targetRoot)
-            # self.targets.append(target)
-            # self.setWorldLight(target)
-    
+        #self.targets = []
+        #for i in range (10):
+            #target = loader.loadModel("smiley")
+            #target.setScale(.5)
+            #target.setPos(random.uniform(-20, 20), random.uniform(-15, 15), 2)
+            #target.reparentTo(self.targetRoot)
+            #self.targets.append(target)
+            #self.setWorldLight(target)
+         
+        # Node Map
+        map = Node.NodeMap("nodes.txt")
+            
+        # enemies    
+        self.enemies = []
+        file = open('levels/enemies.txt' )
+        line = file.readline().rstrip()
+        i = 0
+        while line != "" :
+            nums = line.split(',')
+            convertedNums = []
+            for i in range(len(nums)):
+                if i != 0:
+                    convertedNums.append(int(nums[i]))
+            nodePos = map.nodeList[int(nums[0])].getPos()
+            newEnemy = Enemy.Enemy(map, convertedNums, self, nodePos[0], nodePos[1], nodePos[2] )
+            self.enemies.append( newEnemy )
+            #self.setWorldLight( newEnemy ) 
+            taskMgr.add(newEnemy.move, "Enemy Move " + str(i), extraArgs = [map], appendTask = True)
+            line = file.readline().rstrip()
+            i = i + 1
+        
+            
     def loadSounds(self):
         self.flamethrowerSound = base.loader.loadSfx("sound/dragonflameloop.wav")
         self.flamethrowerEndSound = base.loader.loadSfx("sound/dragonflameend.wav")
-
         
     def setupLights(self):
         #ambient light
@@ -371,6 +403,7 @@ class World(DirectObject):
         self.player.speed = self.player.speed * 0.9
         
     def lightModify(self, t, which_way):
+
         if which_way: #which_way == true then make it brighter
             value = t/100 * MAX_LIGHT
         else: #which_way == true then make it darker

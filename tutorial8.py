@@ -202,7 +202,7 @@ class World(DirectObject):
             # self.setWorldLight(target)
     
     def loadSounds(self):
-        self.flamethrowerSound = base.loader.loadSfx("sound/dragonflame.wav")
+        self.flamethrowerSound = base.loader.loadSfx("sound/dragonflameloop.wav")
         self.flamethrowerEndSound = base.loader.loadSfx("sound/dragonflameend.wav")
 
         
@@ -384,6 +384,7 @@ class World(DirectObject):
         #self.lightOn.start()
         
         #Get the flame noise started!
+        self.flamethrowerSound.setLoop(True)
         self.flamethrowerSound.play()
         
     def stopShoot(self):

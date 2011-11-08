@@ -26,6 +26,7 @@ from direct.particles.ParticleEffect import ParticleEffect
 from direct.particles.ForceGroup import ForceGroup
 from direct.gui.OnscreenText import OnscreenText
 from direct.showbase.DirectObject import DirectObject
+from direct.filter.CommonFilters import CommonFilters
 
 import sys, math, random
 from vehicle import Vehicle
@@ -120,7 +121,7 @@ class World(DirectObject):
         self.pickerNode.addSolid(self.pickerRay)
         self.picker.addCollider(self.pickerNP, self.pq)
         
-        self.targetRoot = render.attachNewNode('targetRoot')
+        self.staticRoot = render.attachNewNode('staticRoot')
         self.mouseTask = taskMgr.add(self.mouseTask, 'mouseTask')
         
     def dfs(self, item = render, depth = 0, file = None):
@@ -138,11 +139,15 @@ class World(DirectObject):
         if base.mouseWatcherNode.hasMouse():
             mpos = base.mouseWatcherNode.getMouse()
             self.pickerRay.setFromLens(base.camNode, mpos.getX(), mpos.getY())
-            self.picker.traverse(self.targetRoot)
+            self.picker.traverse(self.staticRoot)
             if self.pq.getNumEntries() > 0:
                 self.pq.sortEntries()
-                i = int(self.pq.getEntry(0).getIntoNode().getTag('target'))
-                  
+                for i in range(self.pq.getNumEntries()):
+                    if self.pq.getEntry(0).getIntoNode().getTag('car') != "":
+                        j = int(self.pq.getEntry(0).getIntoNode().getTag('car'))
+                        print(self.gasList[j])
+                        break
+                
         return Task.cont
 
     def setupIntervals(self):
@@ -162,6 +167,7 @@ class World(DirectObject):
                             name="LightDown")
                             
         self.cameraMove = None
+ 
     def setKey(self, key, value):
         self.keyMap[key] = value
         
@@ -194,26 +200,13 @@ class World(DirectObject):
                                             camera.getPos(), 
                                             camera.getHpr())
         self.cameraMove.start()
-    
-    
+      
     def loadModels(self):
         self.player.setupBooster()
         self.env = loader.loadModel("ralph_models/green_ramps")      
         self.env.reparentTo(render)
         self.env.setScale(15)
         
-        #self.setWorldLight(self.env)
-        
-        #load targets
-        #self.targets = []
-        #for i in range (10):
-            #target = loader.loadModel("smiley")
-            #target.setScale(.5)
-            #target.setPos(random.uniform(-20, 20), random.uniform(-15, 15), 2)
-            #target.reparentTo(self.targetRoot)
-            #self.targets.append(target)
-            #self.setWorldLight(target)
-         
         # Node Map
         map = Node.NodeMap("nodes.txt")
             
@@ -221,14 +214,16 @@ class World(DirectObject):
         self.enemies = []
         file = open('levels/enemies.txt' )
         line = file.readline().rstrip()
-        i = 0
+        
         self.staticCars = []
+        self.gasList = []
         for currCar in carLocations.cars:
             target = loader.loadModel("ralph_models/" + currCar['color'] + "_car")
             target.setPos(currCar['position'])
             target.setHpr(currCar['direction'])
-            target.reparentTo(render)
+            target.reparentTo(self.staticRoot)
             self.staticCars.append(target)
+            self.gasList.append(currCar['gas'])
             
         while line != "" :
             nums = line.split(',')
@@ -239,12 +234,10 @@ class World(DirectObject):
             nodePos = map.nodeList[int(nums[0])].getPos()
             newEnemy = Enemy.Enemy(map, convertedNums, self, nodePos[0], nodePos[1], nodePos[2] )
             self.enemies.append( newEnemy )
-            #self.setWorldLight( newEnemy ) 
             taskMgr.add(newEnemy.move, "Enemy Move " + str(i), extraArgs = [map], appendTask = True)
             line = file.readline().rstrip()
             i = i + 1
-        
-            
+                  
     def loadSounds(self):
         self.flamethrowerSound = base.loader.loadSfx("sound/dragonflameloop.wav")
         self.flamethrowerEndSound = base.loader.loadSfx("sound/dragonflameend.wav")
@@ -372,17 +365,8 @@ class World(DirectObject):
         wallCNodePath = self.wallNode.attachNewNode(wallCNode)
         if DEBUG:
             wallCNodePath.show()
-        
-        segment1 = CollisionSegment(-4, -10, 2,  4, -10, 2)
-        segment2 = CollisionSegment(-4,   9, 2,  4,   9, 2)
-        segment3 = CollisionSegment(-4, -10, 2, -4,   9, 2)
-        segment4 = CollisionSegment( 4, -10, 2,  4,   9, 2)
-        
+            
         cNode = CollisionNode("player")
-        #cNode.addSolid(segment1)
-        #cNode.addSolid(segment2)
-        #cNode.addSolid(segment3)
-        #cNode.addSolid(segment4)
         temp = CollisionSphere((0,-5.5,10), 4)
         cNode.addSolid(temp)
         temp = CollisionSphere((0,-0.5,10), 4)
@@ -419,8 +403,7 @@ class World(DirectObject):
         if True:
             cNodePath2.show()
         
-        
-        for currCar in self.staticCars:
+        for i in range(len(self.staticCars)):
             staticNode = CollisionNode("staticCar")
             temp = CollisionSphere((0,-5.5,10), 4)
             staticNode.addSolid(temp)
@@ -430,19 +413,13 @@ class World(DirectObject):
             staticNode.addSolid(temp)
             staticNode.setIntoCollideMask(BitMask32.bit(1))
             staticNode.setFromCollideMask(BitMask32.bit(0))
-            staticNodePath = currCar.attachNewNode(staticNode)
-            
-        #registers a from object with the traverser with a corresponding handler
-        #base.cTrav.addCollider(cNodePath, self.cHandler)
-        # i = 0
-        # for target in self.targets:
-            # cSphere = CollisionSphere((0,0,0), 2)
-            # cNode = CollisionNode("smiley")
-            ##cNode.addSolid(cSphere)
-            # cNode.setIntoCollideMask(BitMask32.bit(1))
-            # cNode.setTag('target', str(i))
-            # cNodePath = target.attachNewNode(cNode)
-            # i += 1
+            staticNodePath = self.staticCars[i].attachNewNode(staticNode)
+            temp = CollisionTube(0,7,3,0,-6,3,3.5)
+            sN = CollisionNode("staticTube")
+            sN.addSolid(temp)
+            staticNode.setFromCollideMask(BitMask32.bit(0))
+            sNP = self.staticCars[i].attachNewNode(sN)
+            sN.setTag('car', str(i))
             
         self.enemyHandler = CollisionHandlerEvent()    
         for enemy in self.enemies:

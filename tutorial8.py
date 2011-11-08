@@ -1,6 +1,6 @@
 from pandac.PandaModules import loadPrcFileData
-if False:
-    loadPrcFileData("", "window-title Your Title")
+if 0:
+    loadPrcFileData("", "window-title THE_TITLE_GOES_HERE!!!!")
     loadPrcFileData("", "fullscreen 1") # Set to 1 for fullscreen
     loadPrcFileData("", "win-size 1680 1050")
     loadPrcFileData("", "win-origin 0 0")
@@ -52,7 +52,7 @@ class World(DirectObject):
         self.player = Vehicle("ralph_models/vampire_car", "ralph_models/vampire_car", self)
         
         self.loadModels()
-        self.player.setPos(0,0,0)#self.env.find("**/start_point").getPos())
+        self.player.setPos(0,0,0)
         self.setupIntervals()
         camera.reparentTo(self.player)
         camera.setPos(self.cameraPositions[0][0][0],self.cameraPositions[0][0][1],self.cameraPositions[0][0][2])
@@ -64,6 +64,9 @@ class World(DirectObject):
         
         #Give the vehicle direct access to the keyMap
         self.player.addKeyMap(self.keyMap)
+        
+        #Sounds!
+        self.loadSounds()
         
         self.prevtime = 0
         self.isMoving = False
@@ -199,13 +202,13 @@ class World(DirectObject):
         #self.setWorldLight(self.env)
         
         #load targets
-        self.targets = []
-        for i in range (10):
-            target = loader.loadModel("smiley")
-            target.setScale(.5)
-            target.setPos(random.uniform(-20, 20), random.uniform(-15, 15), 2)
-            target.reparentTo(self.targetRoot)
-            self.targets.append(target)
+        #self.targets = []
+        #for i in range (10):
+            #target = loader.loadModel("smiley")
+            #target.setScale(.5)
+            #target.setPos(random.uniform(-20, 20), random.uniform(-15, 15), 2)
+            #target.reparentTo(self.targetRoot)
+            #self.targets.append(target)
             #self.setWorldLight(target)
          
         # Node Map
@@ -231,6 +234,9 @@ class World(DirectObject):
             i = i + 1
         
             
+    def loadSounds(self):
+        self.flamethrowerSound = base.loader.loadSfx("sound/dragonflameloop.wav")
+        self.flamethrowerEndSound = base.loader.loadSfx("sound/dragonflameend.wav")
         
     def setupLights(self):
         #ambient light
@@ -383,15 +389,15 @@ class World(DirectObject):
         self.accept('player-into-fence', self.collideWithFence)
         #registers a from object with the traverser with a corresponding handler
         #base.cTrav.addCollider(cNodePath, self.cHandler)
-        i = 0
-        for target in self.targets:
-            cSphere = CollisionSphere((0,0,0), 2)
-            cNode = CollisionNode("smiley")
-            #cNode.addSolid(cSphere)
-            cNode.setIntoCollideMask(BitMask32.bit(1))
-            cNode.setTag('target', str(i))
-            cNodePath = target.attachNewNode(cNode)
-            i += 1
+        # i = 0
+        # for target in self.targets:
+            # cSphere = CollisionSphere((0,0,0), 2)
+            # cNode = CollisionNode("smiley")
+            ##cNode.addSolid(cSphere)
+            # cNode.setIntoCollideMask(BitMask32.bit(1))
+            # cNode.setTag('target', str(i))
+            # cNodePath = target.attachNewNode(cNode)
+            # i += 1
     
     def collideWithFence(self, entry):
         self.player.speed = self.player.speed * 0.9
@@ -410,11 +416,18 @@ class World(DirectObject):
         #self.lightOff.finish()
         #self.lightOn.start()
         
+        #Get the flame noise started!
+        self.flamethrowerSound.setLoop(True)
+        self.flamethrowerSound.play()
+        
     def stopShoot(self):
         self.p1.softStop()
         self.p2.softStop()
         #self.lightOn.finish()
         #self.lightOff.start()
+        
+        self.flamethrowerSound.stop()
+        self.flamethrowerEndSound.play()
         
     def loadParticleConfig(self, file):
         self.p1.reset()

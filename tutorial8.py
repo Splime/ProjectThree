@@ -422,7 +422,6 @@ class World(DirectObject):
             enemy.lightRayNode.setIntoCollideMask(BitMask32.allOff())
             enemy.lightRayNodePath = enemy.attachNewNode(enemy.lightRayNode)
             enemy.lightRayNodePath.show()
-            
 
     
     def collideWithFence(self, entry):

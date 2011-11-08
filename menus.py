@@ -38,6 +38,7 @@ def createMenus(stateMachine):
 		},
 		2: {
 			'text':'Credits',
-			'function': stateMachine.request
-			}
+			'function': stateMachine.request,
+			'args': ['Menu']
+		}
 	}

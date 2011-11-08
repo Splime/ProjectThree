@@ -246,7 +246,7 @@ class World(DirectObject):
         
             
     def loadSounds(self):
-        self.flamethrowerSound = base.loader.loadSfx("sound/dragonflameloop.wav")
+        self.flamethrowerSound = base.loader.loadSfx("sound/dragonflameloop2.wav")
         self.flamethrowerEndSound = base.loader.loadSfx("sound/dragonflameend.wav")
         
     def setupLights(self):

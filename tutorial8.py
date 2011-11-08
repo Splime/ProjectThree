@@ -204,7 +204,7 @@ class World(DirectObject):
             target.setHpr(currCar['direction'])
             target.reparentTo(render)
             self.setWorldLight(target)
-            self.staticCars.append(currCar)
+            self.staticCars.append(target)
         
     def setupLights(self):
         #ambient light
@@ -243,11 +243,13 @@ class World(DirectObject):
         #instantiates a collision traverser and sets it to the default
         base.cTrav = CollisionTraverser()
         self.cHandler = CollisionHandlerEvent()
+        #Create a collision handler that prevents the player from moving through the stationary cars.
+        pusher = CollisionHandlerPusher()
         #set pattern for event sent on collision
         # "%in" is substituted with the name of the into object
         self.cHandler.setInPattern("ate-%in")
         
-        cSphere = CollisionSphere((0,0,200), 2.25) #because the player is scaled way down
+        cSphere = CollisionSphere((0,0,0), 10) #because the player is scaled way down
         self.playerRay = CollisionRay()
         self.playerRay.setOrigin(0,0,1000)
         self.playerRay.setDirection(0,0,-1)
@@ -301,6 +303,7 @@ class World(DirectObject):
         cNode.setIntoCollideMask(BitMask32.allOff()) #player is *only* a from object
         #cNode.setFromCollideMask(BitMask32.bit(0))
         cNodePath = self.player.attachNewNode(cNode)
+        cNodePath.show()
         #registers a from object with the traverser with a corresponding handler
         base.cTrav.addCollider(cNodePath, self.cHandler)
         i = 0
@@ -313,15 +316,16 @@ class World(DirectObject):
             cNodePath = target.attachNewNode(cNode)
             i += 1
 
-        i = 0
         for currCar in self.staticCars:
-            cSphere = CollisionSphere((0,0,0), 2)
-            cNode = CollisionNode("staticCar")
-            cNode.addSolid(cSphere)
-            cNode.setIntoCollideMask(BitMask32.bit(1))
-            cNode.setTag('staticCar', str(i))
-            cNodePath = target.attachNewNode(cNode)
-            i += 1
+            cSphere = CollisionSphere((0,0,0), 1000)
+            staticNode = CollisionNode("staticCar")
+            staticNode.addSolid(cSphere)
+            staticNode.setIntoCollideMask(BitMask32.bit(1))
+            staticNodePath = currCar.attachNewNode(staticNode)
+            staticNodePath.show()
+            pusher.addCollider(cNodePath, staticNodePath, base.drive.node())
+        
+        base.cTrav.addCollider(cNodePath, pusher)
     
     def lightModify(self, t, which_way):
         if which_way: #which_way == true then make it brighter

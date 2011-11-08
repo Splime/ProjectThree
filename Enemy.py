@@ -27,9 +27,6 @@ ANGLE_LEEWAY = 1.0
 MOVING = 0
 TURNING = 1
 
-
-TURNTIME = 5
-
 class Enemy(vehicle.Vehicle):
     def __init__(self, map, nodePath, world, x, y, z ):
         vehicle.Vehicle.__init__(self, "models/panda-model", "panda-walk4", world)
@@ -39,10 +36,11 @@ class Enemy(vehicle.Vehicle):
         self.curNodeIndex = 0 
         self.speed = 4.0
         
-        self.turnTime = TURNTIME
-        self.turnSpeed = 40.0
+        self.firstNode = nodePath[0]
         
-        self.phase = MOVING
+        self.turnSpeed = 80.0
+        
+        self.phase = TURNING
         
         self.lastNodePos = map.nodeList[nodePath[self.curNodeIndex]].getPos()
         self.nextNodePos = map.nodeList[nodePath[self.curNodeIndex+1]].getPos()
@@ -62,17 +60,33 @@ class Enemy(vehicle.Vehicle):
         if self.finishedTurning == True :
             if absx == 0 and absy != 0 : 
                 self.nextAngle = math.acos(dy/absy)
+                self.nextAngle = math.degrees(self.nextAngle)
+                if dx != 0:
+                    self.nextAngle += 180
             elif absy == 0 and absx != 0 : 
                 self.nextAngle = math.asin(dx/absx)
+                self.nextAngle = math.degrees(self.nextAngle)
+                if dx != 0:
+                    self.nextAngle += 180
             else:
                 self.nextAngle = math.atan(dx/dy)
-            self.nextAngle = math.degrees(self.nextAngle)
-            if dx != 0:
-                self.nextAngle += 180
+                self.nextAngle = math.degrees(self.nextAngle)
+                self.nextAngle % 90
+                if dy > 0 and dx > 0:
+                    pass
+                elif dy < 0 and dx < 0:
+                    self.nextAngle = self.nextAngle + 180
+                elif dy < 0 and dx > 0:
+                    self.nextAngle = self.nextAngle + 180 - 2 * self.nextAngle
+                elif dy > 0 and dx < 0:
+                    self.nextAngle = self.nextAngle + 360 - 2 * self.nextAngle
+                    
+                #self.nextAngle = self.nextAngle - 90
+            print "(1) DX: " + str(dx) + " DY: " + str(dy) + " Angle: " + str(self.nextAngle) + " CurAngle: " + str(curAngle)
+            
             self.finishedTurning = False    
             
-        #print "(1) DX: " + str(dx) + " DY: " + str(dy) + " Angle: " + str(self.nextAngle) + " CurAngle: " + str(curAngle)
-        
+        self.nextAngle = self.nextAngle % 360
         # most the panda should ever have to turn is 180 degrees.
         angleDiff = abs( curAngle - self.nextAngle )
         if angleDiff > 180:
@@ -83,11 +97,13 @@ class Enemy(vehicle.Vehicle):
         
         
         
-        #print "(2) Abs X: " + str(absx) + " Abs Y: " + str(absy) + " Angle: " + str(self.nextAngle) + " CurAngle: " + str(curAngle)
+        print "(2) Abs X: " + str(absx) + " Abs Y: " + str(absy) + " Angle: " + str(self.nextAngle) + " CurAngle: " + str(curAngle)
         if abs(curAngle - self.nextAngle) < ANGLE_LEEWAY:
             self.setH(self.nextAngle)
+            print "(1): " + str(self.getH())
             while self.getH() < 0:
                 self.setH(self.getH() + 360)
+            print "(2): " + str(self.getH())
             self.phase = MOVING
             self.finishedTurning = True
             #print "inside leeway"
@@ -99,7 +115,6 @@ class Enemy(vehicle.Vehicle):
         self.prevtime = task.time
         
     def move( self, map, task ):
-        
         
         #check if enemy is at node, if so, then change lastNode and nextNode
         #print "X: " + str(int(self.getX())) + " vs "  + str(self.nextNodePos[0])
@@ -135,6 +150,9 @@ class Enemy(vehicle.Vehicle):
             
             xdir = 0
             ydir = 0
+            
+            #if ( self.getH() % 45 ) != 0:
+                #print str(self.firstNode) + ": H: " + str(self.getH())
             
             if dx > 0:
                 xdir = -1

@@ -1,0 +1,2490 @@
+render: 
++render: PandaNode
+-ambientLight: 
+ +ambientLight: AmbientLight
+ +render: PandaNode
+-keyLight: 
+ +keyLight: DirectionalLight
+ +render: PandaNode
+-fillLight: 
+ +fillLight: DirectionalLight
+ +render: PandaNode
+-targetRoot: 
+ +targetRoot: PandaNode
+ +render: PandaNode
+--smiley.egg: 
+  +smiley.egg: ModelRoot
+  +targetRoot: PandaNode
+  +render: PandaNode
+---: 
+   +: GeomNode
+   +smiley.egg: ModelRoot
+   +targetRoot: PandaNode
+   +render: PandaNode
+---smiley: 
+   +smiley: CollisionNode
+   +smiley.egg: ModelRoot
+   +targetRoot: PandaNode
+   +render: PandaNode
+--smiley.egg: 
+  +smiley.egg: ModelRoot
+  +targetRoot: PandaNode
+  +render: PandaNode
+---: 
+   +: GeomNode
+   +smiley.egg: ModelRoot
+   +targetRoot: PandaNode
+   +render: PandaNode
+---smiley: 
+   +smiley: CollisionNode
+   +smiley.egg: ModelRoot
+   +targetRoot: PandaNode
+   +render: PandaNode
+--smiley.egg: 
+  +smiley.egg: ModelRoot
+  +targetRoot: PandaNode
+  +render: PandaNode
+---: 
+   +: GeomNode
+   +smiley.egg: ModelRoot
+   +targetRoot: PandaNode
+   +render: PandaNode
+---smiley: 
+   +smiley: CollisionNode
+   +smiley.egg: ModelRoot
+   +targetRoot: PandaNode
+   +render: PandaNode
+--smiley.egg: 
+  +smiley.egg: ModelRoot
+  +targetRoot: PandaNode
+  +render: PandaNode
+---: 
+   +: GeomNode
+   +smiley.egg: ModelRoot
+   +targetRoot: PandaNode
+   +render: PandaNode
+---smiley: 
+   +smiley: CollisionNode
+   +smiley.egg: ModelRoot
+   +targetRoot: PandaNode
+   +render: PandaNode
+--smiley.egg: 
+  +smiley.egg: ModelRoot
+  +targetRoot: PandaNode
+  +render: PandaNode
+---: 
+   +: GeomNode
+   +smiley.egg: ModelRoot
+   +targetRoot: PandaNode
+   +render: PandaNode
+---smiley: 
+   +smiley: CollisionNode
+   +smiley.egg: ModelRoot
+   +targetRoot: PandaNode
+   +render: PandaNode
+--smiley.egg: 
+  +smiley.egg: ModelRoot
+  +targetRoot: PandaNode
+  +render: PandaNode
+---: 
+   +: GeomNode
+   +smiley.egg: ModelRoot
+   +targetRoot: PandaNode
+   +render: PandaNode
+---smiley: 
+   +smiley: CollisionNode
+   +smiley.egg: ModelRoot
+   +targetRoot: PandaNode
+   +render: PandaNode
+--smiley.egg: 
+  +smiley.egg: ModelRoot
+  +targetRoot: PandaNode
+  +render: PandaNode
+---: 
+   +: GeomNode
+   +smiley.egg: ModelRoot
+   +targetRoot: PandaNode
+   +render: PandaNode
+---smiley: 
+   +smiley: CollisionNode
+   +smiley.egg: ModelRoot
+   +targetRoot: PandaNode
+   +render: PandaNode
+--smiley.egg: 
+  +smiley.egg: ModelRoot
+  +targetRoot: PandaNode
+  +render: PandaNode
+---: 
+   +: GeomNode
+   +smiley.egg: ModelRoot
+   +targetRoot: PandaNode
+   +render: PandaNode
+---smiley: 
+   +smiley: CollisionNode
+   +smiley.egg: ModelRoot
+   +targetRoot: PandaNode
+   +render: PandaNode
+--smiley.egg: 
+  +smiley.egg: ModelRoot
+  +targetRoot: PandaNode
+  +render: PandaNode
+---: 
+   +: GeomNode
+   +smiley.egg: ModelRoot
+   +targetRoot: PandaNode
+   +render: PandaNode
+---smiley: 
+   +smiley: CollisionNode
+   +smiley.egg: ModelRoot
+   +targetRoot: PandaNode
+   +render: PandaNode
+--smiley.egg: 
+  +smiley.egg: ModelRoot
+  +targetRoot: PandaNode
+  +render: PandaNode
+---: 
+   +: GeomNode
+   +smiley.egg: ModelRoot
+   +targetRoot: PandaNode
+   +render: PandaNode
+---smiley: 
+   +smiley: CollisionNode
+   +smiley.egg: ModelRoot
+   +targetRoot: PandaNode
+   +render: PandaNode
+-panda_soft: 
+ +panda_soft: PandaNode
+ +render: PandaNode
+--__Actor_modelRoot: 
+  +__Actor_modelRoot: Character
+  +panda_soft: PandaNode
+  +render: PandaNode
+---: 
+   +: GeomNode
+   +__Actor_modelRoot: Character
+   +panda_soft: PandaNode
+   +render: PandaNode
+--shadowlight: 
+  +shadowlight: Spotlight
+  +panda_soft: PandaNode
+  +render: PandaNode
+--plight: 
+  +plight: PointLight
+  +panda_soft: PandaNode
+  +render: PandaNode
+--plight: 
+  +plight: PointLight
+  +panda_soft: PandaNode
+  +render: PandaNode
+--boostlight: 
+  +boostlight: PointLight
+  +panda_soft: PandaNode
+  +render: PandaNode
+--camera: 
+  +camera: ModelNode
+  +panda_soft: PandaNode
+  +render: PandaNode
+---cam: 
+   +cam: Camera
+   +camera: ModelNode
+   +panda_soft: PandaNode
+   +render: PandaNode
+---mouseRay: 
+   +mouseRay: CollisionNode
+   +camera: ModelNode
+   +panda_soft: PandaNode
+   +render: PandaNode
+--playerRay: 
+  +playerRay: CollisionNode
+  +panda_soft: PandaNode
+  +render: PandaNode
+--player: 
+  +player: CollisionNode
+  +panda_soft: PandaNode
+  +render: PandaNode
+-green_ramps.egg: 
+ +green_ramps.egg: ModelRoot
+ +render: PandaNode
+--alan_terrain: 
+  +alan_terrain: Character
+  +green_ramps.egg: ModelRoot
+  +render: PandaNode
+---: 
+   +: GeomNode
+   +alan_terrain: Character
+   +green_ramps.egg: ModelRoot
+   +render: PandaNode
+-show_collisions: 
+ +show_collisions: CollisionVisualizer
+ +render: PandaNode
+: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+---wall: 
+   +wall: GeomNode
+   +: PandaNode
+   +world.egg: ModelRoot
+   +render: PandaNode
+---trees: 
+   +trees: PandaNode
+   +: PandaNode
+   +world.egg: ModelRoot
+   +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_1: 
+     +trees_piece_1: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_2: 
+     +trees_piece_2: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_3: 
+     +trees_piece_3: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_4: 
+     +trees_piece_4: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_5: 
+     +trees_piece_5: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_6: 
+     +trees_piece_6: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_7: 
+     +trees_piece_7: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_8: 
+     +trees_piece_8: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_9: 
+     +trees_piece_9: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_10: 
+     +trees_piece_10: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_11: 
+     +trees_piece_11: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_12: 
+     +trees_piece_12: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_13: 
+     +trees_piece_13: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_14: 
+     +trees_piece_14: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_15: 
+     +trees_piece_15: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_16: 
+     +trees_piece_16: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_17: 
+     +trees_piece_17: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_18: 
+     +trees_piece_18: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_19: 
+     +trees_piece_19: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_20: 
+     +trees_piece_20: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_21: 
+     +trees_piece_21: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_22: 
+     +trees_piece_22: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_23: 
+     +trees_piece_23: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_24: 
+     +trees_piece_24: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_25: 
+     +trees_piece_25: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_26: 
+     +trees_piece_26: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_27: 
+     +trees_piece_27: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_28: 
+     +trees_piece_28: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_29: 
+     +trees_piece_29: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_30: 
+     +trees_piece_30: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_31: 
+     +trees_piece_31: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_32: 
+     +trees_piece_32: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_33: 
+     +trees_piece_33: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_34: 
+     +trees_piece_34: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_35: 
+     +trees_piece_35: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_36: 
+     +trees_piece_36: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_37: 
+     +trees_piece_37: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_38: 
+     +trees_piece_38: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_39: 
+     +trees_piece_39: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_40: 
+     +trees_piece_40: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_41: 
+     +trees_piece_41: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_42: 
+     +trees_piece_42: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_43: 
+     +trees_piece_43: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_44: 
+     +trees_piece_44: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_45: 
+     +trees_piece_45: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_46: 
+     +trees_piece_46: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_47: 
+     +trees_piece_47: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_48: 
+     +trees_piece_48: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_49: 
+     +trees_piece_49: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_50: 
+     +trees_piece_50: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_51: 
+     +trees_piece_51: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_52: 
+     +trees_piece_52: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_53: 
+     +trees_piece_53: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_54: 
+     +trees_piece_54: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_55: 
+     +trees_piece_55: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_56: 
+     +trees_piece_56: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +trees: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----trees_piece_57: 
+     +trees_piece_57: CollisionNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +trees: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+---rocks: 
+   +rocks: PandaNode
+   +: PandaNode
+   +world.egg: ModelRoot
+   +render: PandaNode
+----: 
+    +: PandaNode
+    +rocks: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----rock_1_piece_4: 
+     +rock_1_piece_4: CollisionNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +rocks: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----rock_1_piece_5: 
+     +rock_1_piece_5: CollisionNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +rocks: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----rock_1_piece_6: 
+     +rock_1_piece_6: CollisionNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +rocks: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----rock_1_piece_7: 
+     +rock_1_piece_7: CollisionNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +rocks: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----rock_1_piece_8: 
+     +rock_1_piece_8: CollisionNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +rocks: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----rock_1_piece_9: 
+     +rock_1_piece_9: CollisionNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +rocks: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----rock_1_piece_10: 
+     +rock_1_piece_10: CollisionNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +rocks: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----rock_1_piece_11: 
+     +rock_1_piece_11: CollisionNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +rocks: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----rock_1_piece_12: 
+     +rock_1_piece_12: CollisionNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +rocks: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----rock_1_piece_13: 
+     +rock_1_piece_13: CollisionNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +rocks: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----rock_1_piece_14: 
+     +rock_1_piece_14: CollisionNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +rocks: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----rock_1_piece_15: 
+     +rock_1_piece_15: CollisionNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +rocks: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----rock_1_piece_16: 
+     +rock_1_piece_16: CollisionNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +rocks: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----rock_1_piece_17: 
+     +rock_1_piece_17: CollisionNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +rocks: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----rock_1_piece_18: 
+     +rock_1_piece_18: CollisionNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +rocks: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----rock_1_piece_19: 
+     +rock_1_piece_19: CollisionNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +rocks: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----rock_1_piece_20: 
+     +rock_1_piece_20: CollisionNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +rocks: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----rock_1_piece_21: 
+     +rock_1_piece_21: CollisionNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +rocks: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----rock_1_piece_22: 
+     +rock_1_piece_22: CollisionNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +rocks: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----rock_1_piece_23: 
+     +rock_1_piece_23: CollisionNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +rocks: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----rock_1_piece_24: 
+     +rock_1_piece_24: CollisionNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +rocks: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----rock_1_piece_25: 
+     +rock_1_piece_25: CollisionNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +rocks: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----rock_1_piece_26: 
+     +rock_1_piece_26: CollisionNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +rocks: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----rock_1_piece_27: 
+     +rock_1_piece_27: CollisionNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +rocks: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----rock_1_piece_28: 
+     +rock_1_piece_28: CollisionNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +rocks: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+---hedges: 
+   +hedges: PandaNode
+   +: PandaNode
+   +world.egg: ModelRoot
+   +render: PandaNode
+----: 
+    +: PandaNode
+    +hedges: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----hedge_piece_1: 
+     +hedge_piece_1: CollisionNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +hedges: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----hedge_piece_2: 
+     +hedge_piece_2: CollisionNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +hedges: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----hedge_piece_3: 
+     +hedge_piece_3: CollisionNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +hedges: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----hedge_piece_4: 
+     +hedge_piece_4: CollisionNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +hedges: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----hedge_piece_5: 
+     +hedge_piece_5: CollisionNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +hedges: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----hedge_piece_6: 
+     +hedge_piece_6: CollisionNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +hedges: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----hedge_piece_7: 
+     +hedge_piece_7: CollisionNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +hedges: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----hedge_piece_8: 
+     +hedge_piece_8: CollisionNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +hedges: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----hedge_piece_9: 
+     +hedge_piece_9: CollisionNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +hedges: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----hedge_piece_10: 
+     +hedge_piece_10: CollisionNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +hedges: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----hedge_piece_11: 
+     +hedge_piece_11: CollisionNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +hedges: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----hedge_piece_12: 
+     +hedge_piece_12: CollisionNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +hedges: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----hedge_piece_13: 
+     +hedge_piece_13: CollisionNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +hedges: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----hedge_piece_14: 
+     +hedge_piece_14: CollisionNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +hedges: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----hedge_piece_15: 
+     +hedge_piece_15: CollisionNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +hedges: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----hedge_piece_16: 
+     +hedge_piece_16: CollisionNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +hedges: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----hedge_piece_17: 
+     +hedge_piece_17: CollisionNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +hedges: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----hedge_piece_18: 
+     +hedge_piece_18: CollisionNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +hedges: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----hedge_piece_19: 
+     +hedge_piece_19: CollisionNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +hedges: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----hedge_piece_20: 
+     +hedge_piece_20: CollisionNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +hedges: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----hedge_piece_21: 
+     +hedge_piece_21: CollisionNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +hedges: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----hedge_piece_22: 
+     +hedge_piece_22: CollisionNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +hedges: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----hedge_piece_23: 
+     +hedge_piece_23: CollisionNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +hedges: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----hedge_piece_24: 
+     +hedge_piece_24: CollisionNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +hedges: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----hedge_piece_25: 
+     +hedge_piece_25: CollisionNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +hedges: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----hedge_piece_26: 
+     +hedge_piece_26: CollisionNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +hedges: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----hedge_piece_27: 
+     +hedge_piece_27: CollisionNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +hedges: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----hedge_piece_28: 
+     +hedge_piece_28: CollisionNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +hedges: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----hedge_piece_29: 
+     +hedge_piece_29: CollisionNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+----: 
+    +: PandaNode
+    +hedges: PandaNode
+    +: PandaNode
+    +world.egg: ModelRoot
+    +render: PandaNode
+-----hedge_piece_30: 
+     +hedge_piece_30: CollisionNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+-----: 
+     +: GeomNode
+     +: PandaNode
+     +hedges: PandaNode
+     +: PandaNode
+     +world.egg: ModelRoot
+     +render: PandaNode
+---start_point: 
+   +start_point: ModelNode
+   +: PandaNode
+   +world.egg: ModelRoot
+   +render: PandaNode
+-show_collisions: 
+ +show_collisions: CollisionVisualizer
+ +render: PandaNode

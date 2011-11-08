@@ -22,10 +22,11 @@ from direct.showbase.DirectObject import DirectObject
 
 import sys, math, random
 
-#WARNING: THESE ARE COPYPASTA'D FROM TUTORIAL8.PY
-MAX_LIGHT = 6
+MAX_LIGHT = 1.5
 BOOSTER_LENGTH = 3
-RAMP_INTERVAL_DURATION = 0.5
+RAMP_INTERVAL_DURATION = 0.25
+BOOST_FACTOR = 2.5
+BOOST_MAX_SPEED_BONUS = 100
 
 class Vehicle(Actor):
     
@@ -40,20 +41,21 @@ class Vehicle(Actor):
         self.reparentTo(render)
         self.prevtime = 0
         #some movement stats
-        self.accel = 40.0
-        self.deccel = -40.0
-        self.bkwdsAccel = -10.0
+        self.accel = 30.0
+        self.brake = -200.0
+        self.deccel = -50.0
+        self.bkwdsAccel = -17.5
         self.speed = 0.0
-        self.maxSpeed = 100.0
+        self.maxSpeed = 260.0
         self.maxBkwdsSpeed = -40.0
         self.direction = Vehicle.STOPPED
         self.isTurning = False
-        self.turnFactor = 4.0
+        self.turnFactor = 1.2
         self.loc = ""
         self.rampHprInterval = LerpFunc(self.rampInterval,
                                         fromData=0,
                                         toData=100,
-                                        duration=1,
+                                        duration=RAMP_INTERVAL_DURATION,
                                         blendType='noBlend',
                                         extraArgs=[(0,0),(0,0)],
                                         name="rampInterval")
@@ -66,9 +68,9 @@ class Vehicle(Actor):
         self.boosterLight.setColor(VBase4(0,0,0,1))
         self.boosterLight.setAttenuation(Point3(0,0.001,0.001))
         self.world.boosterLightNP = self.attachNewNode(self.boosterLight)
-        self.world.boosterLightNP.setPos(0, 2.5, 1.375)
+        self.world.boosterLightNP.setPos(0, 20, 2)
         self.world.boosterLightNP.setHpr(180, 90, 0)
-        self.world.setWorldLight(self)
+        #self.world.setWorldLight(self)
     
     def addKeyMap(self, keyMap):
         self.keyMap = keyMap
@@ -107,7 +109,7 @@ class Vehicle(Actor):
         #Accelerating
         if (self.keyMap["forward"] and not self.keyMap["backwards"]) or self.keyMap["boost"]:
             if self.direction == Vehicle.BACKWARDS:
-                newSpeed = self.speed + (self.accel-self.deccel)*elapsed
+                newSpeed = self.speed + (self.accel-self.brake)*elapsed
             else:
                 newSpeed = self.speed + self.accel*elapsed
             if newSpeed > self.maxSpeed:
@@ -118,7 +120,7 @@ class Vehicle(Actor):
         #Braking/Reversing
         if self.keyMap["backwards"] and not (self.keyMap["forward"] or self.keyMap["boost"]):
             if self.direction == Vehicle.FORWARDS:
-                newSpeed = self.speed + (self.bkwdsAccel+self.deccel)*elapsed
+                newSpeed = self.speed + (self.bkwdsAccel+self.brake)*elapsed
             else:
                 newSpeed = self.speed + self.bkwdsAccel*elapsed
             if newSpeed < self.maxBkwdsSpeed:
@@ -173,7 +175,6 @@ class Vehicle(Actor):
         entries.sort(lambda x,y: cmp(y.getSurfacePoint(render).getZ(), x.getSurfacePoint(render).getZ()))
         if (len(entries)>0) and (entries[0].getIntoNode().getName()[:3] == "lot"):
             self.setZ(entries[0].getSurfacePoint(render).getZ())
-            #print(self.getP())
             if entries[0].getIntoNode().getName() == "lot_ramp_top":
                 if self.loc != entries[0].getIntoNode().getName():
                     slope_angle = math.asin((6 - 3.5) / (-8.845 + 14.923))
@@ -225,9 +226,9 @@ class Vehicle(Actor):
                                                     name="rampInterval")
                     self.rampHprInterval.start()
             self.loc = entries[0].getIntoNode().getName()
-        elif (len(entries)>0):
-            #print "Hahahaha, nooope"
-            self.setPos(startpos)
+        #elif (len(entries)>0):
+        #    print "Hahahaha, nooope"
+        #    self.setPos(startpos)
         
         self.prevtime = task.time
         return Task.cont
@@ -236,15 +237,16 @@ class Vehicle(Actor):
         if self.boosterStartTime == -1:
             self.boosters.loadConfig(Filename('flamethrower4.ptf'))        
             self.boosters.start(self)
-            self.boosters.setPos(0, 200, 275)
+            self.boosters.setPos(0, 8.5, 2)
             self.boosters.setHpr(180, 90, 0)
-            self.boosters.setScale(200)
             self.boosters.setLightOff()
-            self.accel = self.accel * 2
+            self.maxSpeed = self.maxSpeed + BOOST_MAX_SPEED_BONUS
+            self.speed = min(self.speed + 75, self.maxSpeed)
+            self.accel = self.accel * BOOST_FACTOR
             self.keyMap["boost"] = 1
             self.boosterLight.setColor(VBase4(MAX_LIGHT,MAX_LIGHT,MAX_LIGHT,1))
             taskMgr.add(self.checkBoosterEnd, "endBoosters")
-    
+        
     def checkBoosterEnd(self, task):
         if self.boosterStartTime == -1:
             self.boosterStartTime = task.time
@@ -255,9 +257,12 @@ class Vehicle(Actor):
         if elapsed > BOOSTER_LENGTH:
             self.boosterLight.setColor(VBase4(0,0,0,1))
             self.boosters.softStop()
-            self.accel = self.accel / 2
+            self.accel = self.accel / BOOST_FACTOR
             self.keyMap["boost"] = 0
             self.boosterStartTime = -1
+            self.maxSpeed = self.maxSpeed - BOOST_MAX_SPEED_BONUS
+            self.speed = min(self.speed, self.maxSpeed)
             return Task.done        
         else:    
             return Task.cont
+            

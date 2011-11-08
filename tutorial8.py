@@ -30,6 +30,7 @@ from direct.showbase.DirectObject import DirectObject
 import sys, math, random
 from vehicle import Vehicle
 
+import carLocations
 import Node
 import Enemy
 
@@ -176,6 +177,8 @@ class World(DirectObject):
         self.setWorldLight(self.env)
         for enemy in self.enemies:
             self.setWorldLight(enemy)
+        for car in self.staticCars:
+            self.setWorldLight(car)
         
     def shiftCamera(self):
         if self.cameraMove:
@@ -219,6 +222,14 @@ class World(DirectObject):
         file = open('levels/enemies.txt' )
         line = file.readline().rstrip()
         i = 0
+        self.staticCars = []
+        for currCar in carLocations.cars:
+            target = loader.loadModel("ralph_models/" + currCar['color'] + "_car")
+            target.setPos(currCar['position'])
+            target.setHpr(currCar['direction'])
+            target.reparentTo(render)
+            self.staticCars.append(target)
+            
         while line != "" :
             nums = line.split(',')
             convertedNums = []
@@ -387,6 +398,19 @@ class World(DirectObject):
         pusher.addCollider(cNodePath, self.player)
         pusher.addInPattern('%fn-into-%in')
         self.accept('player-into-fence', self.collideWithFence)
+        
+        for currCar in self.staticCars:
+            staticNode = CollisionNode("staticCar")
+            temp = CollisionSphere((0,-5.5,10), 4)
+            staticNode.addSolid(temp)
+            temp = CollisionSphere((0,-0.5,10), 4)
+            staticNode.addSolid(temp)
+            temp = CollisionSphere((0,3.5,10), 4)
+            staticNode.addSolid(temp)
+            staticNode.setIntoCollideMask(BitMask32.bit(1))
+            staticNode.setFromCollideMask(BitMask32.bit(0))
+            staticNodePath = currCar.attachNewNode(staticNode)
+            
         #registers a from object with the traverser with a corresponding handler
         #base.cTrav.addCollider(cNodePath, self.cHandler)
         # i = 0
@@ -400,6 +424,13 @@ class World(DirectObject):
             # i += 1
             
         for enemy in self.enemies:
+            collideNode = CollisionNode("droneNode")
+            temp = CollisionSphere((0,0,10), 4)
+            collideNode.addSolid(temp)
+            collideNode.setIntoCollideMask(BitMask32.bit(1))
+            collideNode.setFromCollideMask(BitMask32.bit(0))
+            enemycollideNodePath = enemy.attachNewNode(collideNode)
+            
             enemy.lightRay = CollisionRay()
             enemy.lightRay.setOrigin(0, -4, 4)
             # This is assumed based on the -175 degree pitch of the headlights.

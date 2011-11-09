@@ -55,6 +55,8 @@ MOVING = 0
 TURNING = 1
 STOPPED = 2
 
+MAX_GAS = 500.0
+
 class World(DirectObject):
     def __init__(self):
         self.winprops=WindowProperties()
@@ -75,6 +77,7 @@ class World(DirectObject):
         self.boosterLightNP = None
         self.flameLights = None
         self.player = Vehicle("ralph_models/vampire_car", "ralph_models/vampire_car", self, "player")
+
         self.livesFrame = DirectFrame(frameColor=(0, 0, 0, 0), parent = base.a2dTopLeft)
 
         self.livesSprites = list()
@@ -82,7 +85,22 @@ class World(DirectObject):
             sprite = OnscreenImage(image = 'images/healthicon.png', parent = self.livesFrame, scale = 0.08, pos = (0.2*i+0.1,0,-0.1))
             sprite.setTransparency(TransparencyAttrib.MAlpha)
             self.livesSprites.append(sprite)
-        
+
+        self.progressFrame = DirectFrame(frameColor=(0, 0, 0, 0), parent = base.a2dpTopRight)
+        gasIcon = OnscreenImage(image = 'images/gas_icon.png', parent = self.progressFrame, scale = 0.04, pos = (-1,0,-0.05))
+        # gasIcon.reparentTo(aspect2d)
+        gasIcon.setTransparency(TransparencyAttrib.MAlpha)
+                    
+        # gasBar = OnscreenImage(image = 'images/gas_bar.png', parent = self.progressFrame, scale = 0.4)#, pos = (-0.9,0,-0.05))
+        gasBar = DirectFrame(frameColor = (0,0,0,1), image = 'images/gas_bar.png', parent = self.progressFrame, scale = (0.44,1,0.0525), pos = (-.47,0,-0.04))
+        self.gasLevel = DirectFrame(frameColor=(1, 0, 0, .5),frameSize=(-1, -1, -1, 1), parent = self.progressFrame, scale = 1, pos = (0,0,-0.04))
+        # self.updateGasBar()
+        self.gasLevel.reparentTo(gasBar)
+        gasBar.setTransparency(TransparencyAttrib.MAlpha)
+
+
+        taskMgr.add(self.updateGasBar, "Update gas")
+
         self.loadModels()
         self.player.setPos(0,0,0)
         self.setupIntervals()
@@ -699,3 +717,7 @@ class World(DirectObject):
         if self.player.dead:
             print "THE PLAYER IS DEAD!!!!!!!!!!"
         return Task.cont
+
+    def updateGasBar(self, task):
+            self.gasLevel['frameSize'] = (-1,(self.player.totalGas / MAX_GAS)*2 - 1, -1, 1)
+            return Task.cont

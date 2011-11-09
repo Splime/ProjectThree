@@ -79,7 +79,7 @@ class Vehicle(Actor):
             self.loadSounds()
             self.lowSound.play()
         
-        self.totalGas = 0
+        self.totalGas = 150
         
     def takeHit(self, entry):
         ENEMY_STOPPED = 2

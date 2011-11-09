@@ -4,6 +4,7 @@ from pandac.PandaModules import TextNode
 from direct.fsm.FSM import FSM
 from direct.gui.OnscreenImage import OnscreenImage
 import menus
+import sys
 from world import World
 
 class MenuFSM(FSM):

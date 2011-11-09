@@ -55,6 +55,8 @@ STOPPED = 2
 class World(DirectObject):
     def __init__(self):
         self.winprops=WindowProperties()
+        self.winprops.setCursorFilename(Filename.binaryFilename("question-icon.ico"))
+        base.win.requestProperties(self.winprops) 
         self.enemyLights = []
         self.cameraPositions = [((0, 95, 75), (180, -27, 0)),((0, 55, 25), (180, -15, 0))]
         self.cameraIndex = 0
@@ -80,6 +82,9 @@ class World(DirectObject):
         
         #Give the vehicle direct access to the keyMap
         self.player.addKeyMap(self.keyMap)
+        
+        #Player Death
+        taskMgr.add(self.deathChecker, "deathTask")
         
         #Sounds!
         self.loadSounds()
@@ -159,6 +164,7 @@ class World(DirectObject):
             self.dfs(item.getChild(i), depth + 1, file)
             
     def startDrain(self):
+        prevDraining = self.draining #previous value of draining
         if base.mouseWatcherNode.hasMouse():
             mpos = base.mouseWatcherNode.getMouse()
             self.pickerRay.setFromLens(base.camNode, mpos.getX(), mpos.getY())
@@ -169,6 +175,9 @@ class World(DirectObject):
                     if self.pq.getEntry(i).getIntoNode().getTag('car') != "":
                         self.target = int(self.pq.getEntry(i).getIntoNode().getTag('car'))
                         self.draining = True
+        #Start sounds if self.draining started
+        if self.draining and not prevDraining:
+            self.drainSound.play()
 
     def drain(self, task):
         if self.draining and task.time - self.drainTime > DRAIN_DELAY:
@@ -179,7 +188,7 @@ class World(DirectObject):
                 if not self.gasPlaying:
                     self.gasP.reset()
                     self.gasP = ParticleEffect()  
-                    self.gasP.loadConfig(Filename('flamethrower6.ptf'))        
+                    self.gasP.loadConfig(Filename('oil.ptf'))        
                     self.gasP.start(self.player)
                     self.gasNode.lookAt(self.staticCars[self.target])
                     self.gasP.setPos(0,0,2)
@@ -197,11 +206,13 @@ class World(DirectObject):
             self.drainTime = task.time
         elif not self.draining or self.alan_var:
             self.gasP.softStop()
+            self.drainSound.stop()
             self.gasPlaying = False
         return Task.cont
                      
     def stopDrain(self):
         self.draining = False
+        
            
     def mouseTask(self, task):
         j = -1
@@ -218,13 +229,18 @@ class World(DirectObject):
                         playerpos = self.player.getPos()
                         dist = math.sqrt( (carpos[0] - playerpos[0])**2 + (carpos[1] - playerpos[1])**2 + (carpos[2] - playerpos[2])**2 )
                         if self.gasList[j] > 0 and dist < DRAIN_DIST:
-                            self.changeMouseCursor("vamp-icon.ico")
+                            self.winprops.setCursorFilename(Filename.binaryFilename("vamp-icon.ico"))
+                            base.win.requestProperties(self.winprops)
+                        elif self.gasList[j] > 0:
+                            self.winprops.setCursorFilename(Filename.binaryFilename("vamp-off.ico"))
+                            base.win.requestProperties(self.winprops)
                         else:
-                            self.changeMouseCursor("vamp-off.ico")
-                        #print(self.gasList[j])
+                            self.winprops.setCursorFilename(Filename.binaryFilename("empty-icon.ico"))
+                            base.win.requestProperties(self.winprops)
                         break
         if j == -1:
-            self.changeMouseCursor("question-icon.ico")
+            self.winprops.setCursorFilename(Filename.binaryFilename("question-icon.ico"))
+            base.win.requestProperties(self.winprops)
         #print j
         return Task.cont
     
@@ -324,6 +340,8 @@ class World(DirectObject):
         self.flamethrowerSound = base.loader.loadSfx("sound/dragonflameloop2.wav")
         self.flamethrowerEndSound = base.loader.loadSfx("sound/dragonflameend.wav")
         self.collideSound = base.loader.loadSfx("sound/collide.wav")
+        self.drainSound = base.loader.loadSfx("sound/gas_pump.wav")
+        self.drainSound.setLoop(True)
         
     def setupLights(self):
         #ambient light
@@ -651,3 +669,8 @@ class World(DirectObject):
             # print winprops.getXSize()
             # print "test"
             self.winprops.setCursorFilename(Filename.binaryFilename(cursorFile))
+    
+    def deathChecker(self, task):
+        if self.player.dead:
+            print "THE PLAYER IS DEAD!!!!!!!!!!"
+        return Task.cont

@@ -21,6 +21,7 @@ from panda3d.core import Filename
 from panda3d.core import CollisionTraverser,CollisionNode
 from panda3d.core import CollisionHandlerQueue,CollisionRay
 from panda3d.core import AmbientLight,DirectionalLight,LightAttrib
+from panda3d.core import ClockObject
 from direct.particles.Particles import Particles
 from direct.particles.ParticleEffect import ParticleEffect
 from direct.particles.ForceGroup import ForceGroup
@@ -430,20 +431,19 @@ class World(DirectObject):
             collideNode.setFromCollideMask(BitMask32.bit(0))
             enemycollideNodePath = enemy.attachNewNode(collideNode)
             
-            enemy.lightRay = CollisionRay()
-            enemy.lightRay.setOrigin(0, -4, 4)
-            # This is assumed based on the -175 degree pitch of the headlights.
-            enemy.lightRay.setDirection( 0 , -1 , -0.125 ) 
+            enemy.lightRay = CollisionSegment()
+            enemy.lightRay.setPointA(0, -4, 4)
+            enemy.lightRay.setPointB( 0 , -100 , 0 ) 
             
             # left
-            enemy.lightRayLeft = CollisionRay()
-            enemy.lightRayLeft.setOrigin(0, -4, 4)
-            enemy.lightRayLeft.setDirection( -0.125 , -1 , -0.125 ) 
+            enemy.lightRayLeft = CollisionSegment()
+            enemy.lightRayLeft.setPointA(0, -4, 4)
+            enemy.lightRayLeft.setPointB( -5 , -100 , 0 ) 
             
-            #right
-            enemy.lightRayRight = CollisionRay()
-            enemy.lightRayRight.setOrigin(0, -4, 4)
-            enemy.lightRayRight.setDirection( 0.125 , -1 , -0.125 ) 
+            # right
+            enemy.lightRayRight = CollisionSegment()
+            enemy.lightRayRight.setPointA(0, -4, 4)
+            enemy.lightRayRight.setPointB( 5 , -100 , 0 ) 
             
             enemy.lightRayNode = CollisionNode("lightRay")
             enemy.lightRayNode.addSolid(enemy.lightRay)
@@ -454,12 +454,7 @@ class World(DirectObject):
             enemy.lightRayNodePath.show()
             
             base.cTrav.addCollider(enemy.lightRayNodePath, self.playerLightCollision)
-        self.accept('into-playerinto', self.playerHit)
-
-    
-    def playerHit(self, entry):
-        print "HIT"
-        print entry
+        self.accept('into-playerinto', self.player.takeHit)
     
     def collideWithFence(self, entry):
         self.player.speed = self.player.speed * 0.9

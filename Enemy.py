@@ -23,9 +23,11 @@ import vehicle
 LEEWAY = 0.5
 ANGLE_LEEWAY = 1.0
 
+STUN_LENGTH = 4.0
 
 MOVING = 0
 TURNING = 1
+STOPPED = 2
 
 class Enemy(vehicle.Vehicle):
     def __init__(self, map, nodePath, world, x, y, z ):
@@ -65,7 +67,6 @@ class Enemy(vehicle.Vehicle):
         self.world.enemyLights.append(self.headlight1NP)
         #self.world.setWorldLight(self)
         
-
         
         
     def turn( self, task ):
@@ -111,14 +112,16 @@ class Enemy(vehicle.Vehicle):
             
             self.finishedTurning = False    
             
-        self.nextAngle = self.nextAngle % 360
+            self.nextAngle = self.nextAngle % 360
         # most the panda should ever have to turn is 180 degrees.
+        #print "CurAngle: " + str(curAngle) + " nextAngle: " + str(self.nextAngle)
         angleDiff = abs( curAngle - self.nextAngle )
         if angleDiff > 180:
             #print " Angle Diff: " + str(angleDiff)
             angleDiff -= 180
             angleDiff *= -1
             self.nextAngle = angleDiff
+            #print " Angle Diff: " + str(angleDiff)
         
         
         
@@ -197,4 +200,9 @@ class Enemy(vehicle.Vehicle):
             
             self.setPos(self.getX() + dx, self.getY() + dy, 0)
             self.prevtime = task.time
+        elif self.phase == STOPPED:
+            if task.time - self.prevtime > STUN_LENGTH:
+                self.phase = self.prevPhase
+                self.prevtime = task.time
+                self.headlight1.setColor(VBase4(75, 75, 75, 75))
         return Task.cont

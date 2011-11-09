@@ -462,6 +462,266 @@ cars = [
         'color'    : "navy",		'position' : (160,65,48),		'direction': (90,0,0),		'gas'      : 0
 	},
     
+    {
+        'color'    : "blue",		'position' : (160,75,48),		'direction': (90,0,0),		'gas'      : 100
+	},
+    
+    {
+        'color'    : "green",		'position' : (160,85,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
+    {
+        'color'    : "red",		'position' : (160,95,48),		'direction': (90,0,0),		'gas'      : 30
+	},
+    
+    {
+        'color'    : "silver",		'position' : (160,105,48),		'direction': (90,0,0),		'gas'      : 10
+	},
+    
+    {
+        'color'    : "navy",		'position' : (160,115,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
     #END ROW ALPHA
+    
+    #Row Beta
+    
+    {
+        'color'    : "blue",		'position' : (210,-25,48),		'direction': (90,0,0),		'gas'      : 100
+	},
+    
+    {
+        'color'    : "green",		'position' : (210,-35,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
+    {
+        'color'    : "red",		'position' : (210,-45,48),		'direction': (90,0,0),		'gas'      : 30
+	},
+    
+    {
+        'color'    : "silver",		'position' : (210,-55,48),		'direction': (90,0,0),		'gas'      : 10
+	},
+    
+    {
+        'color'    : "navy",		'position' : (210,-65,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
+    {
+        'color'    : "navy",		'position' : (210,-5,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
+    {
+        'color'    : "red",		'position' : (210,5,48),		'direction': (90,0,0),		'gas'      : 10
+	},
+    
+    {
+        'color'    : "blue",		'position' : (210,15,48),		'direction': (90,0,0),		'gas'      : 100
+	},
+    
+    {
+        'color'    : "green",		'position' : (210,25,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
+    {
+        'color'    : "red",		'position' : (210,35,48),		'direction': (90,0,0),		'gas'      : 30
+	},
+    
+    {
+        'color'    : "green",		'position' : (210,85,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
+    {
+        'color'    : "red",		'position' : (210,95,48),		'direction': (90,0,0),		'gas'      : 30
+	},
+    
+    {
+        'color'    : "silver",		'position' : (210,105,48),		'direction': (90,0,0),		'gas'      : 10
+	},
+    
+    {
+        'color'    : "navy",		'position' : (210,115,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
+    #END ROW BETA
+    
+    #Row Gamma
+    
+    {
+        'color'    : "blue",		'position' : (230,-25,48),		'direction': (90,0,0),		'gas'      : 100
+	},
+    
+    {
+        'color'    : "green",		'position' : (230,-35,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
+    {
+        'color'    : "red",		'position' : (230,-45,48),		'direction': (90,0,0),		'gas'      : 30
+	},
+    
+    {
+        'color'    : "silver",		'position' : (230,-55,48),		'direction': (90,0,0),		'gas'      : 10
+	},
+    
+    {
+        'color'    : "navy",		'position' : (230,-65,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
+    {
+        'color'    : "navy",		'position' : (230,-5,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
+    {
+        'color'    : "red",		'position' : (230,5,48),		'direction': (90,0,0),		'gas'      : 10
+	},
+    
+    {
+        'color'    : "blue",		'position' : (230,15,48),		'direction': (90,0,0),		'gas'      : 100
+	},
+    
+    {
+        'color'    : "green",		'position' : (230,25,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
+    {
+        'color'    : "red",		'position' : (230,35,48),		'direction': (90,0,0),		'gas'      : 30
+	},
+    
+    {
+        'color'    : "green",		'position' : (230,85,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
+    {
+        'color'    : "red",		'position' : (230,95,48),		'direction': (90,0,0),		'gas'      : 30
+	},
+    
+    {
+        'color'    : "silver",		'position' : (230,105,48),		'direction': (90,0,0),		'gas'      : 10
+	},
+    
+    {
+        'color'    : "navy",		'position' : (230,115,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
+    #END ROW GAMMA
+    
+    #Row Delta
+    
+    {
+        'color'    : "blue",		'position' : (280,-25,48),		'direction': (90,0,0),		'gas'      : 100
+	},
+    
+    {
+        'color'    : "green",		'position' : (280,-35,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
+    {
+        'color'    : "red",		'position' : (280,-45,48),		'direction': (90,0,0),		'gas'      : 30
+	},
+    
+    {
+        'color'    : "silver",		'position' : (280,-55,48),		'direction': (90,0,0),		'gas'      : 10
+	},
+    
+    {
+        'color'    : "navy",		'position' : (280,-65,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
+    {
+        'color'    : "navy",		'position' : (280,-5,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
+    {
+        'color'    : "red",		'position' : (280,5,48),		'direction': (90,0,0),		'gas'      : 10
+	},
+    
+    {
+        'color'    : "blue",		'position' : (280,15,48),		'direction': (90,0,0),		'gas'      : 100
+	},
+    
+    {
+        'color'    : "green",		'position' : (280,25,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
+    {
+        'color'    : "red",		'position' : (280,35,48),		'direction': (90,0,0),		'gas'      : 30
+	},
+    
+    {
+        'color'    : "green",		'position' : (280,85,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
+    {
+        'color'    : "red",		'position' : (280,95,48),		'direction': (90,0,0),		'gas'      : 30
+	},
+    
+    {
+        'color'    : "silver",		'position' : (280,105,48),		'direction': (90,0,0),		'gas'      : 10
+	},
+    
+    {
+        'color'    : "navy",		'position' : (280,115,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
+    #END ROW DELTA
+    
+    #Row SJKDS
+    
+    {
+        'color'    : "blue",		'position' : (300,-25,48),		'direction': (90,0,0),		'gas'      : 100
+	},
+    
+    {
+        'color'    : "green",		'position' : (300,-35,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
+    {
+        'color'    : "red",		'position' : (300,-45,48),		'direction': (90,0,0),		'gas'      : 30
+	},
+    
+    {
+        'color'    : "silver",		'position' : (300,-55,48),		'direction': (90,0,0),		'gas'      : 10
+	},
+    
+    {
+        'color'    : "navy",		'position' : (300,-65,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
+    {
+        'color'    : "navy",		'position' : (300,-5,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
+    {
+        'color'    : "red",		'position' : (300,5,48),		'direction': (90,0,0),		'gas'      : 10
+	},
+    
+    {
+        'color'    : "blue",		'position' : (300,15,48),		'direction': (90,0,0),		'gas'      : 100
+	},
+    
+    {
+        'color'    : "green",		'position' : (300,25,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
+    {
+        'color'    : "red",		'position' : (300,35,48),		'direction': (90,0,0),		'gas'      : 30
+	},
+    
+    {
+        'color'    : "green",		'position' : (300,85,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
+    {
+        'color'    : "red",		'position' : (300,95,48),		'direction': (90,0,0),		'gas'      : 30
+	},
+    
+    {
+        'color'    : "silver",		'position' : (300,105,48),		'direction': (90,0,0),		'gas'      : 10
+	},
+    
+    {
+        'color'    : "navy",		'position' : (300,115,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
+    #END ROW SJKDS
 
 ]

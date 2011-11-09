@@ -19,6 +19,7 @@ from direct.particles.ParticleEffect import ParticleEffect
 from direct.particles.ForceGroup import ForceGroup
 from direct.gui.OnscreenText import OnscreenText
 from direct.showbase.DirectObject import DirectObject
+from panda3d.core import ClockObject
 
 import sys, math, random
 
@@ -27,6 +28,7 @@ BOOSTER_LENGTH = 3
 RAMP_INTERVAL_DURATION = 0.25
 BOOST_FACTOR = 2.5
 BOOST_MAX_SPEED_BONUS = 100
+INVULN_TIME = 2.0 
 
 class Vehicle(Actor):
     
@@ -59,7 +61,17 @@ class Vehicle(Actor):
                                         blendType='noBlend',
                                         extraArgs=[(0,0),(0,0)],
                                         name="rampInterval")
-    
+        self.health = 100
+        self.lastCollision = 0.0
+        
+        
+    def takeHit(self, entry):
+        if ClockObject.getGlobalClock().getLongTime() - self.lastCollision > INVULN_TIME:
+            self.lastCollision = ClockObject.getGlobalClock().getLongTime()
+            self.health = self.health - 1
+            print self.health
+            
+        
     def setupBooster(self):
         #Booster Stuff
         self.boosters = ParticleEffect()

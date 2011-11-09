@@ -67,7 +67,7 @@ class Vehicle(Actor):
                                         blendType='noBlend',
                                         extraArgs=[(0,0),(0,0)],
                                         name="rampInterval")
-        self.health = 10
+        self.health = 8
         self.dead = False
         self.lastCollision = 0.0
         

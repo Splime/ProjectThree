@@ -45,7 +45,7 @@ MOVING = 0
 TURNING = 1
 STOPPED = 2
 
-MAX_GAS = 500.0
+MAX_GAS = 200.0
 GAS_TIME = 1
 
 class World(DirectObject):
@@ -83,12 +83,15 @@ class World(DirectObject):
         gasIcon.setTransparency(TransparencyAttrib.MAlpha)
                     
         # gasBar = OnscreenImage(image = 'images/gas_bar.png', parent = self.progressFrame, scale = 0.4)#, pos = (-0.9,0,-0.05))
-        gasBar = DirectFrame(frameColor = (0,0,0,1), image = 'images/gas_bar.png', parent = self.progressFrame, scale = (0.44,1,0.0525), pos = (-.47,0,-0.04))
+        gasBar = OnscreenImage( image = 'images/gas_bar.png', parent = self.progressFrame, scale = (0.44,1,0.0525), pos = (-.47,0,-0.04))
         self.gasLevel = DirectFrame(frameColor=(1, 0, 0, .5),frameSize=(-1, -1, -1, 1), parent = self.progressFrame, scale = 1, pos = (0,0,-0.04))
-        # self.updateGasBar()
         self.gasLevel.reparentTo(gasBar)
         gasBar.setTransparency(TransparencyAttrib.MAlpha)
 
+        timeBar = OnscreenImage(image = 'images/time_bar.png', parent = self.progressFrame, scale = (0.44,1,0.0525), pos = (-.47,0,-0.2))
+        # self.gasLevel = DirectFrame(frameColor=(1, 0, 0, .5),frameSize=(-1, -1, -1, 1), parent = self.progressFrame, scale = 1, pos = (0,0,-0.04))
+        # self.gasLevel.reparentTo(gasBar)
+        timeBar.setTransparency(TransparencyAttrib.MAlpha)
 
         taskMgr.add(self.updateGasBar, "Update gas")
 

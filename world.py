@@ -34,7 +34,7 @@ from direct.filter.CommonFilters import CommonFilters
 # import FSM
 # import menus
 
-import sys, math, random
+import sys, math, random, datetime
 from vehicle import Vehicle
 
 import carLocations
@@ -142,6 +142,10 @@ class World(DirectObject):
         self.drainTime = 0.0
     
         self.flamethrowerActive = False
+        
+        #After all the loading, we need to calculate our start time
+        self.startTime = datetime.datetime.now()
+        self.timeLimit = datetime.timedelta(seconds=60)
     
     def setupPicking(self):
         self.picker = CollisionTraverser()
@@ -168,20 +172,21 @@ class World(DirectObject):
             self.dfs(item.getChild(i), depth + 1, file)
             
     def startDrain(self):
-        prevDraining = self.draining #previous value of draining
-        if base.mouseWatcherNode.hasMouse():
-            mpos = base.mouseWatcherNode.getMouse()
-            self.pickerRay.setFromLens(base.camNode, mpos.getX(), mpos.getY())
-            self.picker.traverse(self.staticRoot)
-            if self.pq.getNumEntries() > 0:
-                self.pq.sortEntries()
-                for i in range(self.pq.getNumEntries()):
-                    if self.pq.getEntry(i).getIntoNode().getTag('car') != "":
-                        self.target = int(self.pq.getEntry(i).getIntoNode().getTag('car'))
-                        self.draining = True
-        #Start sounds if self.draining started
-        if self.draining and not prevDraining:
-            self.drainSound.play()
+        if not self.flamethrowerActive:
+            prevDraining = self.draining #previous value of draining
+            if base.mouseWatcherNode.hasMouse():
+                mpos = base.mouseWatcherNode.getMouse()
+                self.pickerRay.setFromLens(base.camNode, mpos.getX(), mpos.getY())
+                self.picker.traverse(self.staticRoot)
+                if self.pq.getNumEntries() > 0:
+                    self.pq.sortEntries()
+                    for i in range(self.pq.getNumEntries()):
+                        if self.pq.getEntry(i).getIntoNode().getTag('car') != "":
+                            self.target = int(self.pq.getEntry(i).getIntoNode().getTag('car'))
+                            self.draining = True
+            #Start sounds if self.draining started
+            if self.draining and not prevDraining:
+                self.drainSound.play()
 
     def drain(self, task):
         if self.draining and task.time - self.drainTime > DRAIN_DELAY:
@@ -622,6 +627,7 @@ class World(DirectObject):
         self.flamethrowerSound.setLoop(True)
         self.flamethrowerSound.play()
         self.flamethrowerActive = True
+        self.draining = False
         
     def stopShoot(self):
         self.p1.softStop()
@@ -675,6 +681,11 @@ class World(DirectObject):
             self.winprops.setCursorFilename(Filename.binaryFilename(cursorFile))
     
     def deathChecker(self, task):
+        #Check for out of time
+        currTime = datetime.datetime.now()
+        if currTime > self.startTime + self.timeLimit:
+            print "OUT OF TIME!!!!!!!!!!!"
+        #Check for death
         if self.player.dead:
             print "THE PLAYER IS DEAD!!!!!!!!!!"
         return Task.cont

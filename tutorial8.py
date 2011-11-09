@@ -40,6 +40,9 @@ MAX_LIGHT = 6
 BOOSTER_LENGTH = 3
 DEBUG = False
 
+DRAIN_DIST = 20.0
+DRAIN_DELAY = 0.1
+
 class World(DirectObject):
     def __init__(self):
         self.enemyLights = []
@@ -95,6 +98,9 @@ class World(DirectObject):
         
         self.accept("mouse1", self.startShoot)
         self.accept("mouse1-up", self.stopShoot)
+        self.accept("mouse3", self.startDrain )
+        self.accept("mouse3-up" , self.stopDrain)
+        
         self.accept("tab", self.shiftCamera)   
         self.accept("space", self.player.startBoosters)
         
@@ -111,6 +117,10 @@ class World(DirectObject):
         
     
         self.setLights()
+    
+        self.draining = False
+        taskMgr.add(self.drain, 'drain')
+        self.drainTime = 0.0
     
     def setupPicking(self):
         self.picker = CollisionTraverser()
@@ -136,6 +146,35 @@ class World(DirectObject):
         for i in range(item.getNumChildren()):
             self.dfs(item.getChild(i), depth + 1, file)
             
+    def startDrain(self):
+        if base.mouseWatcherNode.hasMouse():
+            mpos = base.mouseWatcherNode.getMouse()
+            self.pickerRay.setFromLens(base.camNode, mpos.getX(), mpos.getY())
+            self.picker.traverse(self.staticRoot)
+            if self.pq.getNumEntries() > 0:
+                self.pq.sortEntries()
+                for i in range(self.pq.getNumEntries()):
+                    if self.pq.getEntry(i).getIntoNode().getTag('car') != "":
+                        self.target = int(self.pq.getEntry(i).getIntoNode().getTag('car'))
+                        self.draining = True
+
+    def drain(self, task):
+        if self.draining and task.time - self.drainTime > DRAIN_DELAY:
+            carpos = self.staticCars[self.target].getPos()
+            playerpos = self.player.getPos()
+            dist = math.sqrt( (carpos[0] - playerpos[0])**2 + (carpos[1] - playerpos[1])**2 + (carpos[2] - playerpos[2])**2 )
+            if self.gasList[self.target] > 0 and dist < DRAIN_DIST:
+                self.player.totalGas = self.player.totalGas + 1
+                self.gasList[self.target] = self.gasList[self.target] - 1
+            print "TotalGas: " + str(self.player.totalGas)
+            self.drainTime = task.time
+        return Task.cont
+        
+                        
+    def stopDrain(self):
+        self.draining = False
+        
+            
     def mouseTask(self, task):
         if base.mouseWatcherNode.hasMouse():
             mpos = base.mouseWatcherNode.getMouse()
@@ -144,13 +183,14 @@ class World(DirectObject):
             if self.pq.getNumEntries() > 0:
                 self.pq.sortEntries()
                 for i in range(self.pq.getNumEntries()):
-                    if self.pq.getEntry(0).getIntoNode().getTag('car') != "":
-                        j = int(self.pq.getEntry(0).getIntoNode().getTag('car'))
-                        print(self.gasList[j])
+                    if self.pq.getEntry(i).getIntoNode().getTag('car') != "":
+                        j = int(self.pq.getEntry(i).getIntoNode().getTag('car'))
+                        #print(self.gasList[j])
                         break
-                
         return Task.cont
-
+    
+    
+    
     def setupIntervals(self):
         self.lightOn = LerpFunc(self.lightModify,
                             fromData=0,

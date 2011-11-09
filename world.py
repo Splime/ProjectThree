@@ -54,6 +54,7 @@ STOPPED = 2
 
 class World(DirectObject):
     def __init__(self):
+        self.winprops=WindowProperties()
         self.enemyLights = []
         self.cameraPositions = [((0, 95, 75), (180, -27, 0)),((0, 55, 25), (180, -15, 0))]
         self.cameraIndex = 0
@@ -625,8 +626,7 @@ class World(DirectObject):
     def changeMouseCursor(self, cursorFile):
         if self.currIcon != cursorFile:
             self.currIcon = cursorFile
-            winprops=WindowProperties()
-            winprops.getParentWindow().getXSize()
+            # winprops.getParentWindow().getXSize()
             # print winprops.getXSize()
-            print "test"
-            winprops.setCursorFilename(Filename.binaryFilename(cursorFile))
+            # print "test"
+            self.winprops.setCursorFilename(Filename.binaryFilename(cursorFile))

@@ -2,10 +2,6 @@ cars = [
     
     #Row 1
 	{
-        'color'    : "blue",		'position' : (10,0,0),		'direction': (180,0,0),		'gas'      : 100
-	},
-
-	{
         'color'    : "green",		'position' : (20,0,0),		'direction': (180,0,0),		'gas'      : 10
 	},
     
@@ -15,10 +11,6 @@ cars = [
     
     {
         'color'    : "navy",		'position' : (50,0,0),		'direction': (180,0,0),		'gas'      : 100
-	},
-    
-    {
-        'color'    : "blue",		'position' : (-10,0,0),		'direction': (180,0,0),		'gas'      : 100
 	},
     
     {
@@ -58,14 +50,6 @@ cars = [
     
     {
         'color'    : "navy",		'position' : (50,20,0),		'direction': (180,0,0),		'gas'      : 100
-	},
-    
-    {
-        'color'    : "blue",		'position' : (-10,20,0),		'direction': (180,0,0),		'gas'      : 100
-	},
-    
-    {
-        'color'    : "green",		'position' : (-20,20,0),		'direction': (180,0,0),		'gas'      : 10
 	},
     
     {
@@ -116,18 +100,6 @@ cars = [
 	},
     
     {
-        'color'    : "red",		'position' : (-30,70,0),		'direction': (180,0,0),		'gas'      : 0
-	},
-    
-    {
-        'color'    : "silver",		'position' : (-40,70,0),		'direction': (180,0,0),		'gas'      : 30
-	},
-    
-    {
-        'color'    : "navy",		'position' : (-50,70,0),		'direction': (180,0,0),		'gas'      : 100
-	},
-    
-    {
         'color'    : "blue",		'position' : (-100,70,0),		'direction': (180,0,0),		'gas'      : 100
 	},
 
@@ -164,18 +136,6 @@ cars = [
     
     {
         'color'    : "red",		'position' : (-30,90,0),		'direction': (180,0,0),		'gas'      : 0
-	},
-    
-    {
-        'color'    : "silver",		'position' : (-40,90,0),		'direction': (180,0,0),		'gas'      : 30
-	},
-    
-    {
-        'color'    : "navy",		'position' : (-50,90,0),		'direction': (180,0,0),		'gas'      : 100
-	},
-    
-    {
-        'color'    : "blue",		'position' : (-100,90,0),		'direction': (180,0,0),		'gas'      : 100
 	},
 
 	#END ROW 4
@@ -256,14 +216,6 @@ cars = [
 	},
     
     {
-        'color'    : "silver",		'position' : (95,40,0),		'direction': (180,0,0),		'gas'      : 30
-	},
-    
-    {
-        'color'    : "silver",		'position' : (95,20,0),		'direction': (180,0,0),		'gas'      : 30
-	},
-    
-    {
         'color'    : "silver",		'position' : (95,0,0),		'direction': (180,0,0),		'gas'      : 30
 	},
     
@@ -274,14 +226,6 @@ cars = [
 
 	{
         'color'    : "green",		'position' : (20,-50,0),		'direction': (180,0,0),		'gas'      : 10
-	},
-    
-    {
-        'color'    : "red",		'position' : (30,-50,0),		'direction': (180,0,0),		'gas'      : 0
-	},
-    
-    {
-        'color'    : "navy",		'position' : (50,-50,0),		'direction': (180,0,0),		'gas'      : 100
 	},
     
     {
@@ -317,14 +261,6 @@ cars = [
     #Row B
 	{
         'color'    : "blue",		'position' : (10,-70,0),		'direction': (180,0,0),		'gas'      : 100
-	},
-
-	{
-        'color'    : "green",		'position' : (20,-70,0),		'direction': (180,0,0),		'gas'      : 10
-	},
-    
-    {
-        'color'    : "red",		'position' : (30,-70,0),		'direction': (180,0,0),		'gas'      : 0
 	},
     
     {
@@ -383,18 +319,6 @@ cars = [
 	},
     
     {
-        'color'    : "blue",		'position' : (-10,-120,0),		'direction': (180,0,0),		'gas'      : 100
-	},
-    
-    {
-        'color'    : "green",		'position' : (-20,-120,0),		'direction': (180,0,0),		'gas'      : 10
-	},
-    
-    {
-        'color'    : "red",		'position' : (-30,-120,0),		'direction': (180,0,0),		'gas'      : 0
-	},
-    
-    {
         'color'    : "silver",		'position' : (-40,-120,0),		'direction': (180,0,0),		'gas'      : 30
 	},
     
@@ -435,18 +359,6 @@ cars = [
 	},
     
     {
-        'color'    : "navy",		'position' : (160,-5,48),		'direction': (90,0,0),		'gas'      : 0
-	},
-    
-    {
-        'color'    : "red",		'position' : (160,5,48),		'direction': (90,0,0),		'gas'      : 10
-	},
-    
-    {
-        'color'    : "blue",		'position' : (160,15,48),		'direction': (90,0,0),		'gas'      : 100
-	},
-    
-    {
         'color'    : "green",		'position' : (160,25,48),		'direction': (90,0,0),		'gas'      : 0
 	},
     
@@ -462,6 +374,175 @@ cars = [
         'color'    : "navy",		'position' : (160,65,48),		'direction': (90,0,0),		'gas'      : 0
 	},
     
+    {
+        'color'    : "blue",		'position' : (160,75,48),		'direction': (90,0,0),		'gas'      : 100
+	},
+    
+    {
+        'color'    : "green",		'position' : (160,85,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
+    {
+        'color'    : "red",		'position' : (160,95,48),		'direction': (90,0,0),		'gas'      : 30
+	},
+    
+    
     #END ROW ALPHA
+    
+    #Row Beta
+    
+    {
+        'color'    : "blue",		'position' : (210,-25,48),		'direction': (90,0,0),		'gas'      : 100
+	},
+    
+    {
+        'color'    : "green",		'position' : (210,-35,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
+    {
+        'color'    : "red",		'position' : (210,-45,48),		'direction': (90,0,0),		'gas'      : 30
+	},
+    
+    {
+        'color'    : "silver",		'position' : (210,-55,48),		'direction': (90,0,0),		'gas'      : 10
+	},
+    
+    {
+        'color'    : "navy",		'position' : (210,-65,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
+    {
+        'color'    : "red",		'position' : (210,35,48),		'direction': (90,0,0),		'gas'      : 30
+	},
+    
+    {
+        'color'    : "green",		'position' : (210,85,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
+    #END ROW BETA
+    
+    #Row Gamma
+    
+    {
+        'color'    : "red",		'position' : (230,-45,48),		'direction': (90,0,0),		'gas'      : 30
+	},
+    
+    {
+        'color'    : "silver",		'position' : (230,-55,48),		'direction': (90,0,0),		'gas'      : 10
+	},
+    
+    {
+        'color'    : "navy",		'position' : (230,-65,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
+    {
+        'color'    : "blue",		'position' : (230,15,48),		'direction': (90,0,0),		'gas'      : 100
+	},
+    
+    {
+        'color'    : "green",		'position' : (230,25,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
+    {
+        'color'    : "red",		'position' : (230,35,48),		'direction': (90,0,0),		'gas'      : 30
+	},
+    
+    {
+        'color'    : "green",		'position' : (230,85,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
+    {
+        'color'    : "red",		'position' : (230,95,48),		'direction': (90,0,0),		'gas'      : 30
+	},
+    
+    {
+        'color'    : "silver",		'position' : (230,105,48),		'direction': (90,0,0),		'gas'      : 10
+	},
+    
+    #END ROW GAMMA
+    
+    #Row Delta
+    
+    {
+        'color'    : "blue",		'position' : (280,-25,48),		'direction': (90,0,0),		'gas'      : 100
+	},
+    
+    {
+        'color'    : "navy",		'position' : (280,-5,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
+    {
+        'color'    : "red",		'position' : (280,5,48),		'direction': (90,0,0),		'gas'      : 10
+	},
+    
+    {
+        'color'    : "blue",		'position' : (280,15,48),		'direction': (90,0,0),		'gas'      : 100
+	},
+    
+    {
+        'color'    : "green",		'position' : (280,25,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
+    {
+        'color'    : "red",		'position' : (280,35,48),		'direction': (90,0,0),		'gas'      : 30
+	},
+    
+    {
+        'color'    : "green",		'position' : (280,85,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
+    {
+        'color'    : "red",		'position' : (280,95,48),		'direction': (90,0,0),		'gas'      : 30
+	},
+    
+    #END ROW DELTA
+    
+    #Row SJKDS
+    
+    {
+        'color'    : "blue",		'position' : (300,-25,48),		'direction': (90,0,0),		'gas'      : 100
+	},
+    
+    {
+        'color'    : "green",		'position' : (300,-35,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
+    {
+        'color'    : "navy",		'position' : (300,-5,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
+    {
+        'color'    : "red",		'position' : (300,5,48),		'direction': (90,0,0),		'gas'      : 10
+	},
+    
+    {
+        'color'    : "blue",		'position' : (300,15,48),		'direction': (90,0,0),		'gas'      : 100
+	},
+    
+    {
+        'color'    : "green",		'position' : (300,25,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
+    {
+        'color'    : "red",		'position' : (300,35,48),		'direction': (90,0,0),		'gas'      : 30
+	},
+    
+    {
+        'color'    : "green",		'position' : (300,85,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
+    {
+        'color'    : "red",		'position' : (300,95,48),		'direction': (90,0,0),		'gas'      : 30
+	},
+    
+    {
+        'color'    : "silver",		'position' : (300,105,48),		'direction': (90,0,0),		'gas'      : 10
+	},
+    
+    {
+        'color'    : "navy",		'position' : (300,115,48),		'direction': (90,0,0),		'gas'      : 0
+	},
+    
+    #END ROW SJKDS
 
 ]

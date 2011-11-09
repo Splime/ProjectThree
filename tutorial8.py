@@ -255,7 +255,7 @@ class World(DirectObject):
         self.player.setupBooster()
         self.env = loader.loadModel("ralph_models/green_ramps")      
         self.env.reparentTo(render)
-        self.env.setScale(15)
+        self.env.setScale(8) #was 15
         
         # Node Map
         map = Node.NodeMap("nodes.txt")

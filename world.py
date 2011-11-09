@@ -159,6 +159,7 @@ class World(DirectObject):
             self.dfs(item.getChild(i), depth + 1, file)
             
     def startDrain(self):
+        prevDraining = self.draining #previous value of draining
         if base.mouseWatcherNode.hasMouse():
             mpos = base.mouseWatcherNode.getMouse()
             self.pickerRay.setFromLens(base.camNode, mpos.getX(), mpos.getY())
@@ -169,6 +170,9 @@ class World(DirectObject):
                     if self.pq.getEntry(i).getIntoNode().getTag('car') != "":
                         self.target = int(self.pq.getEntry(i).getIntoNode().getTag('car'))
                         self.draining = True
+        #Start sounds if self.draining started
+        if self.draining and not prevDraining:
+            self.drainSound.play()
 
     def drain(self, task):
         if self.draining and task.time - self.drainTime > DRAIN_DELAY:
@@ -202,6 +206,7 @@ class World(DirectObject):
                      
     def stopDrain(self):
         self.draining = False
+        self.drainSound.stop()
            
     def mouseTask(self, task):
         j = -1
@@ -324,6 +329,8 @@ class World(DirectObject):
         self.flamethrowerSound = base.loader.loadSfx("sound/dragonflameloop2.wav")
         self.flamethrowerEndSound = base.loader.loadSfx("sound/dragonflameend.wav")
         self.collideSound = base.loader.loadSfx("sound/collide.wav")
+        self.drainSound = base.loader.loadSfx("sound/gas_pump.wav")
+        self.drainSound.setLoop(True)
         
     def setupLights(self):
         #ambient light

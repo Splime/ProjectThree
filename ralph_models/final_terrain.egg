@@ -4,7 +4,7 @@
   "maya2egg2012 -cs y-up -a model -cn super_terrain -o final_terrain.egg 'C:\Users\lummia2\Dropbox\Project 3\Project folder\terrain2_mod.mb'"
 }
 <Texture> phong2SG {
-  "../../Users/lummia2/Dropbox/Project 3/Project folder/textures/environment/roof.bmp"
+  "environment/roof.bmp"
   <Scalar> format { rgb }
   <Scalar> wrapu { repeat }
   <Scalar> wrapv { repeat }
@@ -12,7 +12,7 @@
   <Scalar> magfilter { linear }
 }
 <Texture> lambert2SG {
-  "../../Users/lummia2/Dropbox/Project 3/Project folder/textures/environment/environment.bmp"
+  "environment/environment.bmp"
   <Scalar> format { rgb }
   <Scalar> wrapu { repeat }
   <Scalar> wrapv { repeat }

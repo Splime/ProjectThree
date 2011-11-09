@@ -55,7 +55,7 @@ class World(DirectObject):
         #Prepare the vehicular manslaughter!
         self.boosterLightNP = None
         self.flameLights = None
-        self.player = Vehicle("ralph_models/vampire_car", "ralph_models/vampire_car", self)
+        self.player = Vehicle("ralph_models/vampire_car", "ralph_models/vampire_car", self, "player")
         
         self.loadModels()
         self.player.setPos(0,0,0)

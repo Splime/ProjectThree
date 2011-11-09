@@ -728,16 +728,16 @@ class World(DirectObject):
             print "OUT OF TIME!!!!!!!!!!!"
             
             taskMgr.doMethodLater(5, self.STOPGAME, 'tickTask')
-            self.loading = OnscreenImage(image = 'images/loading.png', scale = (1.3333333,0, 1))
+            self.loading = OnscreenImage(image = 'images/victory.png', scale = (1.3333333,0, 1))
         #Check for death
         if self.player.dead:
             print "THE PLAYER IS DEAD!!!!!!!!!!"
             taskMgr.doMethodLater(5, self.STOPGAME, 'tickTask')
-            self.loading = OnscreenImage(image = 'images/loading.png', scale = (1.3333333,0, 1))
+            self.loading = OnscreenImage(image = 'images/lose_death.png', scale = (1.3333333,0, 1))
         if self.player.totalGas <= 0:
             print "YOU SUCK. YOU RAN OUT OF GAS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
             taskMgr.doMethodLater(5, self.STOPGAME, 'tickTask')
-            self.loading = OnscreenImage(image = 'images/loading.png', scale = (1.3333333,0, 1))
+            self.loading = OnscreenImage(image = 'images/lose_nogas.png', scale = (1.3333333,0, 1))
         return Task.cont
 
         

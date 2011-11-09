@@ -57,7 +57,7 @@ class Vehicle(Actor):
         self.maxBkwdsSpeed = -40.0
         self.direction = Vehicle.STOPPED
         self.isTurning = False
-        self.turnFactor = 1.2
+        self.turnFactor = 2.0
         self.loc = ""
         self.rampHprInterval = LerpFunc(self.rampInterval,
                                         fromData=0,

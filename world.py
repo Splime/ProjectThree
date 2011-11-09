@@ -202,11 +202,11 @@ class World(DirectObject):
                             self.changeMouseCursor("vamp-icon.ico")
                         else:
                             self.changeMouseCursor("vamp-off.ico")
-                        print(self.gasList[j])
+                        #print(self.gasList[j])
                         break
         if j == -1:
             self.changeMouseCursor("question-icon.ico")
-        print j
+        #print j
         return Task.cont
     
     def setupIntervals(self):

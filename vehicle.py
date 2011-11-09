@@ -66,7 +66,8 @@ class Vehicle(Actor):
                                         blendType='noBlend',
                                         extraArgs=[(0,0),(0,0)],
                                         name="rampInterval")
-        self.health = 100
+        self.health = 10
+        self.dead = False
         self.lastCollision = 0.0
         
             
@@ -87,6 +88,11 @@ class Vehicle(Actor):
             self.lastCollision = ClockObject.getGlobalClock().getLongTime()
             self.health = self.health - 1
             print "Health: " + str(self.health)
+            
+            #If health = 0, we need to do something
+            if self.health <= 0:
+                print "YOU ARE DEAD!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+                self.dead = True
     
     def loadSounds(self):
         self.lowSound = base.loader.loadSfx("sound/car_idle.wav")

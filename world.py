@@ -83,6 +83,9 @@ class World(DirectObject):
         #Give the vehicle direct access to the keyMap
         self.player.addKeyMap(self.keyMap)
         
+        #Player Death
+        taskMgr.add(self.deathChecker, "deathTask")
+        
         #Sounds!
         self.loadSounds()
         self.currIcon = ""
@@ -203,12 +206,13 @@ class World(DirectObject):
             self.drainTime = task.time
         elif not self.draining or self.alan_var:
             self.gasP.softStop()
+            self.drainSound.stop()
             self.gasPlaying = False
         return Task.cont
                      
     def stopDrain(self):
         self.draining = False
-        self.drainSound.stop()
+        
            
     def mouseTask(self, task):
         j = -1
@@ -665,3 +669,8 @@ class World(DirectObject):
             # print winprops.getXSize()
             # print "test"
             self.winprops.setCursorFilename(Filename.binaryFilename(cursorFile))
+    
+    def deathChecker(self, task):
+        if self.player.dead:
+            print "THE PLAYER IS DEAD!!!!!!!!!!"
+        return Task.cont

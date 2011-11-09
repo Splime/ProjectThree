@@ -88,6 +88,7 @@ class Vehicle(Actor):
         if self.world.enemies[index].phase != ENEMY_STOPPED and ClockObject.getGlobalClock().getLongTime() - self.lastCollision > INVULN_TIME:
             self.lastCollision = ClockObject.getGlobalClock().getLongTime()
             self.health = self.health - 1
+            self.screamSound.play()
             self.world.livesSprites[self.health].setImage('images/healthicon_depleted.png')
             self.world.livesSprites[self.health].setTransparency(TransparencyAttrib.MAlpha)
             print "Health: " + str(self.health)
@@ -125,6 +126,7 @@ class Vehicle(Actor):
         self.boostSound = base.loader.loadSfx("sound/car_boost.wav")
         self.boostSound.setLoop(True)
         #self.collideSound = base.loader.loadSfx("sound/collide.wav")
+        self.screamSound = base.loader.loadSfx("sound/scream.wav")
     
     def updateEngineSound(self):
         if self.speed < self.maxSpeed / 4 and self.speed > self.maxBkwdsSpeed / 4:

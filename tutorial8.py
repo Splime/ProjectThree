@@ -73,7 +73,7 @@ class World(DirectObject):
         
         #Sounds!
         self.loadSounds()
-        
+        self.currIcon = ""
         self.prevtime = 0
         self.isMoving = False
         self.accept("escape", sys.exit)
@@ -176,6 +176,7 @@ class World(DirectObject):
         self.draining = False
            
     def mouseTask(self, task):
+        j = -1
         if base.mouseWatcherNode.hasMouse():
             mpos = base.mouseWatcherNode.getMouse()
             self.pickerRay.setFromLens(base.camNode, mpos.getX(), mpos.getY())
@@ -185,8 +186,18 @@ class World(DirectObject):
                 for i in range(self.pq.getNumEntries()):
                     if self.pq.getEntry(i).getIntoNode().getTag('car') != "":
                         j = int(self.pq.getEntry(i).getIntoNode().getTag('car'))
-                        #print(self.gasList[j])
+                        carpos = self.staticCars[j].getPos()  
+                        playerpos = self.player.getPos()
+                        dist = math.sqrt( (carpos[0] - playerpos[0])**2 + (carpos[1] - playerpos[1])**2 + (carpos[2] - playerpos[2])**2 )
+                        if self.gasList[j] > 0 and dist < DRAIN_DIST:
+                            self.changeMouseCursor("vamp-icon.ico")
+                        else:
+                            self.changeMouseCursor("vamp-off.ico")
+                        print(self.gasList[j])
                         break
+        if j == -1:
+            self.changeMouseCursor("question-icon.ico")
+        print j
         return Task.cont
     
     def setupIntervals(self):
@@ -594,7 +605,12 @@ class World(DirectObject):
         #remove from scene graph
         cEntry.getIntoNodePath().getParent().remove()
         
-        
+    def changeMouseCursor(self, cursorFile):
+        if self.currIcon != cursorFile:
+            self.currIcon = cursorFile
+            winprops=WindowProperties()
+            winprops.setCursorFilename(Filename.binaryFilename(cursorFile))
+            base.win.requestProperties(winprops)    
         
 w = World()
 run()

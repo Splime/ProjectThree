@@ -122,6 +122,8 @@ class World(DirectObject):
         taskMgr.add(self.drain, 'drain')
         self.drainTime = 0.0
     
+        self.flamethrowerActive = False
+    
     def setupPicking(self):
         self.picker = CollisionTraverser()
         self.pq     = CollisionHandlerQueue()
@@ -169,12 +171,10 @@ class World(DirectObject):
             print "TotalGas: " + str(self.player.totalGas)
             self.drainTime = task.time
         return Task.cont
-        
-                        
+                     
     def stopDrain(self):
         self.draining = False
-        
-            
+           
     def mouseTask(self, task):
         if base.mouseWatcherNode.hasMouse():
             mpos = base.mouseWatcherNode.getMouse()
@@ -188,8 +188,6 @@ class World(DirectObject):
                         #print(self.gasList[j])
                         break
         return Task.cont
-    
-    
     
     def setupIntervals(self):
         self.lightOn = LerpFunc(self.lightModify,
@@ -416,6 +414,7 @@ class World(DirectObject):
         cNode.addSolid(temp)
         cNode.setIntoCollideMask(BitMask32.allOff()) #player is *only* a from object
         cNodePath = self.player.attachNewNode(cNode)
+        
         if DEBUG:
             cNodePath.show()
             
@@ -441,8 +440,33 @@ class World(DirectObject):
         cNode2.addSolid(temp)
         cNode2.setFromCollideMask(BitMask32.allOff()) #player is *only* a from object
         cNodePath2 = self.player.attachNewNode(cNode2)
-        if True:
+        if DEBUG:
             cNodePath2.show()
+        
+        # FLAMETHROWER COLLISIONS
+        # left
+        flamethrowerLeft = CollisionSegment()
+        flamethrowerLeft.setPointA(-5 , -4, 10)
+        flamethrowerLeft.setPointB( -5 , -40 , 10 ) 
+        
+        # right
+        flamethrowerRight = CollisionSegment()
+        flamethrowerRight.setPointA(5, -4, 10)
+        flamethrowerRight.setPointB( 5 , -40 , 10 ) 
+        
+        flamethrowerNode = CollisionNode("flamethrower")
+        flamethrowerNode.addSolid(flamethrowerLeft)
+        flamethrowerNode.addSolid(flamethrowerRight)
+        flamethrowerNode.setIntoCollideMask(BitMask32.allOff())
+        flamethrowerNode.setFromCollideMask(BitMask32.allOn())
+        flamethrowerNodePath = self.player.attachNewNode(flamethrowerNode)
+        
+        flamethrowerNodePath.show()
+        
+        flamethrowerCollision = CollisionHandlerEvent()
+        flamethrowerCollision.addInPattern('into-%in')
+        base.cTrav.addCollider(flamethrowerNodePath, flamethrowerCollision)
+        self.accept('into-droneNode', self.hitEnemy)
         
         for i in range(len(self.staticCars)):
             staticNode = CollisionNode("staticCar")
@@ -491,7 +515,8 @@ class World(DirectObject):
             enemy.lightRayNode.addSolid(enemy.lightRayRight)
             enemy.lightRayNode.setIntoCollideMask(BitMask32.allOff())
             enemy.lightRayNodePath = enemy.attachNewNode(enemy.lightRayNode)
-            enemy.lightRayNodePath.show()
+            if DEBUG:
+                enemy.lightRayNodePath.show()
             
             base.cTrav.addCollider(enemy.lightRayNodePath, self.playerLightCollision)
         self.accept('into-playerinto', self.player.takeHit)
@@ -516,6 +541,7 @@ class World(DirectObject):
         #Get the flame noise started!
         self.flamethrowerSound.setLoop(True)
         self.flamethrowerSound.play()
+        self.flamethrowerActive = True
         
     def stopShoot(self):
         self.p1.softStop()
@@ -525,6 +551,11 @@ class World(DirectObject):
         
         self.flamethrowerSound.stop()
         self.flamethrowerEndSound.play()
+        self.flamethrowerActive = False
+        
+    def hitEnemy(self, entry):
+        if self.flamethrowerActive:
+            print "Hit!"
         
     def loadParticleConfig(self, file):
         self.p1.reset()
@@ -533,6 +564,7 @@ class World(DirectObject):
         self.p1.start(self.player)
         self.p1.setPos(-1.75, -10, 1.375)
         self.p1.setHpr(0, 90, 0)
+        self.p1.lookAt(self.enemies[0])
         self.p1.setScale(1.5)
         self.p1.setLightOff()
         self.p2.reset()

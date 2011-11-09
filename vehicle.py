@@ -57,6 +57,7 @@ class Vehicle(Actor):
         self.maxBkwdsSpeed = -40.0
         self.direction = Vehicle.STOPPED
         self.isTurning = False
+        self.blinkStart = 0
         self.turnFactor = 2.0
         self.loc = ""
         self.rampHprInterval = LerpFunc(self.rampInterval,
@@ -67,6 +68,7 @@ class Vehicle(Actor):
                                         extraArgs=[(0,0),(0,0)],
                                         name="rampInterval")
         self.health = 3
+        self.dead = False
         self.lastCollision = 0.0
         
             
@@ -89,6 +91,27 @@ class Vehicle(Actor):
             self.world.livesSprites[self.health].setImage('images/healthicon_depleted.png')
             self.world.livesSprites[self.health].setTransparency(TransparencyAttrib.MAlpha)
             print "Health: " + str(self.health)
+            self.blinkStart = -1
+            taskMgr.add(self.blink, "blinking")
+            
+            #If health = 0, we need to do something
+            if self.health <= 0:
+                print "YOU ARE DEAD!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+                self.dead = True
+    
+    def blink(self, task):
+        if self.blinkStart == -1:
+            self.blinkStart = task.time
+        elapsed = task.time - self.blinkStart
+        if elapsed > 2:
+            self.show()
+            return Task.done
+        if int(elapsed * 10) % 2 == 0:
+            self.show()
+        else:
+            self.hide()
+        return Task.cont
+            
     
     def loadSounds(self):
         self.lowSound = base.loader.loadSfx("sound/car_idle.wav")

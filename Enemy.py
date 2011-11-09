@@ -20,8 +20,8 @@ from direct.showbase.DirectObject import DirectObject
 import math
 import vehicle
 
-LEEWAY = 0.5
-ANGLE_LEEWAY = 1.0
+LEEWAY = 1.5
+ANGLE_LEEWAY = 3.0
 
 STUN_LENGTH = 4.0
 
@@ -117,8 +117,6 @@ class Enemy(vehicle.Vehicle):
             #print "(1) DX: " + str(dx) + " DY: " + str(dy) + " Angle: " + str(self.nextAngle) + " CurAngle: " + str(curAngle)
         # most the panda should ever have to turn is 180 degrees.
         angleDiff = abs( curAngle - self.nextAngle )
-        print curAngle
-        print self.nextAngle
         if angleDiff > 180:
             if curAngle == 270 and self.nextAngle == 0:
                 self.nextAngle = 360
@@ -128,8 +126,7 @@ class Enemy(vehicle.Vehicle):
                 angleDiff *= -1
                 self.nextAngle = angleDiff
             #print " Angle Diff: " + str(angleDiff)
-        
-        
+
         
         #print "(2) Abs X: " + str(absx) + " Abs Y: " + str(absy) + " Angle: " + str(self.nextAngle) + " CurAngle: " + str(curAngle)
         if abs(curAngle - self.nextAngle) < ANGLE_LEEWAY:
@@ -153,7 +150,6 @@ class Enemy(vehicle.Vehicle):
         self.prevtime = task.time
         
     def move( self, map, task ):
-        
         #check if enemy is at node, if so, then change lastNode and nextNode
         #print "X: " + str(int(self.getX())) + " vs "  + str(self.nextNodePos[0])
         #print "Y: " + str(int(self.getY())) + " vs "  + str(self.nextNodePos[1])
@@ -208,7 +204,7 @@ class Enemy(vehicle.Vehicle):
             dx = xdir * dist
             dy = ydir * dist
             
-            self.setPos(self.getX() + dx, self.getY() + dy, 0)
+            self.setPos(self.getX() + dx, self.getY() + dy, self.getZ())
             self.prevtime = task.time
         elif self.phase == STOPPED:
             if task.time - self.prevtime > STUN_LENGTH:

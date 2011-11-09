@@ -37,7 +37,7 @@ from direct.gui.DirectGui import *
 # import FSM
 # import menus
 
-import sys, math, random
+import sys, math, random, datetime
 from vehicle import Vehicle
 
 import carLocations
@@ -58,6 +58,12 @@ STOPPED = 2
 class World(DirectObject):
     def __init__(self):
         self.winprops=WindowProperties()
+        self.winprops.setCursorFilename(Filename.binaryFilename("question-icon.ico"))
+        
+        base.win.setClearColorActive(True)
+        base.win.setClearColor(VBase4(0, 0, 0, 1))
+        
+        base.win.requestProperties(self.winprops) 
         self.enemyLights = []
         self.cameraPositions = [((0, 95, 75), (180, -27, 0)),((0, 55, 25), (180, -15, 0))]
         self.cameraIndex = 0
@@ -90,6 +96,9 @@ class World(DirectObject):
         
         #Give the vehicle direct access to the keyMap
         self.player.addKeyMap(self.keyMap)
+        
+        #Player Death
+        taskMgr.add(self.deathChecker, "deathTask")
         
         #Sounds!
         self.loadSounds()
@@ -143,6 +152,10 @@ class World(DirectObject):
         self.drainTime = 0.0
     
         self.flamethrowerActive = False
+        
+        #After all the loading, we need to calculate our start time
+        self.startTime = datetime.datetime.now()
+        self.timeLimit = datetime.timedelta(seconds=60)
     
     def setupPicking(self):
         self.picker = CollisionTraverser()
@@ -169,20 +182,21 @@ class World(DirectObject):
             self.dfs(item.getChild(i), depth + 1, file)
             
     def startDrain(self):
-        prevDraining = self.draining #previous value of draining
-        if base.mouseWatcherNode.hasMouse():
-            mpos = base.mouseWatcherNode.getMouse()
-            self.pickerRay.setFromLens(base.camNode, mpos.getX(), mpos.getY())
-            self.picker.traverse(self.staticRoot)
-            if self.pq.getNumEntries() > 0:
-                self.pq.sortEntries()
-                for i in range(self.pq.getNumEntries()):
-                    if self.pq.getEntry(i).getIntoNode().getTag('car') != "":
-                        self.target = int(self.pq.getEntry(i).getIntoNode().getTag('car'))
-                        self.draining = True
-        #Start sounds if self.draining started
-        if self.draining and not prevDraining:
-            self.drainSound.play()
+        if not self.flamethrowerActive:
+            prevDraining = self.draining #previous value of draining
+            if base.mouseWatcherNode.hasMouse():
+                mpos = base.mouseWatcherNode.getMouse()
+                self.pickerRay.setFromLens(base.camNode, mpos.getX(), mpos.getY())
+                self.picker.traverse(self.staticRoot)
+                if self.pq.getNumEntries() > 0:
+                    self.pq.sortEntries()
+                    for i in range(self.pq.getNumEntries()):
+                        if self.pq.getEntry(i).getIntoNode().getTag('car') != "":
+                            self.target = int(self.pq.getEntry(i).getIntoNode().getTag('car'))
+                            self.draining = True
+            #Start sounds if self.draining started
+            if self.draining and not prevDraining:
+                self.drainSound.play()
 
     def drain(self, task):
         if self.draining and task.time - self.drainTime > DRAIN_DELAY:
@@ -193,7 +207,7 @@ class World(DirectObject):
                 if not self.gasPlaying:
                     self.gasP.reset()
                     self.gasP = ParticleEffect()  
-                    self.gasP.loadConfig(Filename('flamethrower6.ptf'))        
+                    self.gasP.loadConfig(Filename('oil.ptf'))        
                     self.gasP.start(self.player)
                     self.gasNode.lookAt(self.staticCars[self.target])
                     self.gasP.setPos(0,0,2)
@@ -211,12 +225,13 @@ class World(DirectObject):
             self.drainTime = task.time
         elif not self.draining or self.alan_var:
             self.gasP.softStop()
+            self.drainSound.stop()
             self.gasPlaying = False
         return Task.cont
                      
     def stopDrain(self):
         self.draining = False
-        self.drainSound.stop()
+        
            
     def mouseTask(self, task):
         j = -1
@@ -233,13 +248,18 @@ class World(DirectObject):
                         playerpos = self.player.getPos()
                         dist = math.sqrt( (carpos[0] - playerpos[0])**2 + (carpos[1] - playerpos[1])**2 + (carpos[2] - playerpos[2])**2 )
                         if self.gasList[j] > 0 and dist < DRAIN_DIST:
-                            self.changeMouseCursor("vamp-icon.ico")
+                            self.winprops.setCursorFilename(Filename.binaryFilename("vamp-icon.ico"))
+                            base.win.requestProperties(self.winprops)
+                        elif self.gasList[j] > 0:
+                            self.winprops.setCursorFilename(Filename.binaryFilename("vamp-off.ico"))
+                            base.win.requestProperties(self.winprops)
                         else:
-                            self.changeMouseCursor("vamp-off.ico")
-                        #print(self.gasList[j])
+                            self.winprops.setCursorFilename(Filename.binaryFilename("empty-icon.ico"))
+                            base.win.requestProperties(self.winprops)
                         break
         if j == -1:
-            self.changeMouseCursor("question-icon.ico")
+            self.winprops.setCursorFilename(Filename.binaryFilename("question-icon.ico"))
+            base.win.requestProperties(self.winprops)
         #print j
         return Task.cont
     
@@ -509,13 +529,13 @@ class World(DirectObject):
         # FLAMETHROWER COLLISIONS
         # left
         flamethrowerLeft = CollisionSegment()
-        flamethrowerLeft.setPointA(-5 , -4, 10)
-        flamethrowerLeft.setPointB( -5 , -40 , 10 ) 
+        flamethrowerLeft.setPointA(-2 , -4, 10)
+        flamethrowerLeft.setPointB( -2 , -20 , 10 ) 
         
         # right
         flamethrowerRight = CollisionSegment()
-        flamethrowerRight.setPointA(5, -4, 10)
-        flamethrowerRight.setPointB( 5 , -40 , 10 ) 
+        flamethrowerRight.setPointA(2, -4, 10)
+        flamethrowerRight.setPointB( 2 , -20 , 10 ) 
         
         flamethrowerNode = CollisionNode("flamethrower")
         flamethrowerNode.addSolid(flamethrowerLeft)
@@ -617,6 +637,7 @@ class World(DirectObject):
         self.flamethrowerSound.setLoop(True)
         self.flamethrowerSound.play()
         self.flamethrowerActive = True
+        self.draining = False
         
     def stopShoot(self):
         self.p1.softStop()
@@ -643,7 +664,7 @@ class World(DirectObject):
         self.p1.start(self.player)
         self.p1.setPos(-1.75, -10, 1.375)
         self.p1.setHpr(0, 90, 0)
-        self.p1.setScale(1.5)
+        self.p1.setScale(2.0)
         self.p1.setLightOff()
         self.p2.reset()
         self.p2 = ParticleEffect()
@@ -651,7 +672,7 @@ class World(DirectObject):
         self.p2.start(self.player)
         self.p2.setPos(1.75, -10, 1.375)
         self.p2.setHpr(0, 90, 0)
-        self.p2.setScale(1.5)
+        self.p2.setScale(2.0)
         self.p2.setLightOff()
         
     def eat(self, cEntry):
@@ -668,3 +689,13 @@ class World(DirectObject):
             # print winprops.getXSize()
             # print "test"
             self.winprops.setCursorFilename(Filename.binaryFilename(cursorFile))
+    
+    def deathChecker(self, task):
+        #Check for out of time
+        currTime = datetime.datetime.now()
+        if currTime > self.startTime + self.timeLimit:
+            print "OUT OF TIME!!!!!!!!!!!"
+        #Check for death
+        if self.player.dead:
+            print "THE PLAYER IS DEAD!!!!!!!!!!"
+        return Task.cont

@@ -38,7 +38,8 @@ class Vehicle(Actor):
     
     LOW = 0
     MEDIUM = 1
-    HIGH = 2
+    MEDHIGH = 2
+    HIGH = 3
     
     def __init__(self, modelStr, driveStr, world, plyr):
         Actor.__init__(self, modelStr, {"drive":driveStr})
@@ -87,14 +88,20 @@ class Vehicle(Actor):
         self.lowSound.setLoop(True)
         self.mediumSound = base.loader.loadSfx("sound/car_mid.wav")
         self.mediumSound.setLoop(True)
+        self.medhighSound = base.loader.loadSfx("sound/car_midhigh.wav")
+        self.medhighSound.setLoop(True)
         self.highSound = base.loader.loadSfx("sound/car_high.wav")
         self.highSound.setLoop(True)
+        self.boostSound = base.loader.loadSfx("sound/car_boost.wav")
+        self.boostSound.setLoop(True)
     
     def updateEngineSound(self):
         if self.speed < self.maxSpeed / 4 and self.speed > self.maxBkwdsSpeed / 4:
             newSpeed = Vehicle.LOW
-        elif self.speed < self.maxSpeed * 3 / 4 and self.speed > self.maxBkwdsSpeed * 3 / 4:
+        elif self.speed < self.maxSpeed / 2 and self.speed > self.maxBkwdsSpeed / 2:
             newSpeed = Vehicle.MEDIUM
+        elif self.speed < self.maxSpeed * 3 / 4 and self.speed > self.maxBkwdsSpeed * 3 / 4:
+            newSpeed = Vehicle.MEDHIGH
         else:
             newSpeed = Vehicle.HIGH
         #Now actually update
@@ -104,14 +111,22 @@ class Vehicle(Actor):
             if self.speedClass == Vehicle.LOW:
                 self.mediumSound.stop()
                 self.highSound.stop()
+                self.medhighSound.stop()
                 self.lowSound.play()
             elif self.speedClass == Vehicle.MEDIUM:
                 self.lowSound.stop()
                 self.highSound.stop()
+                self.medhighSound.stop()
                 self.mediumSound.play()
+            elif self.speedClass == Vehicle.MEDHIGH:
+                self.lowSound.stop()
+                self.highSound.stop()
+                self.mediumSound.stop()
+                self.medhighSound.play()
             else:
                 self.mediumSound.stop()
                 self.lowSound.stop()
+                self.medhighSound.stop()
                 self.highSound.play()
     
     def setupBooster(self):
@@ -302,6 +317,7 @@ class Vehicle(Actor):
             self.accel = self.accel * BOOST_FACTOR
             self.keyMap["boost"] = 1
             self.boosterLight.setColor(VBase4(MAX_LIGHT,MAX_LIGHT,MAX_LIGHT,1))
+            self.boostSound.play()
             taskMgr.add(self.checkBoosterEnd, "endBoosters")
         
     def checkBoosterEnd(self, task):
@@ -319,6 +335,7 @@ class Vehicle(Actor):
             self.boosterStartTime = -1
             self.maxSpeed = self.maxSpeed - BOOST_MAX_SPEED_BONUS
             self.speed = min(self.speed, self.maxSpeed)
+            self.boostSound.stop()
             return Task.done        
         else:    
             return Task.cont

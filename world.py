@@ -55,6 +55,8 @@ STOPPED = 2
 class World(DirectObject):
     def __init__(self):
         self.winprops=WindowProperties()
+        self.winprops.setCursorFilename(Filename.binaryFilename("question-icon.ico"))
+        base.win.requestProperties(self.winprops) 
         self.enemyLights = []
         self.cameraPositions = [((0, 95, 75), (180, -27, 0)),((0, 55, 25), (180, -15, 0))]
         self.cameraIndex = 0
@@ -223,13 +225,18 @@ class World(DirectObject):
                         playerpos = self.player.getPos()
                         dist = math.sqrt( (carpos[0] - playerpos[0])**2 + (carpos[1] - playerpos[1])**2 + (carpos[2] - playerpos[2])**2 )
                         if self.gasList[j] > 0 and dist < DRAIN_DIST:
-                            self.changeMouseCursor("vamp-icon.ico")
+                            self.winprops.setCursorFilename(Filename.binaryFilename("vamp-icon.ico"))
+                            base.win.requestProperties(self.winprops)
+                        elif self.gasList[j] > 0:
+                            self.winprops.setCursorFilename(Filename.binaryFilename("vamp-off.ico"))
+                            base.win.requestProperties(self.winprops)
                         else:
-                            self.changeMouseCursor("vamp-off.ico")
-                        #print(self.gasList[j])
+                            self.winprops.setCursorFilename(Filename.binaryFilename("empty-icon.ico"))
+                            base.win.requestProperties(self.winprops)
                         break
         if j == -1:
-            self.changeMouseCursor("question-icon.ico")
+            self.winprops.setCursorFilename(Filename.binaryFilename("question-icon.ico"))
+            base.win.requestProperties(self.winprops)
         #print j
         return Task.cont
     

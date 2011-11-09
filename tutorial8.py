@@ -295,6 +295,7 @@ class World(DirectObject):
     def loadSounds(self):
         self.flamethrowerSound = base.loader.loadSfx("sound/dragonflameloop2.wav")
         self.flamethrowerEndSound = base.loader.loadSfx("sound/dragonflameend.wav")
+        self.collideSound = base.loader.loadSfx("sound/collide.wav")
         
     def setupLights(self):
         #ambient light
@@ -437,6 +438,8 @@ class World(DirectObject):
         pusher.addCollider(cNodePath, self.player)
         pusher.addInPattern('%fn-into-%in')
         self.accept('player-into-fence', self.collideWithFence)
+        self.accept('player-into-staticCar', self.collideOther)
+        self.accept('player-into-droneNode', self.collideOther)
         
         self.playerLightCollision = CollisionHandlerEvent()
         self.playerLightCollision.addInPattern('into-%in')
@@ -543,6 +546,13 @@ class World(DirectObject):
     
     def collideWithFence(self, entry):
         self.player.speed = self.player.speed * 0.9
+        if self.collideSound.status() != AudioSound.PLAYING:
+            self.collideSound.play()
+    
+    def collideOther(self, entry):
+        self.player.speed = self.player.speed * 0.9
+        if self.collideSound.status() != AudioSound.PLAYING:
+            self.collideSound.play()
         
     def lightModify(self, t, which_way):
 

@@ -36,6 +36,10 @@ class Vehicle(Actor):
     STOPPED = 0
     FORWARDS = 1
     
+    LOW = 0
+    MEDIUM = 1
+    HIGH = 2
+    
     def __init__(self, modelStr, driveStr, world):
         Actor.__init__(self, modelStr, {"drive":driveStr})
         self.world = world
@@ -64,14 +68,51 @@ class Vehicle(Actor):
         self.health = 100
         self.lastCollision = 0.0
         
+            
+        
+        self.speedClass = Vehicle.LOW
+        #Deal with car sounds
+        self.loadSounds()
+        self.lowSound.play()
         
     def takeHit(self, entry):
         if ClockObject.getGlobalClock().getLongTime() - self.lastCollision > INVULN_TIME:
             self.lastCollision = ClockObject.getGlobalClock().getLongTime()
             self.health = self.health - 1
             print self.health
-            
-        
+    
+    def loadSounds(self):
+        self.lowSound = base.loader.loadSfx("sound/car_idle.wav")
+        self.lowSound.setLoop(True)
+        self.mediumSound = base.loader.loadSfx("sound/car_mid.wav")
+        self.mediumSound.setLoop(True)
+        self.highSound = base.loader.loadSfx("sound/car_high.wav")
+        self.highSound.setLoop(True)
+    
+    def updateEngineSound(self):
+        if self.speed < self.maxSpeed / 4 and self.speed > self.maxBkwdsSpeed / 4:
+            newSpeed = Vehicle.LOW
+        elif self.speed < self.maxSpeed * 3 / 4 and self.speed > self.maxBkwdsSpeed * 3 / 4:
+            newSpeed = Vehicle.MEDIUM
+        else:
+            newSpeed = Vehicle.HIGH
+        #Now actually update
+        #print "Old speed = %i, New speed = %i"%(self.speedClass, newSpeed)
+        if newSpeed != self.speedClass:
+            self.speedClass = newSpeed
+            if self.speedClass == Vehicle.LOW:
+                self.mediumSound.stop()
+                self.highSound.stop()
+                self.lowSound.play()
+            elif self.speedClass == Vehicle.MEDIUM:
+                self.lowSound.stop()
+                self.highSound.stop()
+                self.mediumSound.play()
+            else:
+                self.mediumSound.stop()
+                self.lowSound.stop()
+                self.highSound.play()
+    
     def setupBooster(self):
         #Booster Stuff
         self.boosters = ParticleEffect()
@@ -92,7 +133,7 @@ class Vehicle(Actor):
         self.setP(((end[0] - start[0]) * (t / 100)) + start[0])
         self.setR(((end[1] - start[1]) * (t / 100)) + start[1])
         
-        
+    #Move: Deals with the frame-by-frame stuff
     def move(self, task):
         elapsed = task.time - self.prevtime
         
@@ -241,6 +282,9 @@ class Vehicle(Actor):
         #elif (len(entries)>0):
         #    print "Hahahaha, nooope"
         #    self.setPos(startpos)
+        
+        #Now that actual movement is done, deal with playing the right sound
+        self.updateEngineSound()
         
         self.prevtime = task.time
         return Task.cont

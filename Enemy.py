@@ -29,7 +29,7 @@ TURNING = 1
 
 class Enemy(vehicle.Vehicle):
     def __init__(self, map, nodePath, world, x, y, z ):
-        vehicle.Vehicle.__init__(self, "ralph_models/drone-model", "ralph_models/drone-model", world)
+        vehicle.Vehicle.__init__(self, "ralph_models/drone-model", "ralph_models/drone-model", world, None)
         self.setPos(x,y,z)
         self.nodePath = nodePath
         

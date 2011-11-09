@@ -38,7 +38,7 @@ class Vehicle(Actor):
     MEDIUM = 1
     HIGH = 2
     
-    def __init__(self, modelStr, driveStr, world):
+    def __init__(self, modelStr, driveStr, world, plyr):
         Actor.__init__(self, modelStr, {"drive":driveStr})
         self.world = world
         self.setH(180)
@@ -65,8 +65,9 @@ class Vehicle(Actor):
                                         name="rampInterval")
         self.speedClass = Vehicle.LOW
         #Deal with car sounds
-        self.loadSounds()
-        self.lowSound.play()
+        if plyr == "player":
+            self.loadSounds()
+            self.lowSound.play()
     
     def loadSounds(self):
         self.lowSound = base.loader.loadSfx("sound/car_idle.wav")

@@ -257,7 +257,7 @@ class World(DirectObject):
       
     def loadModels(self):
         self.player.setupBooster()
-        self.env = loader.loadModel("ralph_models/green_ramps")      
+        self.env = loader.loadModel("ralph_models/final_terrain")      
         self.env.reparentTo(render)
         self.env.setScale(8) #was 15
         
@@ -295,19 +295,20 @@ class World(DirectObject):
     def loadSounds(self):
         self.flamethrowerSound = base.loader.loadSfx("sound/dragonflameloop2.wav")
         self.flamethrowerEndSound = base.loader.loadSfx("sound/dragonflameend.wav")
+        self.collideSound = base.loader.loadSfx("sound/collide.wav")
         
     def setupLights(self):
         #ambient light
         self.ambientLight = AmbientLight("ambientLight")
         #four values, RGBA (alpha is largely irrelevent), value range is 0:1
-        self.ambientLight.setColor((.10, .10, .10, 1))
+        self.ambientLight.setColor((.30, .30, .30, 1))
         self.ambientLightNP = render.attachNewNode(self.ambientLight)
         #the nodepath that calls setLight is what gets illuminated by the light
         render.setLight(self.ambientLightNP)
         #call clearLight() to turn it off
         
         self.keyLight = DirectionalLight("keyLight")
-        self.keyLight.setColor((.20,.20,.20, 1))
+        self.keyLight.setColor((.50,.50,.50, 1))
         self.keyLightNP = render.attachNewNode(self.keyLight)
         self.keyLightNP.setHpr(0, -26, 0)
         
@@ -437,6 +438,8 @@ class World(DirectObject):
         pusher.addCollider(cNodePath, self.player)
         pusher.addInPattern('%fn-into-%in')
         self.accept('player-into-fence', self.collideWithFence)
+        self.accept('player-into-staticCar', self.collideOther)
+        self.accept('player-into-droneNode', self.collideOther)
         
         self.playerLightCollision = CollisionHandlerEvent()
         self.playerLightCollision.addInPattern('into-%in')
@@ -543,6 +546,13 @@ class World(DirectObject):
     
     def collideWithFence(self, entry):
         self.player.speed = self.player.speed * 0.9
+        if self.collideSound.status() != AudioSound.PLAYING:
+            self.collideSound.play()
+    
+    def collideOther(self, entry):
+        self.player.speed = self.player.speed * 0.9
+        if self.collideSound.status() != AudioSound.PLAYING:
+            self.collideSound.play()
         
     def lightModify(self, t, which_way):
 

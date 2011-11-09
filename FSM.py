@@ -4,6 +4,7 @@ from pandac.PandaModules import TextNode
 from direct.fsm.FSM import FSM
 from direct.gui.OnscreenImage import OnscreenImage
 import menus
+from world import World
 
 class MenuFSM(FSM):
 
@@ -19,10 +20,18 @@ class MenuFSM(FSM):
 		for i in self.buttons:
 			i.destroy()
 
-	def enterPlay(self):
-		pass
-	def exitPlay(self):
-		pass
+	def enterGame(self):
+		# self.loading = OnscreenImage(image = 'images/credits2.png', pos = (-0.5, 0, 0.02))
+		# for i in range(100000):
+		# 	pass
+		self.world = World()
+		self.world.accept("escape", self.request, ['Menu'])
+		# print "After world"
+		# self.loading.destroy()
+		self.frame.destroy()
+		# pass
+	def exitGame(self):
+		sys.exit()
 
 	def enterInstructions(self):
 		imageObject = OnscreenImage(image = 'myImage.jpg', pos = (-0.5, 0, 0.02))
@@ -33,6 +42,7 @@ class MenuFSM(FSM):
 	def enterCredits(self):
 		self.credits = OnscreenImage(image = 'images/credits.png', scale = (1.3333333,0, 1))
 		self.credits.accept('escape', self.request, ['Menu'])
+
 	def exitCredits(self):
 		self.credits.destroy()
 

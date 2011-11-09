@@ -77,11 +77,16 @@ class Vehicle(Actor):
             self.loadSounds()
             self.lowSound.play()
         
+        self.totalGas = 0
+        
     def takeHit(self, entry):
-        if ClockObject.getGlobalClock().getLongTime() - self.lastCollision > INVULN_TIME:
+        ENEMY_STOPPED = 2
+    
+        index = int(entry.getFromNode().getTag('enemy'))
+        if self.world.enemies[index].phase != ENEMY_STOPPED and ClockObject.getGlobalClock().getLongTime() - self.lastCollision > INVULN_TIME:
             self.lastCollision = ClockObject.getGlobalClock().getLongTime()
             self.health = self.health - 1
-            print self.health
+            print "Health: " + str(self.health)
     
     def loadSounds(self):
         self.lowSound = base.loader.loadSfx("sound/car_idle.wav")
@@ -94,6 +99,7 @@ class Vehicle(Actor):
         self.highSound.setLoop(True)
         self.boostSound = base.loader.loadSfx("sound/car_boost.wav")
         self.boostSound.setLoop(True)
+        #self.collideSound = base.loader.loadSfx("sound/collide.wav")
     
     def updateEngineSound(self):
         if self.speed < self.maxSpeed / 4 and self.speed > self.maxBkwdsSpeed / 4:

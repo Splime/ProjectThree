@@ -167,7 +167,7 @@ class World(DirectObject):
         
         #After all the loading, we need to calculate our start time
         self.startTime = datetime.datetime.now()
-        self.timeLimit = datetime.timedelta(seconds=60)
+        self.timeLimit = datetime.timedelta(seconds=180)
     
         
         

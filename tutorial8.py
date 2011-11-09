@@ -253,7 +253,7 @@ class World(DirectObject):
       
     def loadModels(self):
         self.player.setupBooster()
-        self.env = loader.loadModel("ralph_models/green_ramps")      
+        self.env = loader.loadModel("ralph_models/final_terrain")      
         self.env.reparentTo(render)
         self.env.setScale(15)
         
@@ -297,14 +297,14 @@ class World(DirectObject):
         #ambient light
         self.ambientLight = AmbientLight("ambientLight")
         #four values, RGBA (alpha is largely irrelevent), value range is 0:1
-        self.ambientLight.setColor((.10, .10, .10, 1))
+        self.ambientLight.setColor((.30, .30, .30, 1))
         self.ambientLightNP = render.attachNewNode(self.ambientLight)
         #the nodepath that calls setLight is what gets illuminated by the light
         render.setLight(self.ambientLightNP)
         #call clearLight() to turn it off
         
         self.keyLight = DirectionalLight("keyLight")
-        self.keyLight.setColor((.20,.20,.20, 1))
+        self.keyLight.setColor((.50,.50,.50, 1))
         self.keyLightNP = render.attachNewNode(self.keyLight)
         self.keyLightNP.setHpr(0, -26, 0)
         

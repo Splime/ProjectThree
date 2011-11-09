@@ -166,7 +166,7 @@ class World(DirectObject):
             if self.gasList[self.target] > 0 and dist < DRAIN_DIST:
                 self.player.totalGas = self.player.totalGas + 1
                 self.gasList[self.target] = self.gasList[self.target] - 1
-            #print "TotalGas: " + str(self.player.totalGas)
+            print "TotalGas: " + str(self.player.totalGas)
             self.drainTime = task.time
         return Task.cont
         

@@ -94,10 +94,6 @@ class World(DirectObject):
         # self.timePointer = OnscreenImage(image = 'images/time_bar_marker.png', parent = self.timeBar, scale = (0.44,1,0.0525), pos = (-.47,0,-0.2))
         timeBar.setTransparency(TransparencyAttrib.MAlpha)
 
-        timeInterval = LerpPosInterval(self.timePointer,
-                                      60,
-                                      (.8,0,-0.2))
-        timeInterval.start()
 
         taskMgr.add(self.updateGasBar, "Update gas")
 
@@ -176,7 +172,12 @@ class World(DirectObject):
         
         #After all the loading, we need to calculate our start time
         self.startTime = datetime.datetime.now()
-        self.timeLimit = datetime.timedelta(seconds=180)
+        self.timeLimit = datetime.timedelta(seconds=175)
+        
+        timeInterval = LerpPosInterval(self.timePointer,
+                                      self.timeLimit.seconds,
+                                      (.8,0,-0.2))
+        timeInterval.start()
     
         
         
@@ -739,11 +740,11 @@ class World(DirectObject):
             taskMgr.doMethodLater(5, self.STOPGAME, 'tickTask')
             self.loading = OnscreenImage(image = 'images/victory.png', scale = (1.3333333,0, 1))
         #Check for death
-        if self.player.dead:
+        elif self.player.dead:
             #print "THE PLAYER IS DEAD!!!!!!!!!!"
             taskMgr.doMethodLater(5, self.STOPGAME, 'tickTask')
             self.loading = OnscreenImage(image = 'images/lose_death.png', scale = (1.3333333,0, 1))
-        if self.player.totalGas <= 0:
+        elif self.player.totalGas <= 0:
             #print "YOU SUCK. YOU RAN OUT OF GAS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
             taskMgr.doMethodLater(5, self.STOPGAME, 'tickTask')
             self.loading = OnscreenImage(image = 'images/lose_nogas.png', scale = (1.3333333,0, 1))

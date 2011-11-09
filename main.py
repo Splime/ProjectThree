@@ -1,6 +1,6 @@
 from pandac.PandaModules import loadPrcFileData
 loadPrcFileData("", "fullscreen 0") # Set to 1 for fullscreen
-loadPrcFileData("", "window-title THE_TITLE_GOES_HERE!!!!")
+loadPrcFileData("", "window-title Vampire Car")
 loadPrcFileData("", "win-size 1024 768")
 loadPrcFileData("", "win-origin 30 30")
 import direct.directbase.DirectStart #starts player

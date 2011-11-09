@@ -755,7 +755,7 @@ class World(DirectObject):
             #print "THE PLAYER IS DEAD!!!!!!!!!!"
             taskMgr.doMethodLater(5, self.STOPGAME, 'tickTask')
             self.loading = OnscreenImage(image = 'images/lose_death.png', scale = (1.3333333,0, 1))
-            self.text = OnscreenText(text = "Gas Collected%s" %(self.finalGas), font = font, pos = (0,.2), fg = (255,255,255,1))
+            self.text = OnscreenText(text = "Gas Collected %s" %(self.finalGas), font = font, pos = (0,.1), fg = (255,255,255,1))
         elif self.player.totalGas <= 0:
             #print "YOU SUCK. YOU RAN OUT OF GAS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
             taskMgr.doMethodLater(5, self.STOPGAME, 'tickTask')

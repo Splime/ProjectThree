@@ -79,7 +79,7 @@ class Vehicle(Actor):
             self.loadSounds()
             self.lowSound.play()
         
-        self.totalGas = 0
+        self.totalGas = 50
         
     def takeHit(self, entry):
         ENEMY_STOPPED = 2
@@ -336,6 +336,7 @@ class Vehicle(Actor):
     
     def startBoosters(self):
         if self.boosterStartTime == -1:
+            self.totalGas = -5
             self.boosters.loadConfig(Filename('flamethrower4.ptf'))        
             self.boosters.start(self)
             self.boosters.setPos(0, 8.5, 2)

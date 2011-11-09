@@ -52,6 +52,8 @@ MOVING = 0
 TURNING = 1
 STOPPED = 2
 
+GAS_TIME = 5.0
+
 class World(DirectObject):
     def __init__(self):
         self.winprops=WindowProperties()
@@ -143,6 +145,8 @@ class World(DirectObject):
         self.startTime = datetime.datetime.now()
         self.timeLimit = datetime.timedelta(seconds=60)
     
+        self.gasLossTime = 0.0
+        self.gasLossRate = 1.0
     def setupPicking(self):
         self.picker = CollisionTraverser()
         self.pq     = CollisionHandlerQueue()
@@ -217,7 +221,12 @@ class World(DirectObject):
                      
     def stopDrain(self):
         self.draining = False
-        
+           
+    def loseHealth(self, task):
+        if task.time - self.gasLossTime > GAS_TIME:
+            if self.player.direction != 0:
+                self.player.totalGas = self.playertotalGas - self.gasLossRate
+            self.gasLossTime = task.time
            
     def mouseTask(self, task):
         j = -1
@@ -624,6 +633,7 @@ class World(DirectObject):
         self.flamethrowerSound.play()
         self.flamethrowerActive = True
         self.draining = False
+        self.gasLossRate = 2.0
         
     def stopShoot(self):
         self.p1.softStop()
@@ -634,6 +644,7 @@ class World(DirectObject):
         self.flamethrowerSound.stop()
         self.flamethrowerEndSound.play()
         self.flamethrowerActive = False
+        self.gasLossRate = 1.0
         
     def hitEnemy(self, entry):
         if self.flamethrowerActive:

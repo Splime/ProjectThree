@@ -201,12 +201,13 @@ class World(DirectObject):
             self.drainTime = task.time
         elif not self.draining or self.alan_var:
             self.gasP.softStop()
+            self.drainSound.stop()
             self.gasPlaying = False
         return Task.cont
                      
     def stopDrain(self):
         self.draining = False
-        self.drainSound.stop()
+        
            
     def mouseTask(self, task):
         j = -1

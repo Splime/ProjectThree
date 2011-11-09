@@ -7,4 +7,8 @@ import menus
 stateMachine = FSM.MenuFSM()
 menus.createMenus(stateMachine)
 stateMachine.request('Menu')
+base.enableMusic(True)
+theMusic = base.loader.loadSfx("sound/385977_Carnival.mp3")
+theMusic.setLoop(True)
+theMusic.play()
 run()

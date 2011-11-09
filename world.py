@@ -58,7 +58,7 @@ class World(DirectObject):
         
         base.win.requestProperties(self.winprops) 
         self.enemyLights = []
-        self.cameraPositions = [((0, 95, 75), (180, -27, 0)),((0, 55, 25), (180, -15, 0))]
+        self.cameraPositions = [((0, 95, 75), (180, -27, 0)),((0, 55, 25), (180, -15, 0)),((0, -55, 25), (0, -15, 0))]
         self.cameraIndex = 0
         base.disableMouse()
         base.enableParticles()

@@ -60,7 +60,7 @@ class Enemy(vehicle.Vehicle):
         self.headlight1NP.setHpr(0,-175, 0)
         self.headlight1.getLens().setFov(180)
         
-        #self.headlight1.getLens().setFar(20)
+        self.headlight1.getLens().setFar(10)
         #self.headlight1.getLens().setFilmSize(50,50)
         #self.headlight1NP.lookAt(0,0,0)
         #self.headlight1.showFrustum()
@@ -111,16 +111,18 @@ class Enemy(vehicle.Vehicle):
             #print "(1) DX: " + str(dx) + " DY: " + str(dy) + " Angle: " + str(self.nextAngle) + " CurAngle: " + str(curAngle)
             
             self.finishedTurning = False    
-            
             self.nextAngle = self.nextAngle % 360
+            #print "(1) DX: " + str(dx) + " DY: " + str(dy) + " Angle: " + str(self.nextAngle) + " CurAngle: " + str(curAngle)
         # most the panda should ever have to turn is 180 degrees.
-        #print "CurAngle: " + str(curAngle) + " nextAngle: " + str(self.nextAngle)
         angleDiff = abs( curAngle - self.nextAngle )
         if angleDiff > 180:
+            if curAngle == 270 and self.nextAngle == 0:
+                self.nextAngle = 360
             #print " Angle Diff: " + str(angleDiff)
-            angleDiff -= 180
-            angleDiff *= -1
-            self.nextAngle = angleDiff
+            else:
+                angleDiff -= 180
+                angleDiff *= -1
+                self.nextAngle = angleDiff
             #print " Angle Diff: " + str(angleDiff)
         
         
@@ -128,10 +130,12 @@ class Enemy(vehicle.Vehicle):
         #print "(2) Abs X: " + str(absx) + " Abs Y: " + str(absy) + " Angle: " + str(self.nextAngle) + " CurAngle: " + str(curAngle)
         if abs(curAngle - self.nextAngle) < ANGLE_LEEWAY:
             self.setH(self.nextAngle)
-            print "(1): " + str(self.getH())
+            #print "(1): " + str(self.getH())
             while self.getH() < 0:
                 self.setH(self.getH() + 360)
-            print "(2): " + str(self.getH())
+            #print "(2): " + str(self.getH()
+            if self.getH() == 360:
+                self.setH(0)
             self.phase = MOVING
             self.finishedTurning = True
             #print "inside leeway"

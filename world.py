@@ -69,6 +69,8 @@ class World(DirectObject):
         self.flameLights = None
         self.player = Vehicle("ralph_models/vampire_car", "ralph_models/vampire_car", self, "player")
 
+        self.finalGas = None
+
         self.livesFrame = DirectFrame(frameColor=(0, 0, 0, 0), parent = base.a2dTopLeft)
 
         self.livesSprites = list()
@@ -732,18 +734,28 @@ class World(DirectObject):
             self.winprops.setCursorFilename(Filename.binaryFilename(cursorFile))
     
     def deathChecker(self, task):
+        font = loader.loadFont('fonts/beneg.ttf')
+
         #Check for out of time
         currTime = datetime.datetime.now()
         if currTime > self.startTime + self.timeLimit or self.player.totalGas >= MAX_GAS:
             #print "OUT OF TIME!!!!!!!!!!!"
+
+            if self.finalGas is None:
+                self.finalGas = self.player.totalGas
             
             taskMgr.doMethodLater(5, self.STOPGAME, 'tickTask')
             self.loading = OnscreenImage(image = 'images/victory.png', scale = (1.3333333,0, 1))
+            self.text = OnscreenText(text = "Gas Collected%s" %(self.finalGas), font = font, pos = (0,.2), fg = (255,255,255,1))
         #Check for death
         elif self.player.dead:
+            if self.finalGas is None:
+                self.finalGas = self.player.totalGas
+
             #print "THE PLAYER IS DEAD!!!!!!!!!!"
             taskMgr.doMethodLater(5, self.STOPGAME, 'tickTask')
             self.loading = OnscreenImage(image = 'images/lose_death.png', scale = (1.3333333,0, 1))
+            self.text = OnscreenText(text = "Gas Collected%s" %(self.finalGas), font = font, pos = (0,.2), fg = (255,255,255,1))
         elif self.player.totalGas <= 0:
             #print "YOU SUCK. YOU RAN OUT OF GAS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
             taskMgr.doMethodLater(5, self.STOPGAME, 'tickTask')

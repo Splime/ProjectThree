@@ -32,10 +32,10 @@ class MenuFSM(FSM):
 
         
     def startGame(self, THING):
-        print "lol"
+        # print "lol"
         self.world = World()
         self.world.accept("escape", self.request, ['Menu'])
-        print "abc"
+        # print "abc"
         self.loading.destroy()
         self.frame.destroy()
         

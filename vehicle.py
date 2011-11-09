@@ -91,13 +91,13 @@ class Vehicle(Actor):
             self.screamSound.play()
             self.world.livesSprites[self.health].setImage('images/healthicon_depleted.png')
             self.world.livesSprites[self.health].setTransparency(TransparencyAttrib.MAlpha)
-            print "Health: " + str(self.health)
+            # print "Health: " + str(self.health)
             self.blinkStart = -1
             taskMgr.add(self.blink, "blinking")
             
             #If health = 0, we need to do something
             if self.health <= 0:
-                print "YOU ARE DEAD!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+                # print "YOU ARE DEAD!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
                 self.dead = True
     
     def blink(self, task):

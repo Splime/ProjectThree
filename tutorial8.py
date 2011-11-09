@@ -43,6 +43,10 @@ DEBUG = False
 DRAIN_DIST = 20.0
 DRAIN_DELAY = 0.1
 
+MOVING = 0
+TURNING = 1
+STOPPED = 2
+
 class World(DirectObject):
     def __init__(self):
         self.enemyLights = []
@@ -255,7 +259,7 @@ class World(DirectObject):
         self.player.setupBooster()
         self.env = loader.loadModel("ralph_models/final_terrain")      
         self.env.reparentTo(render)
-        self.env.setScale(15)
+        self.env.setScale(8) #was 15
         
         # Node Map
         map = Node.NodeMap("nodes.txt")
@@ -291,7 +295,6 @@ class World(DirectObject):
     def loadSounds(self):
         self.flamethrowerSound = base.loader.loadSfx("sound/dragonflameloop2.wav")
         self.flamethrowerEndSound = base.loader.loadSfx("sound/dragonflameend.wav")
-        self.collideSound = base.loader.loadSfx("sound/collide.wav")
         
     def setupLights(self):
         #ambient light
@@ -434,8 +437,6 @@ class World(DirectObject):
         pusher.addCollider(cNodePath, self.player)
         pusher.addInPattern('%fn-into-%in')
         self.accept('player-into-fence', self.collideWithFence)
-        self.accept('player-into-staticCar', self.otherCollide)
-        self.accept('player-into-droneNode', self.otherCollide)
         
         self.playerLightCollision = CollisionHandlerEvent()
         self.playerLightCollision.addInPattern('into-%in')
@@ -477,9 +478,9 @@ class World(DirectObject):
         
         flamethrowerNodePath.show()
         
-        flamethrowerCollision = CollisionHandlerEvent()
-        flamethrowerCollision.addInPattern('into-%in')
-        base.cTrav.addCollider(flamethrowerNodePath, flamethrowerCollision)
+        self.flamethrowerCollision = CollisionHandlerEvent()
+        self.flamethrowerCollision.addInPattern('into-%in')
+        base.cTrav.addCollider(flamethrowerNodePath, self.flamethrowerCollision)
         self.accept('into-droneNode', self.hitEnemy)
         
         for i in range(len(self.staticCars)):
@@ -501,50 +502,47 @@ class World(DirectObject):
             sN.setTag('car', str(i))
             
         self.enemyHandler = CollisionHandlerEvent()    
-        for enemy in self.enemies:
+        for i in range(len(self.enemies)):
             collideNode = CollisionNode("droneNode")
             temp = CollisionSphere((0,0,10), 4)
             collideNode.addSolid(temp)
             collideNode.setIntoCollideMask(BitMask32.bit(1))
             collideNode.setFromCollideMask(BitMask32.bit(0))
-            enemycollideNodePath = enemy.attachNewNode(collideNode)
+            enemycollideNodePath = self.enemies[i].attachNewNode(collideNode)
             
-            enemy.lightRay = CollisionSegment()
-            enemy.lightRay.setPointA(0, -4, 4)
-            enemy.lightRay.setPointB( 0 , -100 , 0 ) 
+            collideNode.setTag('enemy',str(i))
+            
+            self.enemies[i].lightRay = CollisionSegment()
+            self.enemies[i].lightRay.setPointA(0, -4, 4)
+            self.enemies[i].lightRay.setPointB( 0 , -100 , 0 ) 
             
             # left
-            enemy.lightRayLeft = CollisionSegment()
-            enemy.lightRayLeft.setPointA(0, -4, 4)
-            enemy.lightRayLeft.setPointB( -5 , -100 , 0 ) 
+            self.enemies[i].lightRayLeft = CollisionSegment()
+            self.enemies[i].lightRayLeft.setPointA(0, -4, 4)
+            self.enemies[i].lightRayLeft.setPointB( -5 , -100 , 0 ) 
             
             # right
-            enemy.lightRayRight = CollisionSegment()
-            enemy.lightRayRight.setPointA(0, -4, 4)
-            enemy.lightRayRight.setPointB( 5 , -100 , 0 ) 
+            self.enemies[i].lightRayRight = CollisionSegment()
+            self.enemies[i].lightRayRight.setPointA(0, -4, 4)
+            self.enemies[i].lightRayRight.setPointB( 5 , -100 , 0 ) 
             
-            enemy.lightRayNode = CollisionNode("lightRay")
-            enemy.lightRayNode.addSolid(enemy.lightRay)
-            enemy.lightRayNode.addSolid(enemy.lightRayLeft)
-            enemy.lightRayNode.addSolid(enemy.lightRayRight)
-            enemy.lightRayNode.setIntoCollideMask(BitMask32.allOff())
-            enemy.lightRayNodePath = enemy.attachNewNode(enemy.lightRayNode)
+            self.enemies[i].lightRayNode = CollisionNode("lightRay")
+            self.enemies[i].lightRayNode.addSolid(self.enemies[i].lightRay)
+            self.enemies[i].lightRayNode.addSolid(self.enemies[i].lightRayLeft)
+            self.enemies[i].lightRayNode.addSolid(self.enemies[i].lightRayRight)
+            
+            self.enemies[i].lightRayNode.setTag('enemy',str(i))
+            
+            self.enemies[i].lightRayNode.setIntoCollideMask(BitMask32.allOff())
+            self.enemies[i].lightRayNodePath = self.enemies[i].attachNewNode(self.enemies[i].lightRayNode)
             if DEBUG:
-                enemy.lightRayNodePath.show()
+                self.enemies[i].lightRayNodePath.show()
             
-            base.cTrav.addCollider(enemy.lightRayNodePath, self.playerLightCollision)
+            base.cTrav.addCollider(self.enemies[i].lightRayNodePath, self.playerLightCollision)
         self.accept('into-playerinto', self.player.takeHit)
     
     def collideWithFence(self, entry):
         self.player.speed = self.player.speed * 0.9
-        if self.collideSound.status() != AudioSound.PLAYING:
-            self.collideSound.play()
-    
-    def otherCollide(self, entry):
-        self.player.speed = self.player.speed * 0.9
-        if self.collideSound.status() != AudioSound.PLAYING:
-            self.collideSound.play()
-        #print "some sort of collision"
         
     def lightModify(self, t, which_way):
 
@@ -577,7 +575,11 @@ class World(DirectObject):
         
     def hitEnemy(self, entry):
         if self.flamethrowerActive:
-            print "Hit!"
+            index = int(entry.getIntoNode().getTag('enemy'))
+            if self.enemies[index].phase != STOPPED:
+                self.enemies[index].prevPhase = self.enemies[index].phase
+                self.enemies[index].phase = STOPPED
+                self.enemies[index].headlight1.setColor(VBase4(0, 0, 0, 0))
         
     def loadParticleConfig(self, file):
         self.p1.reset()

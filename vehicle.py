@@ -80,10 +80,13 @@ class Vehicle(Actor):
         self.totalGas = 0
         
     def takeHit(self, entry):
-        if ClockObject.getGlobalClock().getLongTime() - self.lastCollision > INVULN_TIME:
+        ENEMY_STOPPED = 2
+    
+        index = int(entry.getFromNode().getTag('enemy'))
+        if self.world.enemies[index].phase != ENEMY_STOPPED and ClockObject.getGlobalClock().getLongTime() - self.lastCollision > INVULN_TIME:
             self.lastCollision = ClockObject.getGlobalClock().getLongTime()
             self.health = self.health - 1
-            print self.health
+            print "Health: " + str(self.health)
     
     def loadSounds(self):
         self.lowSound = base.loader.loadSfx("sound/car_idle.wav")

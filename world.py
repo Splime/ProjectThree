@@ -45,6 +45,8 @@ MOVING = 0
 TURNING = 1
 STOPPED = 2
 
+GAS_TIME = 1
+
 class World(DirectObject):
     def __init__(self):
         self.winprops=WindowProperties()
@@ -142,11 +144,16 @@ class World(DirectObject):
         self.drainTime = 0.0
     
         self.flamethrowerActive = False
+        self.gasLossTime = 0.0
+        self.gasLossRate = 1.0    
+        taskMgr.add(self.loseHealth, "loseGas")
         
         #After all the loading, we need to calculate our start time
         self.startTime = datetime.datetime.now()
         self.timeLimit = datetime.timedelta(seconds=60)
     
+        
+        
     def setupPicking(self):
         self.picker = CollisionTraverser()
         self.pq     = CollisionHandlerQueue()
@@ -221,7 +228,16 @@ class World(DirectObject):
                      
     def stopDrain(self):
         self.draining = False
-        
+           
+    def loseHealth(self, task):
+        if task.time - self.gasLossTime > GAS_TIME:
+            if self.player.direction != 0:
+                self.player.totalGas = self.player.totalGas - self.gasLossRate
+            elif self.flamethrowerActive:
+                self.player.totalGas = self.player.totalGas - self.gasLossRate
+            self.gasLossTime = task.time
+            print self.player.totalGas
+        return Task.cont
            
     def mouseTask(self, task):
         j = -1
@@ -634,6 +650,7 @@ class World(DirectObject):
         self.flamethrowerSound.play()
         self.flamethrowerActive = True
         self.draining = False
+        self.gasLossRate = 2.0
         
     def stopShoot(self):
         self.p1.softStop()
@@ -644,6 +661,7 @@ class World(DirectObject):
         self.flamethrowerSound.stop()
         self.flamethrowerEndSound.play()
         self.flamethrowerActive = False
+        self.gasLossRate = 1.0
         
     def hitEnemy(self, entry):
         if self.flamethrowerActive:
@@ -694,4 +712,6 @@ class World(DirectObject):
         #Check for death
         if self.player.dead:
             print "THE PLAYER IS DEAD!!!!!!!!!!"
+        if self.player.totalGas <= 0:
+            print "YOU SUCK. YOU RAN OUT OF GAS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
         return Task.cont

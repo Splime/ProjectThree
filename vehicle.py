@@ -67,7 +67,7 @@ class Vehicle(Actor):
                                         blendType='noBlend',
                                         extraArgs=[(0,0),(0,0)],
                                         name="rampInterval")
-        self.health = 3
+        self.health = 10
         self.dead = False
         self.lastCollision = 0.0
         
@@ -79,7 +79,7 @@ class Vehicle(Actor):
             self.loadSounds()
             self.lowSound.play()
         
-        self.totalGas = 0
+        self.totalGas = 25
         
     def takeHit(self, entry):
         ENEMY_STOPPED = 2
@@ -88,6 +88,7 @@ class Vehicle(Actor):
         if self.world.enemies[index].phase != ENEMY_STOPPED and ClockObject.getGlobalClock().getLongTime() - self.lastCollision > INVULN_TIME:
             self.lastCollision = ClockObject.getGlobalClock().getLongTime()
             self.health = self.health - 1
+            self.screamSound.play()
             self.world.livesSprites[self.health].setImage('images/healthicon_depleted.png')
             self.world.livesSprites[self.health].setTransparency(TransparencyAttrib.MAlpha)
             print "Health: " + str(self.health)
@@ -125,6 +126,7 @@ class Vehicle(Actor):
         self.boostSound = base.loader.loadSfx("sound/car_boost.wav")
         self.boostSound.setLoop(True)
         #self.collideSound = base.loader.loadSfx("sound/collide.wav")
+        self.screamSound = base.loader.loadSfx("sound/scream.wav")
     
     def updateEngineSound(self):
         if self.speed < self.maxSpeed / 4 and self.speed > self.maxBkwdsSpeed / 4:
@@ -183,7 +185,6 @@ class Vehicle(Actor):
     #Move: Deals with the frame-by-frame stuff
     def move(self, task):
         elapsed = task.time - self.prevtime
-        
         startpos = self.getPos() #Initial position
         wasMoving = self.isTurning or (self.direction != Vehicle.STOPPED)
         
@@ -338,6 +339,7 @@ class Vehicle(Actor):
     
     def startBoosters(self):
         if self.boosterStartTime == -1:
+            self.totalGas = self.totalGas - 5
             self.boosters.loadConfig(Filename('flamethrower4.ptf'))        
             self.boosters.start(self)
             self.boosters.setPos(0, 8.5, 2)

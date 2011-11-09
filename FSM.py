@@ -43,7 +43,8 @@ class MenuFSM(FSM):
         sys.exit()
 
     def enterInstructions(self):
-        imageObject = OnscreenImage(image = 'myImage.jpg', pos = (-0.5, 0, 0.02))
+        self.instructions = OnscreenImage(image = 'images/instructions.png', scale = (1.3333333,0, 1))
+        self.instructions.accept('escape', self.request, ['Menu'])
 
     def exitInstructions(self):
         self.credits = OnscreenImage(image = 'images/credits.png', pos = (-0.5, 0, 0.02))

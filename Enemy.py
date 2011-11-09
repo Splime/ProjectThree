@@ -71,6 +71,8 @@ class Enemy(vehicle.Vehicle):
         
     def turn( self, task ):
         elapsed = task.time - self.prevtime
+        if elapsed > .1:
+            elapsed = .1
         dx = self.lastNodePos[0] - self.nextNodePos[0]
         dy = self.lastNodePos[1] - self.nextNodePos[1]
         
@@ -115,6 +117,8 @@ class Enemy(vehicle.Vehicle):
             #print "(1) DX: " + str(dx) + " DY: " + str(dy) + " Angle: " + str(self.nextAngle) + " CurAngle: " + str(curAngle)
         # most the panda should ever have to turn is 180 degrees.
         angleDiff = abs( curAngle - self.nextAngle )
+        print curAngle
+        print self.nextAngle
         if angleDiff > 180:
             if curAngle == 270 and self.nextAngle == 0:
                 self.nextAngle = 360
@@ -130,20 +134,22 @@ class Enemy(vehicle.Vehicle):
         #print "(2) Abs X: " + str(absx) + " Abs Y: " + str(absy) + " Angle: " + str(self.nextAngle) + " CurAngle: " + str(curAngle)
         if abs(curAngle - self.nextAngle) < ANGLE_LEEWAY:
             self.setH(self.nextAngle)
-            #print "(1): " + str(self.getH())
-            while self.getH() < 0:
-                self.setH(self.getH() + 360)
-            #print "(2): " + str(self.getH()
-            if self.getH() == 360:
-                self.setH(0)
+            if self.getH() > 359 or self.getH() < 0:
+                self.setH(self.getH() % 360 )
             self.phase = MOVING
             self.finishedTurning = True
             #print "inside leeway"
         else:
             if curAngle < self.nextAngle:
-                self.setH(curAngle + elapsed * self.turnSpeed)
+                newAngle = curAngle + elapsed * self.turnSpeed
+                if newAngle > 360:
+                    newAngle = newAngle % 360
+                self.setH(newAngle)
             elif curAngle > self.nextAngle:
-                self.setH(curAngle + elapsed * self.turnSpeed * - 1)
+                newAngle = curAngle + elapsed * self.turnSpeed * - 1
+                while newAngle < -180:
+                    newAngle = newAngle + 180
+                self.setH(newAngle)
         self.prevtime = task.time
         
     def move( self, map, task ):

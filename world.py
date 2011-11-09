@@ -622,9 +622,11 @@ class World(DirectObject):
         #remove from scene graph
         cEntry.getIntoNodePath().getParent().remove()
            
-# w = World()
     def changeMouseCursor(self, cursorFile):
         if self.currIcon != cursorFile:
             self.currIcon = cursorFile
             winprops=WindowProperties()
+            winprops.getParentWindow().getXSize()
+            # print winprops.getXSize()
+            print "test"
             winprops.setCursorFilename(Filename.binaryFilename(cursorFile))

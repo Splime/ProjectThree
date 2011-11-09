@@ -179,7 +179,7 @@ class World(DirectObject):
                 if not self.gasPlaying:
                     self.gasP.reset()
                     self.gasP = ParticleEffect()  
-                    self.gasP.loadConfig(Filename('flamethrower6.ptf'))        
+                    self.gasP.loadConfig(Filename('oil.ptf'))        
                     self.gasP.start(self.player)
                     self.gasNode.lookAt(self.staticCars[self.target])
                     self.gasP.setPos(0,0,2)

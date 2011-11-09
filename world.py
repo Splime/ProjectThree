@@ -724,18 +724,18 @@ class World(DirectObject):
     def deathChecker(self, task):
         #Check for out of time
         currTime = datetime.datetime.now()
-        if currTime > self.startTime + self.timeLimit:
-            print "OUT OF TIME!!!!!!!!!!!"
+        if currTime > self.startTime + self.timeLimit or self.player.totalGas >= MAX_GAS:
+            #print "OUT OF TIME!!!!!!!!!!!"
             
             taskMgr.doMethodLater(5, self.STOPGAME, 'tickTask')
             self.loading = OnscreenImage(image = 'images/victory.png', scale = (1.3333333,0, 1))
         #Check for death
         if self.player.dead:
-            print "THE PLAYER IS DEAD!!!!!!!!!!"
+            #print "THE PLAYER IS DEAD!!!!!!!!!!"
             taskMgr.doMethodLater(5, self.STOPGAME, 'tickTask')
             self.loading = OnscreenImage(image = 'images/lose_death.png', scale = (1.3333333,0, 1))
         if self.player.totalGas <= 0:
-            print "YOU SUCK. YOU RAN OUT OF GAS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+            #print "YOU SUCK. YOU RAN OUT OF GAS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
             taskMgr.doMethodLater(5, self.STOPGAME, 'tickTask')
             self.loading = OnscreenImage(image = 'images/lose_nogas.png', scale = (1.3333333,0, 1))
         return Task.cont

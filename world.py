@@ -54,6 +54,7 @@ STOPPED = 2
 
 class World(DirectObject):
     def __init__(self):
+        self.winprops=WindowProperties()
         self.enemyLights = []
         self.cameraPositions = [((0, 95, 75), (180, -27, 0)),((0, 55, 25), (180, -15, 0))]
         self.cameraIndex = 0
@@ -116,7 +117,7 @@ class World(DirectObject):
         self.accept("ate-smiley", self.eat)
         self.p1 = ParticleEffect()
         self.p2 = ParticleEffect()
-        
+        self.alan_var = False
         #Show collisiony stuff
         if DEBUG:
             base.cTrav.showCollisions(render)
@@ -124,7 +125,7 @@ class World(DirectObject):
         #f = open('testLog.txt', 'r+')
         #self.dfs(file = f)
         
-    
+        self.gasPlaying = False
         self.setLights()
     
         self.draining = False
@@ -175,10 +176,28 @@ class World(DirectObject):
             playerpos = self.player.getPos()
             dist = math.sqrt( (carpos[0] - playerpos[0])**2 + (carpos[1] - playerpos[1])**2 + (carpos[2] - playerpos[2])**2 )
             if self.gasList[self.target] > 0 and dist < DRAIN_DIST:
+                if not self.gasPlaying:
+                    self.gasP.reset()
+                    self.gasP = ParticleEffect()  
+                    self.gasP.loadConfig(Filename('flamethrower6.ptf'))        
+                    self.gasP.start(self.player)
+                    self.gasNode.lookAt(self.staticCars[self.target])
+                    self.gasP.setPos(0,0,2)
+                    self.gasP.setScale(1.5)
+                    self.gasP.setLightOff()
+                    self.gasPlaying = True
+                    self.alan_var = False
+                self.gasNode.lookAt(self.staticCars[self.target])
+                self.gasP.setHpr(self.gasNode.getH() + 180, 90, 0)
                 self.player.totalGas = self.player.totalGas + 1
                 self.gasList[self.target] = self.gasList[self.target] - 1
+            else:
+                self.alan_var = True
             print "TotalGas: " + str(self.player.totalGas)
             self.drainTime = task.time
+        elif not self.draining or self.alan_var:
+            self.gasP.softStop()
+            self.gasPlaying = False
         return Task.cont
                      
     def stopDrain(self):
@@ -264,7 +283,11 @@ class World(DirectObject):
         self.player.setupBooster()
         self.env = loader.loadModel("ralph_models/final_terrain")      
         self.env.reparentTo(render)
-        self.env.setScale(8) #was 15
+        self.env.setScale(8)
+        
+        # Gas particles
+        self.gasP = ParticleEffect()
+        self.gasNode = self.player.attachNewNode('gasNode')
         
         # Node Map
         map = Node.NodeMap("nodes.txt")
@@ -603,7 +626,6 @@ class World(DirectObject):
         self.p1.start(self.player)
         self.p1.setPos(-1.75, -10, 1.375)
         self.p1.setHpr(0, 90, 0)
-        self.p1.lookAt(self.enemies[0])
         self.p1.setScale(1.5)
         self.p1.setLightOff()
         self.p2.reset()
@@ -622,9 +644,10 @@ class World(DirectObject):
         #remove from scene graph
         cEntry.getIntoNodePath().getParent().remove()
            
-# w = World()
     def changeMouseCursor(self, cursorFile):
         if self.currIcon != cursorFile:
             self.currIcon = cursorFile
-            winprops=WindowProperties()
-            winprops.setCursorFilename(Filename.binaryFilename(cursorFile))
+            # winprops.getParentWindow().getXSize()
+            # print winprops.getXSize()
+            # print "test"
+            self.winprops.setCursorFilename(Filename.binaryFilename(cursorFile))

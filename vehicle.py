@@ -67,7 +67,7 @@ class Vehicle(Actor):
                                         blendType='noBlend',
                                         extraArgs=[(0,0),(0,0)],
                                         name="rampInterval")
-        self.health = 10
+        self.health = 3
         self.dead = False
         self.lastCollision = 0.0
         
@@ -88,6 +88,8 @@ class Vehicle(Actor):
         if self.world.enemies[index].phase != ENEMY_STOPPED and ClockObject.getGlobalClock().getLongTime() - self.lastCollision > INVULN_TIME:
             self.lastCollision = ClockObject.getGlobalClock().getLongTime()
             self.health = self.health - 1
+            self.world.livesSprites[self.health].setImage('images/healthicon_depleted.png')
+            self.world.livesSprites[self.health].setTransparency(TransparencyAttrib.MAlpha)
             print "Health: " + str(self.health)
             self.blinkStart = -1
             taskMgr.add(self.blink, "blinking")

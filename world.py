@@ -31,6 +31,9 @@ from direct.particles.ForceGroup import ForceGroup
 from direct.gui.OnscreenText import OnscreenText
 from direct.showbase.DirectObject import DirectObject
 from direct.filter.CommonFilters import CommonFilters
+from direct.gui.OnscreenImage import OnscreenImage
+from pandac.PandaModules import TransparencyAttrib
+from direct.gui.DirectGui import *
 # import FSM
 # import menus
 
@@ -58,6 +61,10 @@ class World(DirectObject):
     def __init__(self):
         self.winprops=WindowProperties()
         self.winprops.setCursorFilename(Filename.binaryFilename("question-icon.ico"))
+        
+        base.win.setClearColorActive(True)
+        base.win.setClearColor(VBase4(0, 0, 0, 1))
+        
         base.win.requestProperties(self.winprops) 
         self.enemyLights = []
         self.cameraPositions = [((0, 95, 75), (180, -27, 0)),((0, 55, 25), (180, -15, 0))]
@@ -70,6 +77,13 @@ class World(DirectObject):
         self.boosterLightNP = None
         self.flameLights = None
         self.player = Vehicle("ralph_models/vampire_car", "ralph_models/vampire_car", self, "player")
+        self.livesFrame = DirectFrame(frameColor=(0, 0, 0, 0), parent = base.a2dTopLeft)
+
+        self.livesSprites = list()
+        for i in range(0,self.player.health):
+            sprite = OnscreenImage(image = 'images/healthicon.png', parent = self.livesFrame, scale = 0.08, pos = (0.2*i+0.1,0,-0.1))
+            sprite.setTransparency(TransparencyAttrib.MAlpha)
+            self.livesSprites.append(sprite)
         
         self.loadModels()
         self.player.setPos(0,0,0)

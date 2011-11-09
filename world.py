@@ -565,11 +565,11 @@ class World(DirectObject):
         
         for i in range(len(self.staticCars)):
             staticNode = CollisionNode("staticCar")
-            temp = CollisionSphere((0,-5.5,10), 4)
+            temp = CollisionSphere((0,-5.2,10), 4)
             staticNode.addSolid(temp)
             temp = CollisionSphere((0,-0.5,10), 4)
             staticNode.addSolid(temp)
-            temp = CollisionSphere((0,3.5,10), 4)
+            temp = CollisionSphere((0,5.5,10), 4)
             staticNode.addSolid(temp)
             staticNode.setIntoCollideMask(BitMask32.bit(1))
             staticNode.setFromCollideMask(BitMask32.bit(0))
@@ -709,9 +709,19 @@ class World(DirectObject):
         currTime = datetime.datetime.now()
         if currTime > self.startTime + self.timeLimit:
             print "OUT OF TIME!!!!!!!!!!!"
+            
+            taskMgr.doMethodLater(5, self.STOPGAME, 'tickTask')
+            self.loading = OnscreenImage(image = 'images/loading.png', scale = (1.3333333,0, 1))
         #Check for death
         if self.player.dead:
             print "THE PLAYER IS DEAD!!!!!!!!!!"
+            taskMgr.doMethodLater(5, self.STOPGAME, 'tickTask')
+            self.loading = OnscreenImage(image = 'images/loading.png', scale = (1.3333333,0, 1))
         if self.player.totalGas <= 0:
             print "YOU SUCK. YOU RAN OUT OF GAS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+            taskMgr.doMethodLater(5, self.STOPGAME, 'tickTask')
+            self.loading = OnscreenImage(image = 'images/loading.png', scale = (1.3333333,0, 1))
         return Task.cont
+        
+    def STOPGAME(self, SOMETHNG):
+        taskMgr.stop()

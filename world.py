@@ -55,6 +55,8 @@ STOPPED = 2
 class World(DirectObject):
     def __init__(self):
         self.winprops=WindowProperties()
+        self.winprops.setCursorFilename(Filename.binaryFilename("question-icon.ico"))
+        base.win.requestProperties(self.winprops) 
         self.enemyLights = []
         self.cameraPositions = [((0, 95, 75), (180, -27, 0)),((0, 55, 25), (180, -15, 0))]
         self.cameraIndex = 0
@@ -231,13 +233,18 @@ class World(DirectObject):
                         playerpos = self.player.getPos()
                         dist = math.sqrt( (carpos[0] - playerpos[0])**2 + (carpos[1] - playerpos[1])**2 + (carpos[2] - playerpos[2])**2 )
                         if self.gasList[j] > 0 and dist < DRAIN_DIST:
-                            self.changeMouseCursor("vamp-icon.ico")
+                            self.winprops.setCursorFilename(Filename.binaryFilename("vamp-icon.ico"))
+                            base.win.requestProperties(self.winprops)
+                        elif self.gasList[j] > 0:
+                            self.winprops.setCursorFilename(Filename.binaryFilename("vamp-off.ico"))
+                            base.win.requestProperties(self.winprops)
                         else:
-                            self.changeMouseCursor("vamp-off.ico")
-                        #print(self.gasList[j])
+                            self.winprops.setCursorFilename(Filename.binaryFilename("empty-icon.ico"))
+                            base.win.requestProperties(self.winprops)
                         break
         if j == -1:
-            self.changeMouseCursor("question-icon.ico")
+            self.winprops.setCursorFilename(Filename.binaryFilename("question-icon.ico"))
+            base.win.requestProperties(self.winprops)
         #print j
         return Task.cont
     
@@ -507,13 +514,13 @@ class World(DirectObject):
         # FLAMETHROWER COLLISIONS
         # left
         flamethrowerLeft = CollisionSegment()
-        flamethrowerLeft.setPointA(-5 , -4, 10)
-        flamethrowerLeft.setPointB( -5 , -40 , 10 ) 
+        flamethrowerLeft.setPointA(-2 , -4, 10)
+        flamethrowerLeft.setPointB( -2 , -20 , 10 ) 
         
         # right
         flamethrowerRight = CollisionSegment()
-        flamethrowerRight.setPointA(5, -4, 10)
-        flamethrowerRight.setPointB( 5 , -40 , 10 ) 
+        flamethrowerRight.setPointA(2, -4, 10)
+        flamethrowerRight.setPointB( 2 , -20 , 10 ) 
         
         flamethrowerNode = CollisionNode("flamethrower")
         flamethrowerNode.addSolid(flamethrowerLeft)
@@ -641,7 +648,7 @@ class World(DirectObject):
         self.p1.start(self.player)
         self.p1.setPos(-1.75, -10, 1.375)
         self.p1.setHpr(0, 90, 0)
-        self.p1.setScale(1.5)
+        self.p1.setScale(2.0)
         self.p1.setLightOff()
         self.p2.reset()
         self.p2 = ParticleEffect()
@@ -649,7 +656,7 @@ class World(DirectObject):
         self.p2.start(self.player)
         self.p2.setPos(1.75, -10, 1.375)
         self.p2.setHpr(0, 90, 0)
-        self.p2.setScale(1.5)
+        self.p2.setScale(2.0)
         self.p2.setLightOff()
         
     def eat(self, cEntry):

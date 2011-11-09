@@ -1,3 +1,5 @@
+import sys
+
 def doNothing():
 	pass
 
@@ -8,21 +10,23 @@ def createMenus(stateMachine):
 	global mainMenu
 	mainMenu = {
 		0: {
-			'text':'Play Game',
-			'function': doNothing
+			'text':'New Game',
+			'function': stateMachine.request,
+			'args' : ['Game']
 		},
 		1: {
-			'text':'Options',
+			'text':'Instructions',
 			'function': stateMachine.request,
-			'args' : ['Options']
+			'args' : ['Instructions']
 		},
 		2: {
 			'text':'Credits',
-			'function': doNothing
+			'function': stateMachine.request,
+			'args' : ['Credits']
 		},
 		3: {
 			'text':'Exit',
-			'function': doNothing
+			'function': sys.exit
 		}
 	}
 

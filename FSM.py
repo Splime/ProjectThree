@@ -3,6 +3,8 @@ from direct.gui.DirectGui import *
 from pandac.PandaModules import TextNode
 from direct.fsm.FSM import FSM
 from direct.gui.OnscreenImage import OnscreenImage
+from direct.stdpy.threading import Timer
+from direct.task import Task
 import menus
 import sys
 from world import World
@@ -25,15 +27,18 @@ class MenuFSM(FSM):
         self.mainBackground.destroy()
 
     def enterGame(self):
-        # self.loading = OnscreenImage(image = 'images/credits2.png', pos = (-0.5, 0, 0.02))
-        # for i in range(100000):
-        #     pass
+        self.loading = OnscreenImage(image = 'images/loading.png', scale = (1.3333333,0, 1))
+        taskMgr.doMethodLater(1, self.startGame, 'tickTask')
+
+        
+    def startGame(self, THING):
+        print "lol"
         self.world = World()
         self.world.accept("escape", self.request, ['Menu'])
-        # print "After world"
-        # self.loading.destroy()
+        print "abc"
+        self.loading.destroy()
         self.frame.destroy()
-        # pass
+        
     def exitGame(self):
         sys.exit()
 

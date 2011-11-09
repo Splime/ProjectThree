@@ -1,13 +1,3 @@
-from pandac.PandaModules import loadPrcFileData
-if 0:
-    loadPrcFileData("", "window-title THE_TITLE_GOES_HERE!!!!")
-    loadPrcFileData("", "fullscreen 1") # Set to 1 for fullscreen
-    loadPrcFileData("", "win-size 1024 768")
-    loadPrcFileData("", "win-origin 0 0")
-loadPrcFileData("", "window-title THE_TITLE_GOES_HERE!!!!")
-loadPrcFileData("", "win-size 1024 768")
-loadPrcFileData("", "win-origin 30 30")
-
 import direct.directbase.DirectStart #starts player
 from pandac.PandaModules import * #basic Panda modules
 from direct.showbase.DirectObject import DirectObject #for event handling
@@ -56,6 +46,7 @@ TURNING = 1
 STOPPED = 2
 
 MAX_GAS = 500.0
+GAS_TIME = 1
 
 class World(DirectObject):
     def __init__(self):
@@ -170,11 +161,16 @@ class World(DirectObject):
         self.drainTime = 0.0
     
         self.flamethrowerActive = False
+        self.gasLossTime = 0.0
+        self.gasLossRate = 1.0    
+        taskMgr.add(self.loseHealth, "loseGas")
         
         #After all the loading, we need to calculate our start time
         self.startTime = datetime.datetime.now()
         self.timeLimit = datetime.timedelta(seconds=60)
     
+        
+        
     def setupPicking(self):
         self.picker = CollisionTraverser()
         self.pq     = CollisionHandlerQueue()
@@ -249,7 +245,16 @@ class World(DirectObject):
                      
     def stopDrain(self):
         self.draining = False
-        
+           
+    def loseHealth(self, task):
+        if task.time - self.gasLossTime > GAS_TIME:
+            if self.player.direction != 0:
+                self.player.totalGas = self.player.totalGas - self.gasLossRate
+            elif self.flamethrowerActive:
+                self.player.totalGas = self.player.totalGas - self.gasLossRate
+            self.gasLossTime = task.time
+            print self.player.totalGas
+        return Task.cont
            
     def mouseTask(self, task):
         j = -1
@@ -550,6 +555,11 @@ class World(DirectObject):
         flamethrowerLeft.setPointA(-2 , -4, 10)
         flamethrowerLeft.setPointB( -2 , -20 , 10 ) 
         
+        # middle
+        flamethrowerMiddle = CollisionSegment()
+        flamethrowerMiddle.setPointA(0 , -4, 10)
+        flamethrowerMiddle.setPointB( 0 , -20 , 10 ) 
+        
         # right
         flamethrowerRight = CollisionSegment()
         flamethrowerRight.setPointA(2, -4, 10)
@@ -557,12 +567,13 @@ class World(DirectObject):
         
         flamethrowerNode = CollisionNode("flamethrower")
         flamethrowerNode.addSolid(flamethrowerLeft)
+        flamethrowerNode.addSolid(flamethrowerMiddle)
         flamethrowerNode.addSolid(flamethrowerRight)
         flamethrowerNode.setIntoCollideMask(BitMask32.allOff())
         flamethrowerNode.setFromCollideMask(BitMask32.allOn())
         flamethrowerNodePath = self.player.attachNewNode(flamethrowerNode)
         
-        flamethrowerNodePath.show()
+        #flamethrowerNodePath.show()
         
         self.flamethrowerCollision = CollisionHandlerEvent()
         self.flamethrowerCollision.addInPattern('into-%in')
@@ -571,11 +582,11 @@ class World(DirectObject):
         
         for i in range(len(self.staticCars)):
             staticNode = CollisionNode("staticCar")
-            temp = CollisionSphere((0,-5.5,10), 4)
+            temp = CollisionSphere((0,-5.2,10), 4)
             staticNode.addSolid(temp)
             temp = CollisionSphere((0,-0.5,10), 4)
             staticNode.addSolid(temp)
-            temp = CollisionSphere((0,3.5,10), 4)
+            temp = CollisionSphere((0,5.5,10), 4)
             staticNode.addSolid(temp)
             staticNode.setIntoCollideMask(BitMask32.bit(1))
             staticNode.setFromCollideMask(BitMask32.bit(0))
@@ -656,6 +667,7 @@ class World(DirectObject):
         self.flamethrowerSound.play()
         self.flamethrowerActive = True
         self.draining = False
+        self.gasLossRate = 2.0
         
     def stopShoot(self):
         self.p1.softStop()
@@ -666,6 +678,7 @@ class World(DirectObject):
         self.flamethrowerSound.stop()
         self.flamethrowerEndSound.play()
         self.flamethrowerActive = False
+        self.gasLossRate = 1.0
         
     def hitEnemy(self, entry):
         if self.flamethrowerActive:
@@ -713,11 +726,23 @@ class World(DirectObject):
         currTime = datetime.datetime.now()
         if currTime > self.startTime + self.timeLimit:
             print "OUT OF TIME!!!!!!!!!!!"
+            
+            taskMgr.doMethodLater(5, self.STOPGAME, 'tickTask')
+            self.loading = OnscreenImage(image = 'images/loading.png', scale = (1.3333333,0, 1))
         #Check for death
         if self.player.dead:
             print "THE PLAYER IS DEAD!!!!!!!!!!"
+            taskMgr.doMethodLater(5, self.STOPGAME, 'tickTask')
+            self.loading = OnscreenImage(image = 'images/loading.png', scale = (1.3333333,0, 1))
+        if self.player.totalGas <= 0:
+            print "YOU SUCK. YOU RAN OUT OF GAS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+            taskMgr.doMethodLater(5, self.STOPGAME, 'tickTask')
+            self.loading = OnscreenImage(image = 'images/loading.png', scale = (1.3333333,0, 1))
         return Task.cont
 
+        
     def updateGasBar(self, task):
-            self.gasLevel['frameSize'] = (-1,(self.player.totalGas / MAX_GAS)*2 - 1, -1, 1)
-            return Task.cont
+        self.gasLevel['frameSize'] = (-1,(self.player.totalGas / MAX_GAS)*2 - 1, -1, 1)
+        return Task.cont
+    def STOPGAME(self, SOMETHNG):
+        taskMgr.stop()

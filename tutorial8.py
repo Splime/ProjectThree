@@ -2,8 +2,11 @@ from pandac.PandaModules import loadPrcFileData
 if 0:
     loadPrcFileData("", "window-title THE_TITLE_GOES_HERE!!!!")
     loadPrcFileData("", "fullscreen 1") # Set to 1 for fullscreen
-    loadPrcFileData("", "win-size 1680 1050")
+    loadPrcFileData("", "win-size 1024 768")
     loadPrcFileData("", "win-origin 0 0")
+loadPrcFileData("", "window-title THE_TITLE_GOES_HERE!!!!")
+loadPrcFileData("", "win-size 1024 768")
+loadPrcFileData("", "win-origin 30 30")
 
 import direct.directbase.DirectStart #starts player
 from pandac.PandaModules import * #basic Panda modules
@@ -28,6 +31,9 @@ from direct.particles.ForceGroup import ForceGroup
 from direct.gui.OnscreenText import OnscreenText
 from direct.showbase.DirectObject import DirectObject
 from direct.filter.CommonFilters import CommonFilters
+import direct.directbase.DirectStart
+import FSM
+import menus
 
 import sys, math, random
 from vehicle import Vehicle
@@ -510,20 +516,9 @@ class World(DirectObject):
         self.targets.remove(cEntry.getIntoNodePath().getParent())
         #remove from scene graph
         cEntry.getIntoNodePath().getParent().remove()
-        
-        
-        
-w = World()
+           
+# w = World()
+stateMachine = FSM.MenuFSM()
+menus.createMenus(stateMachine)
+stateMachine.request('Menu')
 run()
-
-
-
-
-
-
-
-
-
-
-
-

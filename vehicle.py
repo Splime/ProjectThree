@@ -75,6 +75,8 @@ class Vehicle(Actor):
         self.loadSounds()
         self.lowSound.play()
         
+        self.totalGas = 0
+        
     def takeHit(self, entry):
         if ClockObject.getGlobalClock().getLongTime() - self.lastCollision > INVULN_TIME:
             self.lastCollision = ClockObject.getGlobalClock().getLongTime()

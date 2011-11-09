@@ -56,6 +56,10 @@ class World(DirectObject):
     def __init__(self):
         self.winprops=WindowProperties()
         self.winprops.setCursorFilename(Filename.binaryFilename("question-icon.ico"))
+        
+        base.win.setClearColorActive(True)
+        base.win.setClearColor(VBase4(0, 0, 0, 1))
+        
         base.win.requestProperties(self.winprops) 
         self.enemyLights = []
         self.cameraPositions = [((0, 95, 75), (180, -27, 0)),((0, 55, 25), (180, -15, 0))]

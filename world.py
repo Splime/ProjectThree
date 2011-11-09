@@ -510,13 +510,13 @@ class World(DirectObject):
         # FLAMETHROWER COLLISIONS
         # left
         flamethrowerLeft = CollisionSegment()
-        flamethrowerLeft.setPointA(-5 , -4, 10)
-        flamethrowerLeft.setPointB( -5 , -40 , 10 ) 
+        flamethrowerLeft.setPointA(-2 , -4, 10)
+        flamethrowerLeft.setPointB( -2 , -20 , 10 ) 
         
         # right
         flamethrowerRight = CollisionSegment()
-        flamethrowerRight.setPointA(5, -4, 10)
-        flamethrowerRight.setPointB( 5 , -40 , 10 ) 
+        flamethrowerRight.setPointA(2, -4, 10)
+        flamethrowerRight.setPointB( 2 , -20 , 10 ) 
         
         flamethrowerNode = CollisionNode("flamethrower")
         flamethrowerNode.addSolid(flamethrowerLeft)
@@ -644,7 +644,7 @@ class World(DirectObject):
         self.p1.start(self.player)
         self.p1.setPos(-1.75, -10, 1.375)
         self.p1.setHpr(0, 90, 0)
-        self.p1.setScale(1.5)
+        self.p1.setScale(2.0)
         self.p1.setLightOff()
         self.p2.reset()
         self.p2 = ParticleEffect()
@@ -652,7 +652,7 @@ class World(DirectObject):
         self.p2.start(self.player)
         self.p2.setPos(1.75, -10, 1.375)
         self.p2.setHpr(0, 90, 0)
-        self.p2.setScale(1.5)
+        self.p2.setScale(2.0)
         self.p2.setLightOff()
         
     def eat(self, cEntry):

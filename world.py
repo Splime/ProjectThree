@@ -45,7 +45,7 @@ MOVING = 0
 TURNING = 1
 STOPPED = 2
 
-MAX_GAS = 200.0
+MAX_GAS = 500.0
 GAS_TIME = 1
 
 class World(DirectObject):
@@ -83,15 +83,21 @@ class World(DirectObject):
         gasIcon.setTransparency(TransparencyAttrib.MAlpha)
                     
         # gasBar = OnscreenImage(image = 'images/gas_bar.png', parent = self.progressFrame, scale = 0.4)#, pos = (-0.9,0,-0.05))
-        gasBar = OnscreenImage( image = 'images/gas_bar.png', parent = self.progressFrame, scale = (0.44,1,0.0525), pos = (-.47,0,-0.04))
-        self.gasLevel = DirectFrame(frameColor=(1, 0, 0, .5),frameSize=(-1, -1, -1, 1), parent = self.progressFrame, scale = 1, pos = (0,0,-0.04))
-        self.gasLevel.reparentTo(gasBar)
+        self.gasMax = DirectFrame(frameColor=(.133, .149, .149, 1),frameSize=(-1, 1, -1, 1), parent = self.progressFrame, scale = (0.432,1,0.055625), pos = (-.5,0,-0.04))
+        self.gasLevel = DirectFrame(frameColor=(.433, .149, .149, 1),frameSize=(-1, -1, -1, 1), parent = self.progressFrame, scale = (0.432,1,0.055625), pos = (-.5,0,-0.04))
+        gasBar = OnscreenImage(image = 'images/gas_bar_border.png', scale = (1,1,.9), pos = (-.0005,0,-0.04))
+        gasBar.reparentTo(self.gasLevel)
         gasBar.setTransparency(TransparencyAttrib.MAlpha)
 
-        timeBar = OnscreenImage(image = 'images/time_bar.png', parent = self.progressFrame, scale = (0.44,1,0.0525), pos = (-.47,0,-0.2))
-        # self.gasLevel = DirectFrame(frameColor=(1, 0, 0, .5),frameSize=(-1, -1, -1, 1), parent = self.progressFrame, scale = 1, pos = (0,0,-0.04))
-        # self.gasLevel.reparentTo(gasBar)
+        timeBar = OnscreenImage(image = 'images/time_bar.png', parent = self.progressFrame, scale = (0.44,1,0.0525), pos = (-.47,0,-0.15))
+        self.timePointer = OnscreenImage(image = 'images/time_bar_marker.png', parent = timeBar, scale = (0.05, 0, .2222), pos = (-.83,0,-0.15))
+        # self.timePointer = OnscreenImage(image = 'images/time_bar_marker.png', parent = self.timeBar, scale = (0.44,1,0.0525), pos = (-.47,0,-0.2))
         timeBar.setTransparency(TransparencyAttrib.MAlpha)
+
+        timeInterval = LerpPosInterval(self.timePointer,
+                                      60,
+                                      (.8,0,-0.2))
+        timeInterval.start()
 
         taskMgr.add(self.updateGasBar, "Update gas")
 
@@ -190,11 +196,11 @@ class World(DirectObject):
     def dfs(self, item = render, depth = 0, file = None):
         if file:
             file.write(("-" * depth) + item.getName() + ": \n")
-        print(("-" * depth) + item.getName() + ": ")
+        # print(("-" * depth) + item.getName() + ": ")
         for i in range(item.getNumNodes()):
             if file:
                 file.write((" " * depth) + "+" + item.getNode(i).getName() + ": " + str(item.getNode(i).getClassType()) + "\n")
-            print((" " * depth) + "+" + item.getNode(i).getName() + ": " + str(item.getNode(i).getClassType()))
+            # print((" " * depth) + "+" + item.getNode(i).getName() + ": " + str(item.getNode(i).getClassType()))
         for i in range(item.getNumChildren()):
             self.dfs(item.getChild(i), depth + 1, file)
             
@@ -238,7 +244,7 @@ class World(DirectObject):
                 self.gasList[self.target] = self.gasList[self.target] - 1
             else:
                 self.alan_var = True
-            print "TotalGas: " + str(self.player.totalGas)
+            # print "TotalGas: " + str(self.player.totalGas)
             self.drainTime = task.time
         elif not self.draining or self.alan_var:
             self.gasP.softStop()
@@ -256,7 +262,7 @@ class World(DirectObject):
             elif self.flamethrowerActive:
                 self.player.totalGas = self.player.totalGas - self.gasLossRate
             self.gasLossTime = task.time
-            print self.player.totalGas
+            # print self.player.totalGas
         return Task.cont
            
     def mouseTask(self, task):

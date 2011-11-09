@@ -1,5 +1,5 @@
 from pandac.PandaModules import loadPrcFileData
-loadPrcFileData("", "fullscreen 1") # Set to 1 for fullscreen
+loadPrcFileData("", "fullscreen 0") # Set to 1 for fullscreen
 loadPrcFileData("", "window-title THE_TITLE_GOES_HERE!!!!")
 loadPrcFileData("", "win-size 1024 768")
 loadPrcFileData("", "win-origin 30 30")

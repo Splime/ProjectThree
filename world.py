@@ -34,7 +34,7 @@ from direct.filter.CommonFilters import CommonFilters
 # import FSM
 # import menus
 
-import sys, math, random
+import sys, math, random, datetime
 from vehicle import Vehicle
 
 import carLocations
@@ -138,6 +138,10 @@ class World(DirectObject):
         self.drainTime = 0.0
     
         self.flamethrowerActive = False
+        
+        #After all the loading, we need to calculate our start time
+        self.startTime = datetime.datetime.now()
+        self.timeLimit = datetime.timedelta(seconds=60)
     
     def setupPicking(self):
         self.picker = CollisionTraverser()
@@ -673,6 +677,11 @@ class World(DirectObject):
             self.winprops.setCursorFilename(Filename.binaryFilename(cursorFile))
     
     def deathChecker(self, task):
+        #Check for out of time
+        currTime = datetime.datetime.now()
+        if currTime > self.startTime + self.timeLimit:
+            print "OUT OF TIME!!!!!!!!!!!"
+        #Check for death
         if self.player.dead:
             print "THE PLAYER IS DEAD!!!!!!!!!!"
         return Task.cont

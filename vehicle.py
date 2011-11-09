@@ -94,6 +94,7 @@ class Vehicle(Actor):
         self.highSound.setLoop(True)
         self.boostSound = base.loader.loadSfx("sound/car_boost.wav")
         self.boostSound.setLoop(True)
+        #self.collideSound = base.loader.loadSfx("sound/collide.wav")
     
     def updateEngineSound(self):
         if self.speed < self.maxSpeed / 4 and self.speed > self.maxBkwdsSpeed / 4:

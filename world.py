@@ -1,13 +1,3 @@
-from pandac.PandaModules import loadPrcFileData
-if 0:
-    loadPrcFileData("", "window-title THE_TITLE_GOES_HERE!!!!")
-    loadPrcFileData("", "fullscreen 1") # Set to 1 for fullscreen
-    loadPrcFileData("", "win-size 1024 768")
-    loadPrcFileData("", "win-origin 0 0")
-loadPrcFileData("", "window-title THE_TITLE_GOES_HERE!!!!")
-loadPrcFileData("", "win-size 1024 768")
-loadPrcFileData("", "win-origin 30 30")
-
 import direct.directbase.DirectStart #starts player
 from pandac.PandaModules import * #basic Panda modules
 from direct.showbase.DirectObject import DirectObject #for event handling
@@ -532,6 +522,11 @@ class World(DirectObject):
         flamethrowerLeft.setPointA(-2 , -4, 10)
         flamethrowerLeft.setPointB( -2 , -20 , 10 ) 
         
+        # middle
+        flamethrowerMiddle = CollisionSegment()
+        flamethrowerMiddle.setPointA(0 , -4, 10)
+        flamethrowerMiddle.setPointB( 0 , -20 , 10 ) 
+        
         # right
         flamethrowerRight = CollisionSegment()
         flamethrowerRight.setPointA(2, -4, 10)
@@ -539,12 +534,13 @@ class World(DirectObject):
         
         flamethrowerNode = CollisionNode("flamethrower")
         flamethrowerNode.addSolid(flamethrowerLeft)
+        flamethrowerNode.addSolid(flamethrowerMiddle)
         flamethrowerNode.addSolid(flamethrowerRight)
         flamethrowerNode.setIntoCollideMask(BitMask32.allOff())
         flamethrowerNode.setFromCollideMask(BitMask32.allOn())
         flamethrowerNodePath = self.player.attachNewNode(flamethrowerNode)
         
-        flamethrowerNodePath.show()
+        #flamethrowerNodePath.show()
         
         self.flamethrowerCollision = CollisionHandlerEvent()
         self.flamethrowerCollision.addInPattern('into-%in')
